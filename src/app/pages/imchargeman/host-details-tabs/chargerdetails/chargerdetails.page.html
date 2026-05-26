@@ -1,0 +1,56 @@
+<app-header details-header title="Station Details"
+redirectTo="chargemen-list"
+iconPath="../../../../assets/icon/back_icon.svg"
+secondaryIconPath ="../../../../assets/icon/edit_icon.svg"
+(onSecondaryIconClick)="editClickHandler()">
+</app-header>
+<ion-content content-color>
+  <div>
+    <img src="../../../../../assets/icon/bgcar.png"/>
+
+    <div charge-station-details-parent>
+      <div station-details> 
+          <div station-name>
+            <ion-label>{{chargerDetails.hostname}}</ion-label>
+            <ion-icon [src]="pageParams.chargeCount === '1' ? redDotIcon : greenDotIcon"></ion-icon>
+          </div>
+          <ion-label station-price>₹ {{chargerDetails.rph}}/Unit</ion-label>
+      </div>
+     
+      <ion-label station-other-details>{{chargerDetails.deviceid}}</ion-label><br>
+      <ion-label station-other-details>Registered as {{chargerDetails.chargettype}} charger</ion-label><br>
+     
+      <ion-label station-other-details>{{chargerDetails.hostaddress}}</ion-label><br>
+
+      <div station-start-end-details>
+        <ion-label station-heading-details position="stacked">Protocol</ion-label><br>
+        <ion-label station-other-details>{{chargerDetails.devicetype ?? "NA"}}</ion-label>
+      </div>
+
+      <div station-start-end-details>
+        <ion-label station-heading-details position="stacked">Capacity</ion-label><br>
+        <ion-label station-other-details>{{chargerDetails.capacity}} KW</ion-label>
+      </div>
+
+      <div station-start-end-details>
+        <ion-label station-heading-details position="stacked">Start Time</ion-label><br>
+        <ion-label station-other-details>{{chargerDetails.startime}}</ion-label>
+      </div>
+
+      <div station-start-end-details>
+        <ion-label station-heading-details position="stacked">End Time</ion-label><br>
+        <ion-label station-other-details>{{chargerDetails.endtime}}</ion-label>
+      </div>
+
+      <div station-start-end-details>
+        <ion-label station-heading-details position="stacked">Active</ion-label><br>
+        <ion-label station-other-details>{{chargerDetails.active === '1' ? 'Yes' : 'No'}}</ion-label>
+      </div>
+
+      <div station-start-end-details>
+        <ion-label station-heading-details position="stacked">24/7 Available</ion-label><br>
+        <ion-label station-other-details>{{chargerDetails.fullday === '1' ? 'Yes' : 'No'}}</ion-label>
+      </div>
+    </div>
+  </div>
+</ion-content>

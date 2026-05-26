@@ -1,0 +1,18 @@
+<app-header title="Terms & Conditions" [redirectTo]='sourcePage' iconPath="../../assets/icon/back_icon.svg"></app-header>
+
+<ion-content content-color>
+<div terms-image-container>
+    <img src="../../assets/icon/loginimg.png">
+</div>
+
+<div terms-content>
+<div heading-container>Terms & Conditions</div>
+
+<div terms-points-heading>
+  <p>By downloading or using the app, these terms will automatically apply to you</p> <p>you should make sure therefore that you read them carefully before using the app.</p>
+</div>
+<div terms-points>
+  <li *ngFor="let point of termsPoints">{{point}}</li>
+</div>
+</div>
+</ion-content>

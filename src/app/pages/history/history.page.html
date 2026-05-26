@@ -1,0 +1,57 @@
+<app-header
+  title="Transactions"
+  iconPath="../../../assets/icon/back_icon.svg"
+></app-header>
+<ion-content content-color>
+  <ion-refresher slot="fixed" (ionRefresh)="loadChargeHistory(true,$event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <app-loading *ngIf="isLoading" [showProgress]="showProgress" [statusText]="statusText"></app-loading>
+  <div history-parent-container *ngIf="!isLoading">
+    <div history-details-container *ngFor="let history of chargerHistory">
+      <!--Name and date-->
+      <div>
+      <div name-date-container>
+        <ion-label>{{history.deviceid}}</ion-label>
+        <ion-label>{{history.chargedate}}</ion-label>
+      </div>
+      <div device-label-container>
+      <ion-label deviceid-label>{{history.hostname}}</ion-label>
+      </div>
+      </div>
+
+      <!--Address-->
+      <div address-container>
+        <ion-label>{{history.hostaddress}}</ion-label>
+      </div>
+      <div address-container>
+        <ion-label>Rate: ₹ {{history.rph}}/KW</ion-label>
+      </div>
+      <!--Time-->
+      <div time-container>
+        <ion-label>Time: {{history.starttime}} - {{history.endtime}}</ion-label>
+      </div>
+
+      <div time-container>
+        <ion-label>Duration: {{history.duration}}</ion-label>
+      </div>
+      <div time-container>
+        <ion-label>Invoice ID : {{history.invoiceid}}</ion-label>
+      </div>
+
+      <div separator></div>
+
+      <div other-details-container>
+        
+        <div detail-container>
+          <ion-label>{{history.chargevalue}}Kw</ion-label>
+          <ion-label>(consumed)</ion-label>
+        </div>
+        <div detail-container>
+          <ion-label>₹ {{history.consumewallet}}</ion-label>
+          <ion-label>(Spent)</ion-label>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

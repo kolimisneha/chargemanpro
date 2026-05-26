@@ -1,0 +1,83 @@
+<app-header title="Charge Summary" iconPath="../../../assets/icon/back_icon.svg"></app-header>
+<ion-content content-color>
+  <app-loading *ngIf="isLoading" [showProgress]="showProgress" [statusText]="statusText"></app-loading>
+  <div *ngIf="!isLoading" charge-glance-parent-container>
+    <div charge-address-container>
+      <ion-label charger-name>{{details.hostname ?? 'Unavailable'}}</ion-label>
+      <ion-label desc-style>{{details.hostaddress ?? '-'}}</ion-label>
+    </div>
+
+
+    <div vehicle-status-container>
+      <img vehicle-icon [src]="vehicleIcon"/>
+      <div vehicle-status-text-container>
+        <ion-label status-heading>status</ion-label>
+        <ion-label charging-status-text>{{details.status}}</ion-label>
+        <ion-label date-text>Date: {{details.chargedate}}</ion-label>
+      </div>
+    </div>
+
+
+    <div charger-details-container>
+      <div charger-details>
+        <ion-icon [src]="timeElapsedIcon"></ion-icon>
+        <ion-label type-style>{{details.timeduration ?? '-'}}</ion-label>
+        <ion-label heading-style>Time Elapsed</ion-label>
+      </div>
+      <div charger-details>
+        <ion-icon [src]="energyIcon"></ion-icon>
+        <ion-label type-style>{{details.chargevalue ?? '-'}} KWh</ion-label>
+        <ion-label heading-style>Energy</ion-label>
+      </div>
+      <div charger-details>
+        <ion-icon [src]="chargerPowerIcon"></ion-icon>
+        <ion-label type-style>{{details.capacity ?? '-'}} KW</ion-label>
+        <ion-label heading-style>Capacity</ion-label>
+      </div>
+    </div>
+
+
+    <div charger-fare-container>
+      <div details-container>
+        <ion-label fare-heading>Start time</ion-label>
+        <ion-label fare-value>{{details.starttime}}</ion-label>
+      </div>
+
+      <div details-container>
+        <ion-label fare-heading>End time</ion-label>
+        <ion-label fare-value>{{details.endtime}}</ion-label>
+      </div>
+
+      <div details-container>
+        <ion-label fare-heading>Charging Fee</ion-label>
+        <ion-label fare-value>₹ {{details.consumewallet}}</ion-label>
+      </div>
+
+      <div details-container>
+        <ion-label fare-heading>CGST({{details.cgst}}%)</ion-label>
+        <ion-label fare-value>₹ {{details.cgstvalue}}</ion-label>
+      </div>
+
+      <div details-container>
+        <ion-label fare-heading>SGST({{details.sgst}}%)</ion-label>
+        <ion-label fare-value>₹ {{details.sgstvalue}}</ion-label>
+      </div>
+
+      <div details-container>
+        <ion-label fare-heading>Charging Fee</ion-label>
+        <ion-label fare-value>₹ {{details.consumewallet}}</ion-label>
+      </div>
+
+      <div details-container>
+        <ion-label fare-heading-total>Total</ion-label>
+        <ion-label fare-total-value>₹ {{details.total}}</ion-label>
+      </div>
+
+      <div details-container>
+        <ion-label fare-heading-total>Wallet Remaining</ion-label>
+        <ion-label fare-total-value>₹ {{walletBalance}}</ion-label>
+      </div>
+    </div>
+  </div>
+
+</ion-content>

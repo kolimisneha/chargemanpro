@@ -1,0 +1,18 @@
+<ion-header>
+  <ion-toolbar toolbar-style>
+    <ion-buttons slot="start" header-button>
+      <!-- <ion-back-button [icon]="iconPath"></ion-back-button> -->
+      <ion-icon header-back-button (click)="backButtonClickHander()" [src]="iconPath"></ion-icon>
+    </ion-buttons>
+    <ion-title header-title>{{title}}</ion-title>
+    <ion-buttons slot="end" *ngIf="secondaryIconPath" >
+      <!-- <ion-back-button [icon]="iconPath"></ion-back-button> -->
+      <ion-icon header-secondary-button (click)="secondaryIconClickHandler()" [src]="secondaryIconPath"></ion-icon>
+    </ion-buttons>
+
+    <ion-buttons slot="end" *ngIf="ionicIconName" >
+      <!-- <ion-back-button [icon]="iconPath"></ion-back-button> -->
+      <ion-icon ionic-icon-secondary-button (click)="secondaryIconClickHandler()" [name]="ionicIconName"></ion-icon>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>

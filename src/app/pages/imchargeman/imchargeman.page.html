@@ -1,0 +1,33 @@
+<app-header
+  title="My Stations"
+  redirectTo="dashboard"
+  iconPath="../../../assets/icon/back_icon.svg"
+  ionicIconName ="add-circle"
+  (onSecondaryIconClick) = "openChargerRegistrationForm()"
+></app-header>
+
+<ion-content content-color>
+  
+  <app-loading *ngIf="isLoading" [showProgress]="showProgress" [statusText]="statusText"></app-loading>
+  <div *ngIf="!isLoading">
+    <div (click)="openChargemanDetails(station)" chargeman-details-container *ngFor="let station of chargeStations">
+      <div image-container>
+        <div name-container>
+          <ion-label station-name>{{station.hostname}}</ion-label>
+          <ion-icon *ngIf="station.active === '1'" [src]="station.chargeCount === '0' ? greenDotIcon : redDotIcon"></ion-icon>
+        </div>
+        <ion-label device-id>{{station.deviceid}}</ion-label>
+        <div charge-active-container>
+          <ion-label charger-type>{{station.chargettype}}</ion-label>
+          <ion-label charger-type>{{station.active === '1' ? 'Active' : 'Disabled'}}</ion-label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- <ion-fab slot="fixed" vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button chargeman-fab-button (click)="openChargerRegistrationForm()">
+      <ion-icon [src]="addIcon"></ion-icon>
+    </ion-fab-button>
+  </ion-fab> -->
+</ion-content>

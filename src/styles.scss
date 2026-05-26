@@ -1,0 +1,2313 @@
+[heading-style-one] {
+  font-family: 'poppins-bold';
+  line-height: 27px;
+  font-size: 18px;
+}
+[home-bottom-banner] {
+  padding: 12px;
+    border-radius: 12px;
+}
+[cotainer-otp-style] {
+  display: flex;
+[heading-style-light] {
+  font-family: 'poppins-light';
+  line-height: 18px;
+  font-size: 14px;
+
+}
+}
+[back-text] {
+  text-transform: uppercase;
+  text-decoration: underline;
+  color: var(--chargemen-primary);
+  font-family: 'poppins-semi-bold';
+  font-size: 14px;
+}
+
+[button-regular] {
+  font-family: 'poppins-bold';
+ --background: var(--chargemen-primary);
+  color: var(--chargemen-white);
+  border-radius: 5px;
+  line-height: 24px;
+  font-weight: 16px;
+  text-transform: none;
+&[start-charge] {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+&[withdraw-button] {
+  position: relative;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+}
+
+
+[button-danger] {
+    font-family: 'poppins-bold';
+   --background: var(--chargemen-withdraw);
+    color: var(--chargemen-white);
+    border-radius: 5px;
+    line-height: 24px;
+    font-weight: 16px;
+    text-transform: none;
+    position: absolute;
+    bottom:0;
+    left: 0;
+    right: 0;
+}
+
+[charging-status-container] {
+  text-align: center;
+  width: 100%;
+  font-family: 'poppins-regular-400';
+  color: var(--chargemen-white);
+  background: var(--chargemen-primary);
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  padding: 6px;
+  margin: 12px 0px;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+  ion-label {
+    margin-left: 12px;
+    &:last-child {
+      margin-right: 12px;
+      text-decoration: underline;
+    }
+  }
+}
+
+
+[login-logo-container] {
+  margin: 24px 0px;
+  width: 100%;
+  height: 35vh;
+  img{
+    width: 100%;
+  }
+}
+
+[login-details-container] {
+  background-color:var(--chargemen-white);
+  height:70vh;
+  width:100vw;
+  border:5px solid var(--chargemen-white);
+  border-top-left-radius: 50px;
+  border-top-right-radius: 50px;
+  overflow: scroll;
+  [otp-container] {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    margin-top: 8px;
+
+    [otp-back-parent-container] {
+      display: flex;
+      flex-direction: row-reverse;
+      text-align: center;
+      justify-content: space-between;
+      width: 100%;
+      align-items: center;
+      margin: 0px 30px;
+    }
+    
+  }
+
+}
+
+/*Header styles*/
+[toolbar-style] {
+--background: var(--chargemen-grey);
+
+[header-back-button] {
+  width: 40px;
+  height: 40px;
+  margin-left: 12px;
+}
+
+[header-title] {
+  font-family: 'poppins-bold';
+  line-height: 27px;
+  font-size: 18px;
+  margin-left: 20px;
+  padding:0px;
+  color: var(--chargemen-black)
+}
+[header-secondary-button] {
+  width: 20px;
+  height: 20px;
+  margin-right: 16px;
+  margin-left: 20px;
+}
+[ionic-icon-secondary-button] {
+  width: 32px;
+  height: 32px;
+  margin-top: 2px;
+  color: var(--chargemen-primary);
+  margin-right: 16px;
+}
+}
+/*Side Menu styles*/
+[menu-content] {
+  --background: var(--chargemen-primary);
+  
+  [menu-list] {
+    padding: 0px;
+    ion-item {
+      --background: var(--chargemen-primary);
+      font-size: 16px;
+      line-height: 24px;
+      ion-label {
+        font-family: 'poppins-semi-bold';
+        color: var(--chargemen-white);
+    }
+      ion-icon {
+        padding: 0px;
+        margin: 0px;
+        width: 16px;
+        height: 16px;
+      }
+      }
+      [profile-container] {
+        background: var(--chargemen-primary);
+        width: 100%;
+        display: flex;
+        border-bottom: 1px solid var(--chargemen-white);
+        min-height: 1px;
+
+        img {
+          margin-left: 18px;
+          margin-top: 20px;
+          margin-bottom: 18px 
+        }
+        [profile-name-container] {
+          font-family: 'poppins-semi-bold';
+          color: var(--chargemen-white);
+          margin-top: 20px;
+          margin-left: 16px;
+          width: 100%;
+          ion-icon {
+            margin-left: 6px;
+          }
+        }
+      }
+  }
+}
+[menu-footer-image-container] {
+    background: var(--chargemen-primary);
+    width: 100%;
+    align-items: center;
+    text-align: center;
+    position: absolute;
+    bottom: 0;
+    margin-bottom: 48px;
+}
+
+/*Login related styles*/
+
+[login-text] {
+  margin-left: 30px;
+  margin-top:30px
+}
+[login-subtext] {
+  margin-left: 30px;
+  margin-top: 15px;
+  span {
+    color: var(--chargemen-primary);
+    line-height: 26px;
+  }
+}
+
+[login-input-item] {
+  --highlight-color-focused: var(--chargemen-black);
+  --background: transparent;
+  ion-select {
+    font-family: 'poppins-regular-400';
+    margin-right: 4px;
+  }
+  ion-input{
+    font-family: 'poppins-regular-400';
+  }
+  margin: 0px 30px 0px 30px;
+  ion-icon {
+    margin: 0px 14px 0px 0px;
+    color: var(--chargemen-black)
+  }
+}
+[login-button] {
+  margin: 10px 20px 20px 20px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: 10px 20px 20px 20px;
+  position: absolute;
+  bottom: 0;
+}
+[login-otp-timer-style] {
+  margin:12px 0px 0px 0px;
+  text-align: center;
+  &[otp-timer] {
+    margin-left: 12px;
+  }
+  &.enabled-color {
+    color: var(--chargemen-primary);
+    font-family: 'poppins-semi-bold';
+  }
+  &.disabled-color {
+    color: var(--chargemen-black);
+  }
+}
+
+/*End of Login styles*/
+
+
+/*Toolbar styles*/
+[chargemen-toolbar-style] {
+  --background: var(--chargemen-grey) !important; 
+  ion-buttons {
+    ion-menu-button {
+      width: 100%;
+      height: 100%;
+      margin-left: 16px;
+      margin-top: 15px;
+      margin-bottom: 15px;
+      ion-icon {
+        width: 40px;
+        height: 40px;
+      }
+    }
+  }
+  ion-buttons {
+    [sidemenuIcon] {
+      width: 34px;
+      height: 40px;
+      color: var(--chargemen-primary);
+    }
+  }
+  ion-buttons:last-child {
+    [chargemen-button-container] {
+    width: 100%;
+    height: 100%;
+    margin-right: 16px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    ion-icon {
+      width: 40px;
+      height: 40px;
+      
+    }
+    [icon-hand] {
+      width: 30px;
+      height: 30px;
+    }
+   }
+  }
+}
+
+.header-md::after{
+  background: none;
+}
+ios in-toolbar {
+  background: none;
+}
+
+[content-color] {
+--background: var(--chargemen-grey) !important;
+}
+
+
+/*Dashboard wallet style*/
+[wallet-balance-container] {
+  font-family: 'poppins-regular-400';
+  font-size: 12px;
+  margin: 20px 18px 20px 18px;
+  background: var(--chargemen-white);
+  border-radius: 5px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+
+  ion-icon {
+    margin-left: 12px;
+  }
+  ion-label {
+    margin-left: 18px;
+    font-size: 14px;
+    line-height: 18px;
+    color: var(--chargemen-black);
+  }
+
+  ion-label:last-child {
+    float: right;
+    margin-left: auto;
+    font-weight: bold;
+    color: var(--chargemen-primary);
+  }
+}
+
+/*Dashboard nearby section*/
+[dashboard-section-heading] {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'poppins-bold';
+  margin: 20px 18px 20px 18px;
+  ion-label {
+    color: var(--chargemen-black);
+    &:last-child {
+      color: var(--chargemen-primary);
+    }
+  }
+  
+}
+[scroll-container] {
+    overflow: auto;
+    white-space: nowrap;
+
+
+[product-container] {
+  background: var(--chargemen-white);
+    display: inline-block;
+    border-radius: 15px;
+    margin: 0px 8px 20px 8px;
+    padding: 0px 20px;
+    width: 200px;
+    text-align: center;
+
+    img {
+      height: 120px;
+      width: 120px;
+      margin: 15px 20px;
+    }
+[product-name-container] {
+  text-align: center;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+    [product-name] {
+      font-family: 'poppins-bold';
+      line-height: 18px;
+      font-size: 14px;
+      color: var(--chargemen-primary);
+     
+    }
+  }
+
+    [price-container] {
+      font-size: 14px;
+      margin-top:14px;
+      margin-bottom:15px;
+      span {
+        color: var(--chargemen-secondary);
+      }
+      span:nth-child(2){
+        color: var(--chargemen-black);
+        text-decoration: line-through;
+      }
+    }
+    [cart-status-container] {
+      padding-bottom:12px;
+      padding-top: 12px;
+      ion-label {
+       font-family: 'poppins-bold';
+       color: var(--chargemen-secondary); 
+      }
+    }
+  }
+}
+
+[explore-container]{
+  margin: 15px 20px 32px;
+  border-radius: 5px;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  background: var(--chargemen-white);
+   [item-details] {
+    display: inline-flex;
+    flex-direction: column;
+    margin: 12px 30px 12px 30px;
+    align-items: center;
+    text-align: center;
+    font-family: 'poppins-regular-400';
+    ion-label {
+      font-size: 12px;
+      color: var(--chargemen-black)
+    }
+    
+   }
+}
+
+/*Ionic tab bar styles*/
+[home-tab-bar] {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding: 4px 0 0 0;
+}
+
+[home-tab-buttons] {
+  flex: 1;
+  max-width: 64px;
+  background: var(--chargeman-grey);
+  --padding-top: 4px;
+  --padding-bottom: 0;
+  min-height: 50px;
+}
+
+[home-tab-icon] {
+  width: 24px;
+  height: 24px;
+  margin-bottom: 2px;
+}
+
+[home-tab-label] {
+  font-size: 10px;
+  font-family: 'poppins-regular-400';
+  color: var(--chargemen-black);
+  margin: 0;
+}
+
+[home-tab-bar] {
+  height: 56px;
+  background:  var(--chargemen-grey);
+  box-shadow: 0px 0px 4px rgb(0 0 0 / 25%);
+}
+
+[tab-spacer] {
+  width: 60px;
+  flex-shrink: 0;
+}
+
+[home-fab-button] {
+  margin-bottom: 28px;
+  --background:black;
+  width: 52px;
+  height: 52px;
+  box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.54);
+  border-radius: 50%;
+  .qr-style {
+      width: 28px;
+      height: 28px;
+  }
+  .charger-style {
+    width: 24px;
+    height: 24px;
+    color:var(--chargemen-white)
+  }
+}
+
+.home-tabs {
+ion-tab-button[aria-selected=true]:first-child{
+  ion-icon {
+  background-image: url('./assets/icon/tab-home-selected.svg');
+}
+}
+ion-tab-button[aria-selected=true]:last-child{
+  ion-icon {
+  background-image: url('./assets/icon/tab-map-selected.svg');
+}
+}
+}
+
+
+.ios {
+ion-tab-button {
+  margin-left: 16px;
+}
+ion-tab-button:last-child{
+  margin-right: 16px;
+}
+.item-detail-icon{
+  display: none;
+}
+
+[wallet-balance-container] {
+  margin-top:42px
+}
+
+.loading-custom-class {
+  --width: 80%;
+  --background: var(--chargemen-grey);
+  .loading-wrapper.sc-ion-loading-ios {
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      flex-grow: 1;
+      ion-spinner {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .loading-content {
+      margin: 12px 0px 0px 0px; 
+      font-family: 'poppins-regular-400';
+      line-height: 10px;
+      font-size: 14px;
+    }
+  }
+}
+
+.header-ios ion-toolbar:last-of-type {
+  --border-width: 0 0 0px;
+}
+
+[header-title] {
+  margin-left: 0px;
+}
+
+}
+
+
+/*Wallet page related styles*/
+
+[wallet-parent-container] {
+  margin-top:20px;
+  margin-left: 18px;
+  margin-right: 18px;
+}
+[wallet-page-heading] {
+  font-family: 'poppins-bold';
+  color: var(--chargemen-black);
+  font-size: 12px;
+  line-height: 18px;
+  margin-top:34px;
+}
+
+[wallet-icon] {
+  width: 30px;
+  height: 30px;
+}
+
+[wallet-display-container] {
+  display: flex;
+  align-items: center;
+  margin-top:12px
+}
+
+[wallet-amount] {
+  font-family: 'poppins-bold';
+  font-size: 16px;
+  line-height: 24px;
+  margin-left: 12px;
+  color: var(--chargemen-primary);
+}
+
+[wallet-buttons-container] {
+  display: flex;
+  margin-top:30px;
+  justify-content: space-around;
+  [recharge-button] {
+    --border-color: var(--chargemen-primary);
+    flex-grow: 1;
+    font-family: 'poppins-semi-bold';
+    font-size: 12px;
+    line-height: 20px;
+    height: 40px;
+    border-radius: 5px;
+    color: var(--chargemen-primary)
+  } 
+ [withdraw-button]{
+    margin-left: 20px;
+    --border-color: var(--chargemen-secondary) !important;
+    color: var(--chargemen-secondary) !important;
+    flex-grow: 1;
+    font-family: 'poppins-semi-bold';
+    font-size: 12px;
+    line-height: 20px;
+    height: 40px;
+    border-radius: 5px;
+    
+  }
+}
+[transactions-parent-container] {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+[transactions-container] {
+  margin-top:20px;
+  [transactions-empty-container] {
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    ion-label {
+      font-family: 'poppins-regular-400';
+      
+    }
+  }
+  ion-label{
+  font-family: 'poppins-bold';
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--chargemen-black);
+}
+[transaction-details] {
+  display: flex;
+  align-items: center;
+  margin: 12px 0px;
+  ion-icon {
+    width: 24px;
+    height: 24px;
+  }
+  [transaction-type] {
+    font-family: 'poppins-bold-600';
+    font-size: 14px;
+    line-height: 18px;
+    margin-left: 10px;
+    color: var(--chargemen-black)
+  }
+  [transaction-date] {
+    font-family: 'poppins-bold-600';
+    font-size: 10px;
+    line-height: 15px;
+    margin-left: 10px;
+    color: var(--chargemen-grey-600)
+  }
+}
+.recharge-style {
+  color: var(--chargemen-recharge)
+}
+.withdraw-style {
+  color: var(--chargemen-withdraw)
+}
+.consume-style {
+  color: var(--chargemen-secondary)
+}
+}
+
+/**History page related styles*/
+
+[history-parent-container] {
+  margin-top:28px;
+  margin-left: 20px;
+  margin-right: 20px;
+  
+  
+  [history-details-container] {
+    margin-bottom:20px;
+    background: var(--chargemen-white);
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+
+    [name-date-container] {
+      display: flex;
+      justify-content: space-between;
+      margin: 0px 14px 10px 14px;
+      padding-top:14px;
+      ion-label {
+        font-family: 'poppins-bold';
+        color: var(--chargemen-primary);
+        font-size: 16px;
+        line-height: 24px;
+      }
+      ion-label:last-child{
+        font-family: 'poppins-regular-400';
+        font-size: 14px;
+        color: var(--chargemen-grey-600)
+      }
+    }
+
+    [address-container] {
+      font-family: 'poppins-regular-400';
+      font-size: 14px;
+      line-height: 18px;
+      color: var(--chargemen-black-00);
+      margin: 0px 14px 10px 14px
+    }
+
+    [time-container] {
+      font-family: 'poppins-regular-400';
+      font-size: 14px;
+      color: var(--chargemen-black-00);
+      line-height: 18px;
+      margin: 0px 14px 10px 14px
+    }
+
+    [separator] {
+      margin-top: 10px;
+      height: 0.1px;
+      background-color: var(--chargemen-grey-600);
+    }
+
+    [other-details-container] {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      margin: 0px 14px 10px 14px;
+      font-family: 'poppins-regular-400';
+      font-size: 12px;
+      line-height: 18px;
+      padding: 12px 0px;
+      [detail-container] {
+        font-size: 12px;
+        color: var(--chargemen-black-00);
+        margin-top: 4px;
+        flex-direction: column;
+        display: flex;
+        flex-grow: 1;
+        &:last-child {
+          font-weight: bolder;
+        }
+      }
+      
+    }
+
+    [device-label-container] {
+      margin: 0px 14px 8px;
+      font-family: 'poppins-regular-400';
+      color: var(--chargemen-secondary);
+      font-size: 14px;
+    }
+  }
+}
+/*Charge start stop page styles*/
+
+  
+  [charge-header-container] {
+    width: 100%;
+    position: absolute;
+    [charge-image] {
+      width: 100%;
+    }
+    [charge-back-button] {
+      position: absolute !important;
+      background: var(--chargemen-white);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-top:14px;
+      margin-left: 14px;
+     }
+  }
+
+  [charge-details-container] {
+    position: absolute;
+    background-color:var(--chargemen-white);
+    top: 20vh;
+    height: calc(100% - 20vh);
+    width:100vw;
+    border:5px solid var(--chargemen-white);
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    overflow: scroll;
+
+    [charge-address-container] {
+      margin-left: 20px;
+      margin-top: 20px;
+      display:flex;
+      flex-direction: column;
+      [name-style] {
+        flex-grow: 1;
+        color: var(--chargemen-primary);
+        font-family: 'poppins-bold';
+        font-size: 18px;
+        line-height: 27px;
+      }
+      [desc-style] {
+        flex-grow: 1;
+        margin-top:14px;
+        color: var(--chargemen-grey-600);
+        font-family: 'poppins-regular-400';
+        font-size: 12px;
+        line-height: 18px;
+      }
+      [desc-style]:last-child {
+        flex-grow: 1;
+        margin-top:14px;
+        color: var(--chargemen-grey-600);
+        font-family: 'poppins-regular-400';
+        font-size: 12px;
+        line-height: 18px;
+      }
+    }
+
+    [power-details-container] {
+      display: flex;
+      flex-direction: row;
+      margin-top: 20px;
+      margin-bottom: 16px;
+      [power-details] {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        justify-content: center;
+        ion-icon {
+          width: 24px;
+          height: 24px;
+        }
+        [type-style] {
+          margin: top 10px;font-family: 'poppins-bold-600';
+          font-size: 12px;
+          line-height: 18px;
+          color: var(--chargemen-black);
+          margin-top:12px
+        }
+        [heading-style] {
+          margin: top 10px;font-family: 'poppins-regular-400';
+          font-size: 10px;
+          line-height: 15px;
+          color: var(--chargemen-grey-600);
+        }
+      }
+    }
+
+    [slot-booking-container] {
+      margin-top: 16px;
+      margin-left: 20px;
+      [resume-hint-container] {
+        font-family: 'poppins-regular-400';
+        font-size: 12px;
+        text-align: left;
+        padding-top: 12px;
+        color: var(--chargemen-primary);
+      }
+      [heading] {
+        font-family: 'poppins-bold';
+        font-size: 14px;
+        line-height: 18px;
+      }
+      [slot-details-container] {
+        margin-top:24px;
+        margin-right: 20px;
+        display: flex;
+        align-items: center;
+        ion-checkbox {
+          --checkmark-color: var(--chargemen-white);
+          --background-checked: var(--chargemen-primary);
+        }
+        [slot-label] {
+          font-family: 'poppins-regular-400';
+          width: 80%;
+          font-size: 12px;line-height: 18px;
+          color: var(--chargemen-black);
+          span {
+            color:red;
+          }
+        }
+
+        ion-item {
+          ion-input {
+            input {
+              padding: 0px;
+            }
+          }
+          ion-icon {
+            width: 12px;
+            height: 12px;
+          }
+        }
+
+        [timer-parent-container] {
+          display: flex;
+          align-items: center;
+          text-align: center;
+          ion-icon {
+            width: 20px;
+            height: 24px;
+          }
+        }
+        [timer-text] {
+          font-family: 'poppins-semi-bold';
+          color:var(--chargemen-black);
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          padding:0px 24px
+
+        }
+        [timer-value] {
+          font-family: 'poppins-regular-400';
+          color: var(--chargemen-grey-600);
+          font-size: 12px;
+        }
+      }
+    }
+
+    [start-charge-button] {
+      --background: var(--chargemen-primary);
+      margin: 18px 20px;
+    }
+  }
+
+
+  /*Charge process styles**/
+  [charge-status-container] {
+    display: flex;
+    margin-left: 26px;
+    margin-top: 26px;
+	
+	[vehicle-icon] {
+	    width: 65px;
+      height: 65px;
+	}
+	
+	[charging-text-container] {
+	    margin-left: 26px;
+      [status-heading] {
+        font-family: 'poppins-bold';
+        color: var(--chargemen-grey-600);
+        font-size: 12px;
+        line-height: 18px;
+      }
+      [timer-display-container] {
+        display: flex;
+        justify-content: space-between;
+        
+      }
+		
+		[battery-container] {
+			display:flex;
+			align-items: center;
+			[charging-status-text] {
+        font-family: 'poppins-bold';
+        color: var(--chargemen-black);
+        font-size: 18px;
+        line-height: 27px;
+        margin-left: 12px;
+      }
+			ion-icon{
+			width:28px;
+			height: 44px;
+      &.blink {
+        color: var(--chargemen-primary);
+        animation: blink 2s infinite both;
+        }
+        &.no-blink {
+          color: var(--chargemen-black-00);
+        }
+			}
+			
+		}
+
+    [timer-text] {
+      font-family: 'poppins-bold';
+      color: var(--chargemen-grey-600);
+      font-size: 12px;
+      line-height: 18px;
+    }
+	}
+
+	}
+
+  [slot-charge-fare-container] {
+    display: flex;
+    justify-content: space-between;
+    margin:24px 20px;
+
+    [fare-heading] {
+      font-family: 'poppins-regular-400';
+      width: 80%;
+      font-size: 12px;line-height: 18px;
+      color: var(--chargemen-black);
+    }
+    [fare-value] {
+      font-family: 'poppins-regular-400';
+      
+      font-size: 12px;line-height: 18px;
+      color: var(--chargemen-black);
+    }
+
+  }
+/*Charger glance styles**/
+
+[charge-glance-parent-container] {
+  margin-left: 12px;
+  margin-top: 16px;
+  [charge-address-container] {
+    display:flex;
+    flex-direction: column;
+    [charger-name] {
+      font-family: 'poppins-bold';
+      color: var(--chargemen-primary);
+      font-size: 18px;
+      line-height: 27px;
+      flex-grow: 1;
+    } 
+    [desc-style] {
+      flex-grow: 1;
+      margin-top:10px;
+      color: var(--chargemen-grey-600);
+      font-family: 'poppins-regular-400';
+      font-size: 12px;
+      line-height: 18px;
+    }
+    [desc-style]:last-child {
+      margin-top: 0px;
+    }
+  }
+
+  [vehicle-status-container] {
+    display: flex;
+    margin-left: 12px;
+    margin-top: 26px;
+    margin-bottom: 12px;
+	  [vehicle-icon] {
+	    width: 80px;
+      height: 80px;
+	  }
+
+    [vehicle-status-text-container] {
+      margin-left: 26px;
+      display: flex;
+      flex-direction: column;
+      [status-heading] {
+        font-family: 'poppins-bold';
+        color: var(--chargemen-grey-600);
+        font-size: 12px;
+        line-height: 18px;
+        
+      }
+      [charging-status-text] {
+        font-family: 'poppins-bold';
+        color: var(--chargemen-black);
+        font-size: 18px;
+        line-height: 27px;
+        
+        
+      }
+      [date-text] {
+        font-family: 'poppins-bold';
+        color: var(--chargemen-grey-600);
+        font-size: 12px;
+        line-height: 18px;
+        margin-top:8px;
+      }
+    }
+  }
+
+  [charger-details-container] {
+    display: flex;
+    flex-direction: row;
+    margin-top: 14px;
+    margin-bottom: 16px;
+    [charger-details] {
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      justify-content: center;
+      ion-icon {
+        width: 24px;
+        height: 24px;
+      }
+      [type-style] {
+        margin: top 10px;font-family: 'poppins-bold-600';
+        font-size: 12px;
+        line-height: 18px;
+        color: var(--chargemen-black);
+        margin-top:12px
+      }
+      [heading-style] {
+        margin: top 10px;font-family: 'poppins-regular-400';
+        font-size: 10px;
+        line-height: 15px;
+        color: var(--chargemen-grey-600);
+      }
+    }
+  }
+
+
+  [charger-fare-container]{
+    margin: 20px 14px 0px 0px;
+  
+      [details-container] {
+      display: flex;
+      justify-content: space-between;
+      margin:24px 20px;
+  
+      [fare-heading] {
+        font-family: 'poppins-regular-400';
+        width: 50%;
+        font-size: 12px;line-height: 18px;
+        color: var(--chargemen-black);
+      }
+      [fare-value] {
+        font-family: 'poppins-regular-400';
+        
+        font-size: 12px;line-height: 18px;
+        color: var(--chargemen-black);
+      }
+
+      [fare-heading-total] {
+        font-family: 'poppins-bold-600';
+        width: 50%;
+        font-size: 12px;line-height: 18px;
+        color: var(--chargemen-black);
+      }
+      [fare-total-value] {
+        font-family: 'poppins-bold-600';
+        
+        font-size: 12px;line-height: 18px;
+        color: var(--chargemen-black);
+      }
+    } 
+  }
+}
+
+[profile-parent-container] {
+  margin: 30px 20px 0px 20px;
+  [profile-item-terms] {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    [checkbox-terms] {
+      --checkmark-color: var(--chargemen-white);
+    }
+    [terms-label] {
+      font-family: 'poppins-regular-400';
+      font-size: 14px;
+      line-height: 20px;
+      margin-left: 15px;
+      span {
+        color: var(--chargemen-primary);
+        text-decoration: underline;
+      }
+    }
+  }
+  [profile-item]{
+    margin-top: 30px;
+    --highlight-color-focused: var(--chargemen-black);
+    --placeholder-color: var(--chargemen-black);
+    --background: transparent;
+  ion-label {
+    font-family: 'poppins-semi-bold';
+    font-size: 16px;
+    line-height: 24px;
+    
+    color: var(--chargemen-black);
+    span {
+      color: var(--chargemen-withdraw)
+    }
+  }
+
+  ion-input {
+    font-family: 'poppins-regular-400';
+    font-size: 16px;
+    line-height: 18px;
+    color: var(--chargemen-grey-600);
+  }
+}
+
+}
+
+/*Form Error styles*/
+[error-container] {
+  span {
+    display: block;
+    margin: 12px 0px 0px 12px;
+    color: red;
+    font-family: 'poppins-light';
+    line-height: 10px;
+    font-size: 14px;
+  }
+}
+
+[loading-container] {
+  span {
+    display: block;
+    margin: 12px 0px 0px 12px;
+    color: var(--chargemen-primary);
+    font-family: 'poppins-light';
+    line-height: 10px;
+    font-size: 14px;
+  }
+}
+[timer-error-container] {
+  display: flex;
+  [error-container] {
+    flex-grow: 1;
+  }
+}
+
+[profile-submit-button] {
+  position: absolute;
+      right: 0;
+      bottom: 10px;
+      margin: auto;
+      width: 50%;
+      left: 0;
+  --background: var(--chargemen-primary);
+  font-family: 'poppins-bold-600';
+  color: var(--chargemen-white);
+}
+.loading-custom-class {
+  --width: 80%;
+  --background: var(--chargemen-grey);
+  .loading-wrapper.sc-ion-loading-md {
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    .loading-spinner {
+      width: 40px;
+      height: 40px;
+      flex-grow: 1;
+      ion-spinner {
+        width: 100%;
+        height: 100%;
+      }
+    }
+    .loading-content {
+      margin: 12px 0px 0px 0px; 
+      font-family: 'poppins-regular-400';
+      line-height: 12px;
+      font-size: 16px;
+    }
+  }
+}
+
+/*I'm chargemen page styles*/
+[chargeman-details-container] {
+  margin: 12px 16px 18px 16px;;
+  [image-container] {
+    background-image:linear-gradient(0deg, rgba(0, 0, 0, 0.397), rgba(0, 0, 0, 0.397)),  url('./assets/icon/bgcar.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    width: 100%;
+    height: 150px;
+    border-radius: 12px;
+
+    [name-container] {
+      padding: 16px 0px 0px 16px;
+      font-family: 'poppins-semi-bold';
+      line-height: 16px;
+      font-size: 18px;
+      color: var(--chargemen-white);
+      ion-icon {
+        width: 10px;
+        height: 10px;
+        margin-left: 12px;
+      }
+    }
+    [charge-active-container] {
+      display: flex;
+      justify-content: space-between;
+      margin-right: 12px;
+    }
+
+    [device-id] {
+      margin-top: 8px;
+      margin-left: 16px;
+      font-family: 'poppins-semi-bold';
+      line-height: 12px;
+      font-size: 14px;
+      color: var(--chargemen-white);
+    }
+
+    [charger-type] {
+      display: block;
+      margin-top: 60px;
+      margin-left: 16px;
+      color:var(--chargemen-white);
+      line-height: 14px;
+      font-size: 16px;
+      font-family: 'poppins-regular-400';
+    }
+  }  
+}
+
+[chargeman-fab-button] {
+  --background: var(--chargemen-primary);
+  ion-icon {
+    width: 26px;
+  height: 26px;
+  }
+}
+    
+
+/*Add charger styles*/ 
+[add-charger-parent-container] {
+  margin: 24px 20px 20px 20px;
+ion-item {
+  --background: transparent;
+  [charger-details-input] {
+    margin: 0px;
+    font-family: 'poppins-regular-400';
+    color: var(--chargemen-black);
+    font-size: 16px;
+    line-height: 14px;
+	}
+	
+	[charger-details-icon] {
+	  padding: 0px;
+    margin: 0px;
+    margin-top: 20px;
+    margin-left: 12px;
+    width: 24px;
+    height: 24px;
+	}
+
+  [charger-details-icon-small] {
+	  padding: 0px;
+    margin: 0px;
+    margin-top: 20px;
+    margin-left: 12px;
+    width: 16px;
+    height: 16px;
+	}
+	
+	[charger-details-label] {
+	 font-family: 'poppins-semi-bold';
+    font-size: 16px;
+    line-height: 14px;
+    margin:0px;
+    padding-bottom: 12px;
+	
+	}
+}
+ion-item:not(:nth-child(1)) {
+  margin: 14px 0px;
+  [charger-details-input] {
+    margin: 0px
+  }
+}
+ion-radio-group {
+  width: 100%;
+}
+[country-capacity-selection-container] {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  ion-item {
+    flex: 1 0 0
+  }
+}
+[select-items-container] {
+  display: flex;
+  flex-direction: column;
+  ion-item {
+    flex: 1 0 0;
+    ion-select {
+      width: 100%;
+    }
+  }
+}
+[radio-container] {
+  display: flex;
+  align-items: center;
+  &[register-type]{
+    display: block;
+  }
+  &[register-type-flex] {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    [select-items] {
+      ion-select {
+        width: 100%;
+      }  
+    }
+  }
+  [multi-container] {
+    flex-grow: 1;
+  }
+  [charger-details-radio] {
+    margin: 0px;
+    flex-grow: 1;
+    ion-radio {
+      margin: 0px;
+      padding: 0px;
+    }
+    ion-label {
+      margin: 0px 12px;
+      font-family: 'poppins-regular-400';
+      font-size: 14px;
+      line-height: 12px;
+    }
+  }
+}
+
+[time-container] {
+  display: flex;
+  align-items: center;
+}
+
+[toggle-selector-container] {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-left: 12px;
+  margin-bottom: 12px;
+  ion-toggle{
+      width: 40px;
+      height: 20px;
+    --handle-height: 16px;
+    --handle-width: 16px;
+    --handle-background: var(--chargemen-white);
+    --handle-background-checked: var(--chargemen-white);
+    --handle-spacing: 2px;
+    --background-checked: var(--chargemen-primary);
+  }
+
+  [charger-details-label] {
+    font-family: 'poppins-semi-bold';
+     font-size: 14px;
+     line-height: 14px;
+     margin:0px;
+    //  padding-bottom: 12px;
+   
+   }
+}
+
+ion-button {
+  margin-top: 14px;
+}
+
+}
+
+/**Charger details style*/
+[charge-station-details-parent] {
+  margin: 12px 20px;
+    [station-details] {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      [station-name] {
+        ion-label {
+          font-family: 'poppins-bold-600';
+          font-size: 16px;
+          line-height: 24px;
+        }
+        ion-icon {
+          width: 12px;
+          height: 12px;
+          margin-left: 12px;
+        }
+      }
+      [station-price] {
+        font-family: 'poppins-semi-bold';
+          font-size: 16px;
+          line-height: 24px;
+      }
+    }
+    [station-other-details] {
+      font-family: 'poppins-regular-400';
+      font-size: 16px;
+      line-height: 18px;
+      padding: 4px 0px;
+    }
+    [station-start-end-details] {
+      padding: 12px 0px;
+    }
+    [station-heading-details] {
+      font-family: 'poppins-semi-bold';
+      line-height: 18px;
+      font-size: 16px;
+    }
+}
+
+[loading-container] {
+  width: 100%;
+  text-align: center;
+  height: calc(100% - 20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  ion-progress-bar {
+    width: 50%;
+  }
+
+  ion-label {
+    font-family: 'poppins-regular-400';
+    line-height: 18px;
+    font-size: 16px;
+    margin-top: 12px
+  }
+}
+
+/*Map styles**/ 
+[pointer-info-container] {
+  position: absolute;
+  bottom: 2%;
+  width: 100%;
+}
+
+[location-card] {
+  width: 100%;
+  --background: var(--chargemen-black-00);
+  border-radius: 12px;
+  [active-status-text] {
+    font-family: 'poppins-regular-400';
+    line-height: 14px;
+    font-size: 14px;
+    width: 100%;
+    text-align: left;
+    margin-left: 16px;
+    padding-bottom: 10px;
+    margin-top:12px
+  }
+
+[location-name-details] {
+  margin: 16px 16px 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+[location-availability] {
+  display: flex;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  justify-content: space-between;
+  [label-style] {
+    font-size: 10px;
+    font-family: 'poppins-regular-400';
+  }
+    ion-label {
+      font-family: 'poppins-bold';
+      font-size: 18px;
+      line-height: 16px;
+      color: white;
+    }
+    ion-icon {
+      width: 10px;
+      height: 10px;
+      margin-left: 12px;
+    }
+
+    .available-container-style {
+      display: flex;
+      font-size: 6px;
+      align-items: center;
+      background: var(--chargemen-primary);
+      padding: 4px;
+      border-radius: 14px;
+      justify-content: center;
+      font-family: 'poppins-regular-400';
+    }
+
+
+    .busy-container-style {
+      display: flex;
+      font-size: 6px;
+      align-items: center;
+      background: var(--chargemen-secondary);
+      padding: 4px;
+      border-radius: 14px;
+      justify-content: center;
+      font-family: 'poppins-regular-400';
+    }
+}
+  [call-icon] {
+    margin-left: 12px;
+    width: 30px;
+    height: 30px;
+    }
+  }
+
+  [address-container] {
+    align-items: flex-end;
+    text-align: left;
+    margin-left: 16px;
+    margin-bottom: 12px;
+    font-family: 'poppins-regular-400';
+    font-size: 14px;
+    line-height: 16px;
+    margin-bottom: 8px;
+    color: var(--chargemen-grey);
+    opacity: 0.8;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    margin-right: 16px;
+    overflow: hidden;
+    [address] {
+     
+    }
+  }
+
+  [location-buttons-container] {
+    display: flex;
+    margin: 0px 14px 14px 12px;
+
+[pointer-buttons] {
+  flex-grow: 1;
+  --border-color: var(--chargemen-white);
+  margin: 8px;
+  color: var(--chargemen-white);
+  font-family: 'poppins-semi-bold';
+  height: 42px;
+  font-size: 12px;
+  line-height: 10px;
+  width: 50%;
+}
+}
+}
+[station-detail-parent] {
+ margin: 20px 16px;
+ [charge-name-container] {
+   display: flex;
+   flex-direction: row;
+   justify-content: space-between;
+   align-items: center;
+    [name-style] {
+      font-family: 'poppins-bold-600';
+      color: var(--chargemen-primary);
+      line-height: 27px;
+      font-size: 18px;
+    }
+    ion-icon {
+      width: 30px;
+      height: 30px;
+    }
+ }
+[charge-address-container] {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  [charge-id] {
+    margin-top: 0px;
+    font-family: 'poppins-regular-400';
+    color: var(--chargemen-secondary);
+    margin-bottom: 6px;
+  }
+  [chargerstatus-container-child] {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'poppins-regular-400';
+    margin-top: 12px;
+    font-size: 12px;
+    .charger-busy {
+      color:var(--chargemen-secondary)
+    }
+    .charger-available {
+      color: var(--chargemen-primary);
+    }
+  }
+ [charge-address] {
+   font-family: 'poppins-regular-400';
+   color: var(--chargemen-grey-600);
+   line-height: 18px;
+   font-size: 12px;
+ }
+ [charge-type] {
+   display: flex;
+   justify-content: space-between;
+   font-family: 'poppins-regular-400';
+   color: var(--chargemen-grey-600);
+   line-height: 18px;
+   font-size: 12px;
+   margin-top: 12px;
+   margin-bottom: 12px
+ }
+}
+[button-container] {
+  display: flex;
+  align-items: center;
+ 
+  [charge-button] {
+    width: 50%;
+    flex-grow: 1;
+  }
+
+  [direction-button] {
+    flex-grow: 1;
+    --border-color: var(--chargemen-primary);
+    margin: 8px;
+    color: var(--chargemen-primary);
+    font-family: 'poppins-semi-bold';
+    height: 42px;
+    font-size: 12px;
+    line-height: 10px;
+    width: 50%;
+    text-transform: none;
+  }
+}
+[power-details-container] {
+  display: flex;
+  flex-direction: row;
+  margin-top: 14px;
+  margin-bottom: 16px;
+  [power-details] {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    justify-content: center;
+    ion-icon {
+      width: 24px;
+      height: 24px;
+    }
+    [type-style] {
+      margin: top 10px;font-family: 'poppins-bold-600';
+      font-size: 12px;
+      line-height: 18px;
+      color: var(--chargemen-black);
+      margin-top:12px
+    }
+    [heading-style] {
+      margin: top 10px;font-family: 'poppins-regular-400';
+      font-size: 10px;
+      line-height: 15px;
+      color: var(--chargemen-grey-600);
+    }
+  }
+}
+
+}
+
+[searchbar-style] {
+  --border-radius: 20px;
+  --background: var(--chargemen-white);
+  --box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.25);
+  font-family: 'poppins-regular-400';
+}
+[reports-entry-container] {
+  margin: 12px 12px;
+  [reports-date-container] {
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: flex-start;
+    width: 100%;
+    ion-item {
+      flex: 1 0 0;
+    }
+  }
+  ion-item {
+    --background: var(--chargemen-grey);
+  }
+  ion-icon {
+    margin: 12px 0px 0px 0px;
+    width: 20px;
+    height: 20px;
+  }
+  [manual-entry-container] {
+    display: flex;
+    flex-direction: row;
+    ion-icon {
+      margin: 10px 0px 0px 0px;
+      width: 24px;
+      height: 24px;
+      color: var(--chargemen-primary)
+    }
+  }
+  [recharge-label] {
+    font-family: 'poppins-bold-600';
+    line-height: 24px;
+    font-size: 14px;
+    color: var(--chargemen-black);
+  }
+  [deviceid-label] {
+    font-family: 'poppins-bold-600';
+    line-height: 24px;
+    font-size: 20px;
+    color: var(--chargemen-black);
+    
+  }
+  [recharge-input] {
+    font-family: 'poppins-regular-400';
+    line-height: 24px;
+    font-size: 18px;
+    color: var(--chargemen-black);
+    // --padding-bottom: 12px;
+     --padding-top: 18px;
+   
+  }
+  [frequency-selection] {
+    --padding-top: 32px;
+  }
+  [button-container] {
+    &[reports-button-container] {
+      position: absolute;
+      /* top: 0; */
+      left: 0;
+      bottom: 0;
+      right: 0;
+      z-index: 1;
+      margin-bottom: 12px;
+    }
+  }
+}
+[recharge-container] {
+  margin: 20px 20px;
+  ion-icon {
+    margin: 12px 0px 0px 0px;
+    width: 20px;
+    height: 20px;
+  }
+  [manual-entry-container] {
+    display: flex;
+    flex-direction: row;
+    ion-icon {
+      margin: 10px 0px 0px 0px;
+      width: 24px;
+      height: 24px;
+      color: var(--chargemen-primary)
+    }
+  }
+  [recharge-label] {
+    font-family: 'poppins-bold-600';
+  line-height: 24px;
+    font-size: 20px;
+    color: var(--chargemen-black);
+  }
+  [deviceid-label] {
+    font-family: 'poppins-bold-600';
+    line-height: 24px;
+    font-size: 16px;
+    color: var(--chargemen-black);
+   
+  }
+  [recharge-input] {
+    font-family: 'poppins-regular-400';
+    line-height: 24px;
+    font-size: 20px;
+    color: var(--chargemen-black);
+    --padding-bottom: 12px;
+    --padding-top: 18px;
+  }
+  [quick-money-selection-container] {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 14px;
+    [money-selection-box] {
+    width: 60px;
+    background: var(--chargemen-white);
+    border: 1px solid var(--chargemen-grey-500);
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding: 6px;
+    font-family: 'poppins-regular-400';
+    font-size: 12px;
+    text-align: center;
+    }
+    
+  }
+  [button-container] {
+    margin-top: 40px;
+  }
+}
+
+[support-container] {
+  text-align: left;
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  margin: 12px 12px;
+
+  [support-item] {
+    margin: 10px 0px;
+    --background: transparent;
+    ion-icon {
+      width: 25px;
+      height: 25px;
+      color: var(--chargemen-primary);
+      margin: 0px 14px 0px 0px
+    }
+    ion-label {
+      font-family: 'poppins-regular-400';
+      font-size: 16px;
+      line-height: 18px;
+    }
+  }
+}
+
+[withdraw-parent-container] {
+  margin: 0px 12px 8px 12px;
+  [withdraw-details-label] {
+    font-family: 'poppins-semi-bold';
+     font-size: 16px;
+     line-height: 14px;
+     margin:0px;
+     padding-bottom: 12px;
+   }
+   ion-item {
+     margin: 8px 0px;
+     --background: transparent;
+    [withdraw-details-input] {
+      margin: 0px;
+      font-family: 'poppins-regular-400';
+      color: var(--chargemen-black);
+      font-size: 16px;
+      line-height: 14px;
+    }
+  }
+}
+
+[hint-container] {
+  line-height: 20px;
+  padding: 12px;
+  span {
+    font-family: 'poppins-bold-600';
+    color: var(--chargemen-primary);
+    font-size: 14px;
+  }
+  span:last-child{
+    font-family: 'poppins-regular-400';
+  }
+}
+
+[kyc-parent-container] {
+  margin: 12px;
+  [upload-container] {
+    height: 160px;
+    background-color: var(--chargemen-green-light);
+    border-radius: 12px;
+    margin-top:12px;
+    [image-hint] {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      ion-icon {
+        width: 24px;
+        height: 24px;
+        color: var(--chargemen-primary);
+       
+      }
+      ion-label {
+        color: var(--chargemen-secondary);
+        font-family: 'poppins-regular-400';
+        line-height: 20px;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+    }
+
+    [image-display] {
+      border-radius: 12px;
+      height: 100%;
+      width: 100%;
+      position: relative;
+      [check-container] {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        justify-content: center;
+        align-items: center;
+        display: flex;
+
+        ion-icon {
+          color: var(--chargemen-primary);
+          opacity: 0.5;
+          font-size: 90px;
+        }
+      }
+      [name-container] {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 10px;
+        background: var(--chargemen-green-light);
+        opacity: 0.6;
+        border-bottom-left-radius: 12px;
+        border-bottom-right-radius: 12px;
+        ion-label {
+          font-family: 'poppins-semi-bold';
+          color: var(--chargemen-secondary);
+        }
+      }
+    img {
+      border-radius: 12px;
+      max-height: 100%;
+      width: 100%;
+    }
+    }
+  }
+}
+[freq-container] {
+  margin-top: 12px
+}
+[version-container] {
+    text-align: center;
+    background: var(--chargemen-primary);
+    font-size: 12px;
+    padding: 12px;
+    color: white;
+    ion-label {
+      font-family: 'poppins-regular-400';
+    }
+}
+[card-parent-container] {
+  border-radius: 15px;height:35vh; margin: 0px 18px; 
+  [card-display-container] {
+    position: absolute; padding:0px; bottom: 0px;width: 100%; background-color: var(--chargemen-primary); opacity: 0.8;
+  }
+  &.card-background-style {
+    background-image: url('./assets/icon/map.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+  }
+}
+[maps-loading-container]{
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  [status-text-container] {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    margin-top: 15vh;
+    [settings-button] {
+      padding: 12px;
+      background-color: var(--chargemen-primary);
+      color: white;
+      font-family: 'poppins-regular-400';
+      margin-top: 4px;
+    }
+    [status-text-label] {
+      margin-top: 12px;
+      font-family: 'poppins-regular-400';
+    }
+    ion-spinner {
+      color: var(--chargemen-primary)
+    }
+  }
+  
+}
+
+[terms-image-container] {
+  background: black;
+    margin: 4px 0px;
+    width: 100%;
+    img {
+      width: 100%;
+    }
+}
+[reports-view-container] {
+  [details-container] {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    [image-text-container] {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding:12px;
+      width: 50%;
+      img {
+        width: 50%;
+        height: 40%;
+        background-color: black;
+        border-radius: 12px;
+      }
+      .chargeman-heading {
+        font-family: 'poppins-bold-600';
+        color: var(--chargemen-primary);
+        font-size: 14px;
+        margin: 0px 4px;
+      }
+      .chargeman-address {
+        font-family: 'poppins-regular-400';
+        color: var(--chargemen-black-00);
+        font-size: 12px;
+        margin: 0px 4px;
+      }
+    }
+    [device-text-container] {
+      width: 50%;
+      div {
+        font-family: 'poppins-regular-400';
+        font-size: 14px;
+      }
+    }
+  }
+  
+  [data-reports-table] {
+    width: 100%;
+    [device-details-header] {
+      border: 1px solid var(--chargemen-grey-600);
+      font-family: 'poppins-bold-600';
+      color: var(--chargemen-secondary);
+      text-transform: uppercase;
+      text-align: left;
+      font-size: 12px;
+      td {
+        padding: 3px;
+      }
+    }
+    [device-details] {
+      td {
+      border: 1px solid var(--chargemen-grey-600);
+      font-family: 'poppins-bold-600';
+      color: var(--chargemen-secondary);
+      text-transform: uppercase;
+      text-align: left;
+      font-size: 12px;
+      padding: 4px;
+      }
+      td:nth-child(2) {
+        color:var(--chargemen-grey-600);
+      }
+    }
+    [header-details] {
+      td {
+        font-size: 13px;
+        border: 1px solid var(--chargemen-grey-600);
+        font-family: 'poppins-bold-600';
+        color: var(--chargemen-secondary);
+        text-transform: uppercase;
+        text-align: center;
+        width: 30%;
+      }
+      td:nth-child(2) {
+        font-size: 13px;
+        border: 1px solid var(--chargemen-grey-600);
+        font-family: 'poppins-bold-600';
+        text-transform: uppercase;
+        text-align: left;
+        color: var(--chargemen-grey-600);
+        width: 70%;
+        padding: 4px;
+      }
+    }
+    [header-row] {
+      border: 1px solid var(--chargemen-grey-600);
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      &[heading] {
+        width: 100%
+      }
+      td {
+        font-size: 13px;
+        border: 1px solid var(--chargemen-grey-600);
+        font-family: 'poppins-bold-600';
+        color: var(--chargemen-secondary);
+        text-transform: uppercase;
+        text-align: center;
+      }
+    }
+  }
+  [device-details-table] {
+    padding: 12px;
+  }
+  
+  [device-details] {
+    ion-col {
+      border: 1px solid var(--chargemen-grey-600);
+      ion-label {
+        
+        font-family: 'poppins-bold-600';
+        color: var(--chargemen-secondary);
+        text-transform: uppercase; 
+        font-size: 12px;
+      }
+      &:nth-child(2) {
+        ion-label {
+          color: var(--chargemen-primary)
+        }
+      }
+    }
+  }
+  [transaction-details] {
+    font-size: 12px;
+    text-align: center;
+    ion-col {
+      border: 1px solid var(--chargemen-grey-600);
+      ion-label{
+        color: var(--chargemen-secondary);
+        font-family: 'poppins-bold-600';
+        text-transform: uppercase;
+      }
+    }
+  }
+  [transaction-values] {
+    text-align: center;
+    td {
+      border: 1px solid var(--chargemen-grey-600);
+      color: var(--chargemen-black-00);
+       font-family: 'poppins-regular-400';
+       font-size: 12px;
+    }
+  }
+  
+}
+[terms-content] {
+[heading-container] {
+  text-align: center;
+  font-family: 'poppins-regular-400';
+  color: var(--chargemen-black);
+  font-size: 16px;
+  text-decoration: underline;
+}
+[terms-points] {
+  margin-left: 12px;
+  margin-right: 12px;
+  padding: 12px;
+  text-align: left;
+  font-family: 'poppins-regular-400';
+  &:last-child {
+    [heading-text] {
+    text-decoration: none;
+    span {
+      color: green;
+    }
+    }
+  }
+  [heading-text] {
+    text-decoration: underline;
+  }
+  li {
+    color: green;
+    padding: 12px
+  }
+}
+[terms-points-heading] {
+    margin-left: 12px;
+    text-align: left;
+    font-family: 'poppins-regular-400';
+    margin-right: 12px;
+    text-transform: uppercase;
+    text-align: center;
+ }
+}
+
+@-webkit-keyframes blink {
+0%,
+50%,
+100% {
+  opacity: 1;
+}
+25%,
+75% {
+  opacity: 0;
+}
+}
+@keyframes blink {
+0%,
+50%,
+100% {
+  opacity: 1;
+}
+25%,
+75% {
+  opacity: 0;
+}
+}
+

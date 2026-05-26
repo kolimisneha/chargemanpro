@@ -1,0 +1,50 @@
+<app-header title="My Profile" [redirectTo]='redirectTo' iconPath="../../assets/icon/back_icon.svg"></app-header>
+
+<ion-content content-color>
+  <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+  <div profile-parent-container>
+      <ion-item profile-item>
+        <ion-label position="stacked">Mobile Number<span>*</span></ion-label>
+        <ion-input [readonly]="isReadonly" formControlName="mobileNumber"></ion-input>
+      </ion-item>
+      <div error-container>
+      <span *ngIf="(profileForm.controls.mobileNumber.touched || submitted) && profileForm.controls.mobileNumber.errors?.required"> Mobile number is required </span>
+      <span *ngIf="(profileForm.controls.mobileNumber.touched || submitted) && profileForm.controls.mobileNumber.errors?.pattern"> Invalid mobile number </span>
+      </div>
+  </div>
+
+  <div profile-parent-container>
+    <ion-item profile-item>
+      <ion-label position="stacked">Name<span>*</span></ion-label>
+      <ion-input formControlName="username"></ion-input>
+    </ion-item>
+    <div error-container>
+      <span *ngIf="(profileForm.controls.username.touched || submitted) && profileForm.controls.username.errors?.required"> Name is required </span>
+      <span *ngIf="(profileForm.controls.username.touched || submitted) && profileForm.controls.username.errors?.pattern"> Name requires only alphabets</span>
+      <span *ngIf="(profileForm.controls.username.touched || submitted) && profileForm.controls.username.errors?.minlength"> Name requires atleast 3 characters</span>
+      <span *ngIf="(profileForm.controls.username.touched || submitted) && profileForm.controls.username.errors?.maxlength"> Name doesn't exceeds 20 characters</span>
+    </div>
+</div>
+
+<div profile-parent-container>
+  <ion-item profile-item>
+    <ion-label position="stacked">Email ID<span>*</span></ion-label>
+    <ion-input formControlName="emailAddress"></ion-input>
+  </ion-item>
+  <div error-container>
+    <span *ngIf="(profileForm.controls.emailAddress.touched || submitted) && profileForm.controls.emailAddress.errors?.required"> Email address is required </span>
+    <span *ngIf="(profileForm.controls.emailAddress.touched || submitted) && profileForm.controls.emailAddress.errors?.pattern"> Invalid email address </span>
+    </div>
+</div>
+<div profile-parent-container *ngIf="isTermsVisible">
+  <div profile-item-terms>
+    <ion-checkbox (ionChange)="onTermsAgreeHandler($event)" checkbox-terms></ion-checkbox>
+    <ion-label terms-label>I agree to the <span (click)="openPage('terms')">Terms and Conditions</span> & <span (click)="openPage('privacy')">Privacy Policy</span></ion-label>
+  </div>
+</div>
+
+
+<ion-button [disabled]="(!profileForm.valid || !isTermsChecked)" type="submit" profile-submit-button>Submit</ion-button>
+
+</form>
+</ion-content>

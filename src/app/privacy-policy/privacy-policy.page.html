@@ -1,0 +1,25 @@
+<app-header title="Privacy Policy" [redirectTo]='sourcePage' iconPath="../../assets/icon/back_icon.svg"></app-header>
+
+<ion-content content-color>
+  <div terms-image-container>
+      <img src="../../assets/icon/loginimg.png">
+  </div>
+  
+  <div terms-content>
+  <div heading-container>Privacy Policy</div>
+  
+  <div terms-points-heading>
+    <p>This page is used to inform visitors regarding our policies with the collection, use, and disclosure of Personal Information if anyone decided to use our Service.</p>
+  </div>
+  <div terms-points>
+    <li *ngFor="let point of policyPoints">{{point}}</li>
+  </div>
+ 
+
+  <div terms-points>
+    <p heading-text>If you have any questions or suggestions about our Privacy Policy, do not hesitate to contact us at <span email-url>contact@evchargeman.com</span></p>
+  </div>
+  </div>
+  
+  </ion-content>
+  

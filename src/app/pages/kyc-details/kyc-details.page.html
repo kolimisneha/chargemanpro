@@ -1,0 +1,48 @@
+<app-header
+  title="KYC"
+  redirectTo="dashboard"
+  iconPath="../../../assets/icon/back_icon.svg"
+></app-header>
+
+<ion-content content-color>
+  <div kyc-parent-container>
+    <div upload-container (click)="openUploadOptions('aadhar')">
+      <div image-hint *ngIf="!isAadharSelected">
+        <ion-icon *ngIf="!isAadharLoading" name="image-outline"></ion-icon>
+        <ion-spinner *ngIf="isAadharLoading"></ion-spinner>
+        <ion-label>{{aadharStatusText}}</ion-label>
+      </div>
+      <div image-display *ngIf="isAadharSelected">
+        <img [src]="aadharPicURL" />
+        <div check-container>
+          <ion-icon name="checkmark-outline"></ion-icon>
+        </div>
+        <div name-container>
+          <ion-label>{{aadharPicName}}</ion-label>
+        </div>
+      </div>
+    </div>
+
+    <div upload-container (click)="openUploadOptions('pan')">
+      <div image-hint *ngIf="!isPanSelected">
+        <ion-icon *ngIf="!isPanLoading" name="image-outline"></ion-icon>
+        <ion-spinner *ngIf="isPanLoading"></ion-spinner>
+        <ion-label>{{panStatusText}}</ion-label>
+      </div>
+      <div image-display *ngIf="isPanSelected">
+        <img [src]="panPicURL" />
+        <div check-container>
+          <ion-icon name="checkmark-outline"></ion-icon>
+        </div>
+        <div name-container>
+          <ion-label>{{panPicName}}</ion-label>
+        </div>
+      </div>
+     
+    </div>
+
+    <div hint-container>
+      <span>Note: Supports JPEG, PNG image format only. Try using landscape mode for better image view</span>
+    </div>
+  </div>
+</ion-content>

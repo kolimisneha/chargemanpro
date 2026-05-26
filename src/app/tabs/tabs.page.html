@@ -1,0 +1,50 @@
+<!-- <ion-header [translucent]="true"> -->
+  <ion-toolbar id="toolbar" chargemen-toolbar-style>
+    
+    <ion-buttons slot="start">
+      <ion-menu-button>
+        <ion-icon sidemenuIcon [src]="appIconSrc"></ion-icon>
+      </ion-menu-button>
+    </ion-buttons>
+    <ion-searchbar (ionChange)="filterItems($event)" [search-icon]="" searchbar-style *ngIf="enableSearch"></ion-searchbar>
+    <ion-buttons slot="end">
+      <div chargemen-button-container>
+        <!-- <ion-icon [src]="cartIconSrc"></ion-icon> -->
+        <img (click)="openManualEntrySheet()" icon-hand src="../../assets/icon/manual_entry.png"/>
+      </div>
+    </ion-buttons>
+  </ion-toolbar>
+<!-- </ion-header> -->
+<ion-tabs #tabs class="home-tabs" (ionTabsWillChange)="onTabChange($event)">
+  <ion-tab-bar home-tab-bar slot="bottom">
+    <ion-tab-button tab="map" home-tab-buttons>
+      <ion-icon home-tab-icon src="../../assets/icon/tab-home.svg"></ion-icon>
+      <ion-label home-tab-label>Home</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="history" home-tab-buttons>
+      <ion-icon home-tab-icon src="../../assets/icon/history.svg"></ion-icon>
+      <ion-label home-tab-label>History</ion-label>
+    </ion-tab-button>
+
+    <div tab-spacer></div>
+
+    <ion-tab-button tab="support" home-tab-buttons>
+      <ion-icon home-tab-icon src="../../assets/icon/support.svg"></ion-icon>
+      <ion-label home-tab-label>Support</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button home-tab-buttons (click)="openShop()">
+      <ion-icon home-tab-icon src="../../assets/icon/shop.svg"></ion-icon>
+      <ion-label home-tab-label>Shop</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>
+
+<ion-fab slot="fixed" vertical="bottom" horizontal="center" slot="fixed">
+  <ion-fab-button home-fab-button (click)="openScanner()">
+    <!-- <ion-icon class="qr-style" src="../../assets/icon/qr_scanner.svg"></ion-icon> -->
+    <ion-icon [ngClass]="!showCharger ? 'qr-style' : 'charger-style'" [src]="!showCharger ?  qr_scanner : chargeEnergy"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
+

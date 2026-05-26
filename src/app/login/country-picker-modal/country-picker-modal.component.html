@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button (click)="dismiss()">
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Select Country</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar [formControl]="searchControl" placeholder="Search country"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-list>
+    <ion-item button *ngFor="let country of filteredCountries" (click)="selectCountry(country)">
+      <ion-label>{{country.name}} <span text-light>({{country.dial_code}})</span></ion-label>
+    </ion-item>
+    <ion-item *ngIf="filteredCountries.length === 0">
+      <ion-label>No countries found</ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

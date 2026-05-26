@@ -1,0 +1,210 @@
+<app-header
+  title="Report View"
+  redirectTo="reports"
+  iconPath="../../../assets/icon/back_icon.svg"
+  secondaryIconPath="../../../assets/icon/download_pdf.svg"
+  (onSecondaryIconClick)="downloadReports()"></app-header>
+<ion-content>
+  <app-loading *ngIf="isLoading" [showProgress]="showProgress" [statusText]="statusText"></app-loading>
+  <div *ngIf="!isLoading" reports-view-container #reportsView> 
+    <div style="display: flex;
+    flex-direction: row;
+    justify-content: space-between;">
+      <div image-text-container>
+        <div style="font-family: 'poppins-bold-600';
+        color: #8EBA47;
+        font-size: 16px;
+        font-weight: bold;
+        margin: 0px 4px;">EV-Chargeman</div>
+        <div style="font-family: 'poppins-regular-400';
+        color: #000000;
+        font-size: 14px;
+        font-weight: bold;
+        margin: 0px 4px;" *ngFor="let add of chargemanAddress">{{add}},</div>
+      </div>
+     
+    </div>
+    <div>
+      <div style="
+      font-family: 'poppins-bold-600';
+      color: #E8981F;
+      text-transform: uppercase;
+      text-align: left;
+      font-weight: bold;
+      font-size: 14px;
+      width: 100%;
+      padding: 3px;">Frequency : {{frequency}}</div>
+      <table style="width: 100%;">
+        <!-- <tr style="border: 1px solid #888888;
+                  font-family: 'poppins-bold-600';
+                  color: #E8981F;
+                  text-transform: uppercase;
+                  text-align: left;
+                  font-weight: bold;
+                  font-size: 14px;"> -->
+         
+        <!-- </tr> -->
+        <tr device-details>
+          <td style=" border: 1px solid #888888;
+                      font-family: 'poppins-bold-600';
+                      color: #E8981F;
+                      text-transform: uppercase;
+                      text-align: left;
+                      font-size: 14px;
+                      font-weight: bold;
+                      padding: 4px;">Name</td>
+          <td style=" color:#000000;
+                      border: 1px solid #888888;
+                      font-family: 'poppins-bold-600';
+                      text-transform: uppercase;
+                      text-align: left;
+                      font-size: 14px;
+                      font-weight: bold;
+                      padding: 4px;">{{DeviceName}}</td>
+        </tr>
+        <tr device-details>
+          <td style=" border: 1px solid #888888;
+          font-family: 'poppins-bold-600';
+          color: #E8981F;
+          text-transform: uppercase;
+          text-align: left;
+          font-size: 14px;
+          font-weight: bold;
+          padding: 4px;">ID</td>
+          <td style="color:#000000;
+          border: 1px solid #888888;
+          font-family: 'poppins-bold-600';
+          text-transform: uppercase;
+          text-align: left;
+          font-size: 14px;
+          font-weight: bold;
+          padding: 4px;">{{selectedDeviceId}}</td>
+        </tr>
+        <tr device-details>
+          <td style=" border: 1px solid #888888;
+          font-family: 'poppins-bold-600';
+          color: #E8981F;
+          text-transform: uppercase;
+          text-align: left;
+          font-size: 14px;
+          font-weight: bold;
+          padding: 4px;">Location</td>
+          <td style="color:#000000;
+          border: 1px solid #888888;
+          font-family: 'poppins-bold-600';
+          text-transform: uppercase;
+          text-align: left;
+          font-size: 14px;
+          font-weight: bold;
+          padding: 4px;">{{DeviceLoc}}</td>
+        </tr>
+       
+      </table>
+      <table style="width: 100%">    
+        <tr style="border: 1px solid #000000">
+          <td style=" font-family: 'poppins-bold-600';
+                      font-size: 14px;
+                      border: 1px solid #888888;
+                      color: #E8981F;
+                      font-weight: bold;
+                      text-transform: uppercase;
+                      
+                      text-align: center;" *ngFor="let data of reportsHeading">{{data}}</td>
+          
+        </tr>
+        <tr style="text-align: center;" *ngFor="let data of reportsData; let i=index">
+          <td style="border: 1px solid #888888;
+           color: #000000;
+           font-weight: bold;
+           font-family: 'poppins-regular-400';
+           font-size: 14px;">{{i+1}}</td>
+          <!-- <td style="border: 1px solid #888888;
+           color: #000000;
+           font-weight: bold;
+           font-family: 'poppins-regular-400';
+           font-size: 14px;">{{data.date}}</td> -->
+          <td style="border: 1px solid #888888;
+           color: #000000;
+           font-weight: bold;
+           font-family: 'poppins-regular-400';
+           font-size: 13px;">{{data.starttime}}</td>
+          <td style="border: 1px solid #888888;
+           color: #000000;
+           font-weight: bold;
+           font-family: 'poppins-regular-400';
+           font-size: 13px;">{{data.endtime}}</td>
+          <td style="border: 1px solid #888888;
+           color: #000000;
+           font-weight: bold;
+           font-family: 'poppins-regular-400';
+           font-size: 13px;">{{data.pwr}}</td>
+          <td style="border: 1px solid #888888;
+           color: #000000;
+           font-weight: bold;
+           font-family: 'poppins-regular-400';
+           font-size: 13px;">{{data.consumewallet}}</td>
+          <td style="border: 1px solid #888888;
+           color: #000000;
+           font-weight: bold;
+           font-family: 'poppins-regular-400';
+           font-size: 13px;">{{data.duration}}</td>
+        </tr>
+      </table>
+      <table style="width: 100%;">
+        <tr device-details>
+          <td style="border: 1px solid #888888;
+          font-family: 'poppins-bold-600';
+          color: #E8981F;
+          text-transform: uppercase;
+          text-align: left;
+          font-size: 14px;
+          font-weight: bold;
+          padding: 4px;">Total Pwr(Kw)</td>
+          <td style="border: 1px solid #888888;
+          font-family: 'poppins-bold-600';
+          color: #000000;
+          text-transform: uppercase;
+          text-align: left;
+          font-weight: bold;
+          font-size: 14px;
+          padding: 4px;">{{totalPower}}</td>
+        </tr>
+        <tr device-details>
+          <td style="border: 1px solid #888888;
+          font-family: 'poppins-bold-600';
+          color: #E8981F;
+          text-transform: uppercase;
+          text-align: left;
+          font-size: 14px;
+          font-weight: bold;
+          padding: 4px;">Total Earnings(₹)</td>
+          <td style="border: 1px solid #888888;
+          font-family: 'poppins-bold-600';
+          color: #000000;
+          text-transform: uppercase;
+          text-align: left;
+          font-size: 14px;
+          font-weight: bold;
+          padding: 4px;">{{totalEarnings}}</td>
+        </tr>
+      </table>
+      <div style="
+      font-family: 'poppins-regular-400';
+      color: #000000;
+      text-align: left;
+      font-size: 12px;
+      font-weight: regular;
+      padding: 4px;">Power(pwr) units in <b>Kw</b>, Earnings in Indian Rupees <b>₹</b></div>
+      <div style="
+      font-family: 'poppins-regular-400';
+      color: #000000;
+      text-transform: uppercase;
+      text-align: left;
+      font-size: 12px;
+      font-weight: regular;
+      padding: 4px;">Report generated on : {{reportGenDate}}</div>
+    </div>
+    
+    
+  </div>
+</ion-content>

@@ -1,0 +1,84 @@
+<app-header title="Withdraw" redirectTo='dashboard' iconPath="../../../assets/icon/back_icon.svg"></app-header>
+<ion-content content-color> 
+    <div withdraw-parent-container>
+      <form [formGroup]="withdrawForm" (ngSubmit)="subimtReq()">
+      <ion-item>
+        <ion-label withdraw-details-label position="stacked">Account Number</ion-label>
+        <ion-input formControlName="acno" withdraw-details-input></ion-input>
+      </ion-item>
+      <div error-container>
+        <span *ngIf="(withdrawForm.controls.acno.touched || submitted) && withdrawForm.controls.acno.errors?.required"> Account number required </span>
+        <span *ngIf="(withdrawForm.controls.acno.touched || submitted) && withdrawForm.controls.acno.errors?.pattern"> Invalid account number</span>
+      </div>
+
+      <ion-item>
+        <ion-label withdraw-details-label position="stacked">Account Name</ion-label>
+        <ion-input formControlName="acname" withdraw-details-input></ion-input>
+      </ion-item>
+
+      <div error-container>
+        <span *ngIf="(withdrawForm.controls.acname.touched || submitted) && withdrawForm.controls.acname.errors?.required"> Account name required </span>
+        <span *ngIf="(withdrawForm.controls.acname.touched || submitted) && withdrawForm.controls.acname.minlength?.required"> Account name must have 3 characters </span>
+        <span *ngIf="(withdrawForm.controls.acname.touched || submitted) && withdrawForm.controls.acname.errors?.pattern"> Invalid Account Name</span>
+      </div>
+
+      <ion-item>
+        <ion-label withdraw-details-label position="stacked">IFSC Code</ion-label>
+        <ion-input formControlName="ifsc" withdraw-details-input (ionChange)="getBankDetailsByIFSC($event)"></ion-input>
+      </ion-item>
+      <div loading-container *ngIf="isIFSCProcessing">
+        <span>{{ifscStatusText}}</span>
+      </div>
+      <div error-container>
+        <span *ngIf="(withdrawForm.controls.ifsc.touched || submitted) && withdrawForm.controls.ifsc.errors?.required"> IFSC number required </span>
+        <span *ngIf="(withdrawForm.controls.ifsc.touched || submitted) && withdrawForm.controls.ifsc.errors?.pattern"> Invalid IFSC number</span>
+      </div>
+
+
+      <ion-item>
+        <ion-label withdraw-details-label position="stacked">Bank Name</ion-label>
+        <ion-input formControlName="bname" [readonly]="isReadOnly"  withdraw-details-input></ion-input>
+      </ion-item>
+      <div error-container>
+        <span *ngIf="(withdrawForm.controls.bname.touched || submitted) && withdrawForm.controls.bname.errors?.required"> Bank name required </span>
+        <span *ngIf="(withdrawForm.controls.bname.touched || submitted) && withdrawForm.controls.bname.errors?.pattern"> Invalid bank name</span>
+        <span *ngIf="(withdrawForm.controls.bname.touched || submitted) && withdrawForm.controls.bname.errors?.minlength">Bank name must have min 3 letters</span>
+      </div>
+
+      <ion-item>
+        <ion-label withdraw-details-label position="stacked">Branch</ion-label>
+        <ion-input formControlName="bbranch" [readonly]="isReadOnly"  withdraw-details-input></ion-input>
+      </ion-item>
+      <div error-container>
+        <span *ngIf="(withdrawForm.controls.bbranch.touched || submitted) && withdrawForm.controls.bbranch.errors?.required"> Branch name required </span>
+        <span *ngIf="(withdrawForm.controls.bbranch.touched || submitted) && withdrawForm.controls.bbranch.errors?.pattern"> Invalid branch name</span>
+        <span *ngIf="(withdrawForm.controls.bbranch.touched || submitted) && withdrawForm.controls.bbranch.errors?.minlength">Branch name must have min 3 letters</span>
+      </div>
+
+      <ion-item>
+        <ion-label withdraw-details-label position="stacked">Bank Address</ion-label>
+        <ion-input formControlName="baddr" withdraw-details-input></ion-input>
+      </ion-item>
+      <div error-container>
+        <span *ngIf="(withdrawForm.controls.baddr.touched || submitted) && withdrawForm.controls.baddr.errors?.required"> Bank address required </span>
+        <span *ngIf="(withdrawForm.controls.baddr.touched || submitted) && withdrawForm.controls.baddr.errors?.pattern"> Invalid bank address</span>
+        <span *ngIf="(withdrawForm.controls.baddr.touched || submitted) && withdrawForm.controls.baddr.errors?.minlength"> Bank address must have min of 10 letters </span>
+      </div>
+   
+
+      <!-- <ion-item>
+        <ion-label withdraw-details-label position="stacked">Withdraw Amount</ion-label>
+        <ion-input formControlName="amnt" withdraw-details-input></ion-input>
+      </ion-item> -->
+      <!-- <div error-container>
+        <span *ngIf="(withdrawForm.controls.amnt.touched || submitted) && withdrawForm.controls.amnt.errors?.required"> Amount required </span>
+        <span *ngIf="(withdrawForm.controls.amnt.touched || submitted) && withdrawForm.controls.amnt.errors?.pattern"> Invalid amount</span>
+      </div> -->
+
+      <div hint-container>
+        <span>Note: </span> <span>This request will redirect to your email application with filled details and send your request to our support team via email to initiate the withdraw process. For contact info please select support in menu list</span>
+      </div>
+      <ion-button button-regular withdraw-button expand="block" [disabled]="!withdrawForm.valid" type="submit">Send Request</ion-button>
+    </form>
+    </div>
+</ion-content>

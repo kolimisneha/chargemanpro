@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">EVChargeMan</string>
+    <string name="title_activity_main">EVChargeMan</string>
+    <string name="package_name">com.chargeman.evgracias</string>
+    <string name="custom_url_scheme">com.chargeman.evgracias</string>
+</resources>

@@ -1,0 +1,69 @@
+<app-header
+  title="Reports"
+  redirectTo="dashboard"
+  iconPath="../../../assets/icon/back_icon.svg"
+></app-header>
+
+<ion-content content-color>
+    <form [formGroup]="reportsForm" (ngSubmit)="openReportsView()">
+  <div reports-entry-container>
+    <ion-item>
+      <div manual-entry-container>
+        <div>
+          <ion-label deviceid-label position="stacked">Device ID (10 digit code)</ion-label>
+          <ion-input formControlName="deviceId" type="text" recharge-input></ion-input>
+        </div>
+
+        <div (click)="openQrScanner()">
+          <ion-icon [src]="scanIcon"></ion-icon>
+        </div>
+      </div>
+    </ion-item>
+    <div error-container>
+        <span *ngIf="(reportsForm.controls.deviceId.touched || submitted) && reportsForm.controls.deviceId.errors?.required"> Device ID required </span>
+        <span *ngIf="(reportsForm.controls.deviceId.touched || submitted) && reportsForm.controls.deviceId.errors?.pattern"> Invalid Characters entered </span>
+        <span *ngIf="(reportsForm.controls.deviceId.touched || submitted) && reportsForm.controls.deviceId.errors?.minlength"> ID must be 10 characters length</span>
+        <span *ngIf="(reportsForm.controls.deviceId.touched || submitted) && reportsForm.controls.deviceId.errors?.maxlength"> ID must be 10 characters length</span>
+        </div>
+    <ion-item freq-container>
+      <ion-label deviceid-label position="stacked">Frequency</ion-label>
+      <ion-select
+        formControlName="frequency"
+        frequency-selection
+        placeholder="Select One"
+        interface="action-sheet"
+        [interfaceOptions]="action_sheet_reports"
+        (ionChange)="onFrequencyChange($event)">
+        <ion-select-option value="today">Today</ion-select-option>
+        <ion-select-option value="week">1 Week</ion-select-option>
+        <ion-select-option value="month">1 Month</ion-select-option>
+        <ion-select-option value="custom">Custom</ion-select-option>
+      </ion-select>
+    </ion-item>
+    <div error-container>
+        <span *ngIf="(reportsForm.controls.frequency.touched || submitted) && reportsForm.controls.frequency.errors?.required"> Invalid Frequency selection </span>
+    </div>
+    <div reports-date-container *ngIf="showDates">
+        <ion-item date-input>
+            <!-- <div manual-entry-container>
+              <div> -->
+                <ion-label deviceid-label  position="stacked">From</ion-label>
+                <ion-input [max]="maxFromDate" [min]="minFromDate" (ionChange)="getFromDate($event)" formControlName="fromDate" type="date" min="2022-01-01" max="2022-12-31" recharge-input></ion-input>
+              <!-- </div>
+            </div> -->
+          </ion-item>
+          <ion-item date-input>
+            <!-- <div manual-entry-container>
+              <div> -->
+                <ion-label deviceid-label position="stacked">To</ion-label>
+                <ion-input (ionChange)="getToDate($event)" [max]="maxToDate" [min]="minToDate" [max]="maxToDate" formControlName="toDate" type="date" recharge-input></ion-input>
+              <!-- </div>
+            </div> -->
+          </ion-item>
+    </div>
+    <div button-container reports-button-container>
+        <ion-button expand="block" type="submit" [disabled]="!reportsForm.valid" button-regular>GET REPORTS</ion-button>
+      </div>
+  </div>
+</form>
+</ion-content>

@@ -1,0 +1,62 @@
+<app-header title="Station History"
+redirectTo="chargemen-list"
+iconPath="../../../../assets/icon/back_icon.svg">
+</app-header>
+<ion-content content-color>
+  <ion-refresher slot="fixed" (ionRefresh)="loadChargerHistory(true,$event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <app-loading *ngIf="isLoading" [showProgress]="showProgress" [statusText]="statusText"></app-loading>
+  <div history-parent-container host *ngIf="!isLoading">
+    <div history-details-container *ngFor="let history of hostChargerHistory">
+      <!--Name and date-->
+      <div>
+      <div name-date-container>
+        <ion-label>{{history.deviceid}}</ion-label>
+        <ion-label>{{history.chargedate}}</ion-label>
+      </div>
+      <div device-label-container>
+      <ion-label deviceid-label>{{history.hostname}}</ion-label>
+      </div>
+      </div>
+
+      <!--Address-->
+      <div address-container>
+        <ion-label>{{history.hostaddress}}</ion-label>
+      </div>
+      <div address-container>
+        <ion-label>Rate: ₹ {{history.rph}}/KW</ion-label>
+      </div>
+      <!--Time-->
+      <div time-container>
+        <ion-label>Time: {{history.starttime}} - {{history.endtime}}</ion-label>
+      </div>
+      <div time-container>
+        <ion-label>Duration: {{history.duration}}</ion-label>
+      </div>
+      <div time-container>
+        <ion-label>EVCM ID : {{history.consumerid}}</ion-label>
+      </div>
+      <div time-container>
+        <ion-label>Invoice ID : {{history.invoiceid}}</ion-label>
+      </div>
+
+      <div separator></div>
+
+      <div other-details-container>
+        <div detail-container>
+          <ion-label>{{history.duration}}</ion-label>
+          <ion-label>(Duration)</ion-label>
+        </div>
+        <div detail-container>
+          <ion-label>{{history.chargevalue}}Kw</ion-label>
+          <ion-label>(Consumed)</ion-label>
+        </div>
+        <div detail-container>
+          <ion-label>₹ {{history.consumewallet}}</ion-label>
+          <ion-label>(Earn)</ion-label>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

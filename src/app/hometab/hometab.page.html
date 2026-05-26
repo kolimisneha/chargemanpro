@@ -1,0 +1,98 @@
+<ion-header [translucent]="true">
+  <ion-toolbar chargemen-toolbar-style>
+    <ion-title></ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content content-color>
+  <ion-refresher slot="fixed" (ionRefresh)="fetchDashboardDetails(true, $event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <div charging-status-container *ngIf="(chargeCount !== '0' || chargeStatus === true)">
+    <ion-label>Charging in progress</ion-label>
+    <ion-label (click)="openChargeStartStopPage()">Tap to open</ion-label>
+  </div>
+    <div wallet-balance-container>
+      <ion-icon [src]="walletIconSrc"></ion-icon>
+      <ion-label>{{walletBalance === '0' ? 'Your wallet is empty' : 'Wallet Balance'}}</ion-label>
+      <ion-label (click)="rechargeHandler()">{{walletBalance === '0' ? 'Recharge' : '₹ '+walletBalance}}</ion-label>
+    </div>
+  
+  
+
+  <!--Charging stations view container-->
+  <div>
+    <div dashboard-section-heading>
+      <ion-label>Nearby charging stations</ion-label>
+      <ion-label (click)="onViewClickHandler()">View</ion-label>
+    </div>
+    <!--Map container-->
+ <div>
+
+  <ion-card (click)="onViewClickHandler()" card-parent-container [ngClass]="!isChargeStationsLoading ? 'card-background-style' : ''">
+    <div maps-loading-container *ngIf="isChargeStationsLoading">
+      <div status-text-container>
+        <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+        <ion-label status-text-label>{{mapsStatusText}}</ion-label>
+        <ion-label (click)="openSettings()" settings-button *ngIf="settingsError">Open Settings</ion-label>  
+    </div>
+    </div>
+    <ion-card-content card-display-container *ngIf="!isChargeStationsLoading">
+     <ion-row>
+       <ion-col size="10"><p style="margin-left: 12px;"><span style="color:white; font-size: 18px; font-weight: bold">Nearby </span><br><span style="color:white; font-size: 18px; font-weight: bold;">Stations</span></p></ion-col>
+       <ion-col size="2"><p style="color: white; font-weight: bold; font-size: 18px; text-align: center; margin-top: 10px; color: white">{{nearestChargeStationsCount}}</p></ion-col>
+     </ion-row>
+    </ion-card-content>
+  </ion-card>
+</div>
+</div>
+<!--End of charging stations view container-->
+ <!--Explore section view container-->
+ <div dashboard-section-heading>
+  <ion-label>Explore</ion-label>
+</div>
+<div explore-container>
+  <div item-details (click)="openQuickAction('history')">
+    <ion-icon [src]="historyIconSrc"></ion-icon>
+    <ion-label>History</ion-label>
+  </div>
+  <!-- <div item-details (click)="openQuickAction('wallet')">
+    <ion-icon [src]="walletIconSrc"></ion-icon>
+    <ion-label>Wallet</ion-label>
+  </div> -->
+  <div item-details (click)="openQuickAction('support')">
+    <ion-icon [src]="supportIconSrc"></ion-icon>
+    <ion-label>Support</ion-label>
+  </div>
+  <div item-details (click)="openQuickAction('shop')">
+    <ion-icon [src]="cartIconSrc"></ion-icon>
+    <ion-label>Shop</ion-label>
+  </div>
+</div>
+<!--Shop section view container-->
+<!-- <div>
+  <div dashboard-section-heading>
+    <ion-label>Shop</ion-label>
+    <ion-label (click)="openProductWebStore()">View All</ion-label>
+  </div>
+  <div scroll-container>
+    <div product-container *ngFor="let product of products">
+      <img [src]="product.image">
+      <div product-name-container>
+      <ion-label product-name>{{product.name}}</ion-label>
+      </div> -->
+      <!-- <div price-container>
+        <span>₹33,953 </span> <span>34,489</span>
+      </div> -->
+      <!-- <div cart-status-container (click)="onProductItemClickHandler(product)">
+        <ion-label>BUY</ion-label>
+      </div>
+    </div>
+  </div>
+  </div> -->
+ <!--End of shop section-->
+  <img [home-bottom-banner] src ="../../assets/icon/footer_banner.png" (click)="onBannerClick()">
+
+ 
+
+ 
+</ion-content>

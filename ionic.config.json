@@ -1,0 +1,7 @@
+{
+  "name": "evchargeman",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

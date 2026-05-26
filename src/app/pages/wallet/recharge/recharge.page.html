@@ -1,0 +1,27 @@
+<ion-content>
+  <div recharge-container>
+    <form [formGroup]="rechargeForm" (ngSubmit)="recharge()" (keydown)="handleKeyupEnter($event)">
+    <ion-item>
+      <ion-label recharge-label position="stacked">Enter Amount</ion-label>
+      <ion-input formControlName="rechargeAmount" type="tel" recharge-input></ion-input>
+      <ion-icon slot="end" [src]="rupeeIcon"></ion-icon>
+    </ion-item>
+    <div error-container>
+      <span *ngIf="(rechargeForm.controls.rechargeAmount.touched || submitted) && rechargeForm.controls.rechargeAmount.errors?.required">Amount required </span>
+      <span *ngIf="(rechargeForm.controls.rechargeAmount.touched || submitted) && rechargeForm.controls.rechargeAmount.errors?.pattern">Invalid amount</span>
+      <span *ngIf="(rechargeForm.controls.rechargeAmount.touched || submitted) && rechargeForm.controls.rechargeAmount.errors?.minamount">Amount range must be in ₹250 - ₹5000</span>
+      </div>
+    <div quick-money-selection-container>
+      <div *ngFor="let money of quickAmounts" money-selection-box (click)="selectMoney(money)">
+        ₹ {{money.amount}}
+      </div>
+      
+    </div>
+      <div button-container>
+        <ion-button expand="full" type="submit" [disabled]="!rechargeForm.valid" button-regular>Recharge</ion-button>
+      </div>
+
+    </form>
+  </div>
+
+</ion-content>

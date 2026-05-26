@@ -1,0 +1,73 @@
+<!--<ion-app style="background-color: aqua;">
+  <ion-content fullscreen >
+    <section style="background-color: #242424;">
+      <div class="d-flex justify-content-center" style="padding-top:20%;padding-bottom:20%"><img src="assets/icon/loginimg.png"></div>
+    </section>
+    <section style="background-color: #ffffff;padding:5%;border-top-left-radius: 40px;border-top-right-radius: 40px;">
+      <ion-text color="dark">
+        <h4 style="font-weight: 600;margin-bottom: 1.5rem;">Welcome Back!</h4>
+        <h4 style="font-weight: 600;margin-bottom: 1.5rem;">Sign in</h4>
+        <h6 style="font-weight: 400;margin-bottom: 2.5rem;">Enter Your Mobile Number</h6>
+      </ion-text>
+      <ion-item>
+        <ion-label position="floating">Mobile No</ion-label>
+        <ion-input style="border-bottom: 1px solid black;"></ion-input>
+      </ion-item>
+      <div class="pt-5 d-flex justify-content-center"><ion-button style="width:360px">Send OTP</ion-button></div>
+    </section>
+  </ion-content>
+</ion-app>-->
+<ion-app>
+  <!-- <ion-row class="top"> -->
+   <div login-logo-container>
+    <img src="assets/icon/loginimg.png">
+   </div>
+   <div *ngIf="login1" login-details-container>
+   <app-loading *ngIf="isLoading" [showProgress]="showOtpProgress" [statusText]="otpStatusText"></app-loading>
+    <div *ngIf="!isLoading">
+      <h4 heading-style-one login-text>Welcome Back!</h4>
+      <h4 heading-style-one login-subtext>Sign in</h4>
+      <h6 heading-style-light login-subtext>Enter Your Mobile Number</h6>
+     
+      <ion-item login-input-item>
+        <div country-code-display (click)="openCountryPicker()">
+          <ion-label>{{selectedCCID}}</ion-label>
+          <ion-icon name="chevron-down"></ion-icon>
+        </div>
+        <ion-input type="tel" [(ngModel)]="enteredMobileNumber" (keypress)="onKeypress($event, 'OTP')"></ion-input>
+      </ion-item>
+      
+       <ion-button button-regular login-button (click)="otppage()">Send OTP</ion-button>
+     
+     </div>
+  </div>
+ 
+  <!-- <ion-row class="bottom" *ngIf="login2"> -->
+    <div login-details-container *ngIf="login2">
+      <app-loading *ngIf="otpValidationLoading" [showProgress]="showOtpValidationProgress" [statusText]="otpValidationStatusText"></app-loading>
+      <div *ngIf="!otpValidationLoading">
+      <h4 heading-style-one login-text>Enter OTP</h4>
+      <h6 heading-style-light login-subtext>Enter the code which is sent to the number <span>{{selectedCCID}}-{{enteredMobileNumber}} </span>below</h6>
+
+      <div otp-input-wrapper (click)="otpInputRef.focus()">
+        <div otp-box *ngFor="let d of [0,1,2,3]; let i=index" [class.filled]="enteredOTP?.length > i">
+          {{ enteredOTP?.[i] || '' }}
+        </div>
+        <input #otpInputRef id="otp-input" type="tel" [(ngModel)]="enteredOTP" maxlength="4" (keydown)="onKeypress($event, 'login')" (input)="onOtpInput()" autocomplete="off">
+      </div>
+      <div otp-container>
+        <div otp-back-parent-container>
+          <div cotainer-otp-style>
+            <h6 heading-style-light login-otp-timer-style (click)="resendOtp()" *ngIf="isResendActive" [ngClass]="isResendActive ? 'enabled-color' : 'disabled-color'">Resend OTP</h6>
+            <h6 heading-style-light login-otp-timer-style otp-timer *ngIf="!isResendActive" [ngClass]="!isResendActive ? 'enabled-color' : 'disabled-color'">{{minuteCount < 10 ? '0'+minuteCount : minuteCount}}:{{seconds < 10 ? '0'+seconds : seconds}}</h6>
+          </div>
+          <h6 back-text (click)="goToLogin()">Go Back</h6>
+        </div>
+      </div>
+    </div>
+      <!-- <ion-row  class="pt-3 d-flex justify-content-center"> -->
+       <ion-button *ngIf="!showOtpValidationProgress" button-regular login-button (click)="login()">Login</ion-button>
+      <!-- </ion-row> -->
+     </div>
+  <!-- </ion-row> -->
+</ion-app>

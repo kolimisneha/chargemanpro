@@ -1,0 +1,15 @@
+{
+	"appId": "com.chargeman.evgracias",
+	"appName": "EVChargeMan",
+	"webDir": "www",
+	"bundledWebRuntime": false,
+	"plugins": {
+		"SplashScreen": {
+			"launchShowDuration": 5000,
+			"launchAutoHide": false,
+			"androidSplashResourceName": "splash",
+			"androidScaleType": "CENTER_CROP",
+			"launchFadeOutDuration": 3000
+		}
+	}
+}

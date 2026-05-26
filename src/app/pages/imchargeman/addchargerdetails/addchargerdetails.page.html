@@ -1,0 +1,205 @@
+<app-header
+  [title]="title"
+  [redirectTo]="navigateBackTo"
+  iconPath="../../../assets/icon/back_icon.svg"
+></app-header>
+
+<ion-content content-color>
+  <app-loading *ngIf="isLoading" [showProgress]="showProgress" [statusText]="statusText"></app-loading>
+  <form *ngIf="!isLoading" [formGroup]="chargeStationForm" (ngSubmit)="addEditChargerHandler()">
+  <div add-charger-parent-container>
+      <ion-item>
+        <ion-label charger-details-label position="stacked">Device ID</ion-label>
+        <ion-input [readonly]="isReadOnly" formControlName="deviceid" charger-details-input></ion-input>
+        <ion-icon *ngIf="!isReadOnly" (click)="openQRScanner()" charger-details-icon name="qr-code-outline" slot="end"></ion-icon>
+      </ion-item>
+      <div error-container>
+        <span *ngIf="(chargeStationForm.controls.deviceid.touched || submitted) && chargeStationForm.controls.deviceid.errors?.required"> Device ID required </span>
+        <span *ngIf="(chargeStationForm.controls.deviceid.touched || submitted) && chargeStationForm.controls.deviceid.errors?.pattern"> Invalid Characters entered </span>
+        <span *ngIf="(chargeStationForm.controls.deviceid.touched || submitted) && chargeStationForm.controls.deviceid.errors?.minlength"> ID must be 10 characters length</span>
+        <span *ngIf="(chargeStationForm.controls.deviceid.touched || submitted) && chargeStationForm.controls.deviceid.errors?.maxlength"> ID must be 10 characters length</span>
+      </div>
+
+      <ion-item>
+        <ion-label charger-details-label position="stacked">Device Name</ion-label>
+        <ion-input formControlName="devicename" charger-details-input></ion-input>
+      </ion-item>
+      <div error-container>
+        <span *ngIf="(chargeStationForm.controls.devicename.touched || submitted) && chargeStationForm.controls.devicename.errors?.required"> Device Name required </span>
+        <span *ngIf="(chargeStationForm.controls.devicename.touched || submitted) && chargeStationForm.controls.devicename.errors?.pattern"> Invalid Characters entered </span>
+        <span *ngIf="(chargeStationForm.controls.devicename.touched || submitted) && chargeStationForm.controls.devicename.errors?.minlength"> Requires atleast 3 characters</span>
+        <span *ngIf="(chargeStationForm.controls.devicename.touched || submitted) && chargeStationForm.controls.devicename.errors?.maxlength"> Does not exceeds 25 characters</span>
+      </div>
+
+      <ion-item>
+        <ion-label charger-details-label position="stacked">Location Name</ion-label>
+        <ion-input formControlName="locationname" charger-details-input></ion-input>
+      </ion-item>
+      <div error-container>
+        <span *ngIf="(chargeStationForm.controls.locationname.touched || submitted) && chargeStationForm.controls.locationname.errors?.required"> Location Name required </span>
+        <span *ngIf="(chargeStationForm.controls.locationname.touched || submitted) && chargeStationForm.controls.locationname.errors?.pattern"> Invalid Characters entered </span>
+        <span *ngIf="(chargeStationForm.controls.locationname.touched || submitted) && chargeStationForm.controls.locationname.errors?.minlength"> Requires atleast 10 characters</span>
+      </div>
+       
+      <ion-item lines="none">
+        <ion-label charger-details-label position="stacked">Register as</ion-label>
+        <ion-radio-group formControlName="registerType" (ionChange)="onChargeTypeChangeHandler($event)">
+        <div radio-container register-type>
+            <ion-item charger-details-radio lines="none">
+              <ion-radio value="private" mode="md"></ion-radio>
+              <ion-label>Private</ion-label>
+            </ion-item>
+
+            <ion-item  charger-details-radio lines="none">
+              <ion-radio value="commercial" mode="md"></ion-radio>
+              <ion-label>Commercial</ion-label>
+            </ion-item>
+          </div>
+        </ion-radio-group>
+      </ion-item>
+      <div error-container>
+        <span *ngIf="(chargeStationForm.controls.registerType.touched || submitted) && chargeStationForm.controls.registerType.errors?.required"> Register type required </span>
+      </div>
+
+      <ion-item lines="none" *ngIf="pageParams?.type !== 'EDIT'">
+        <ion-label charger-details-label position="stacked">Protocol Type</ion-label>
+        <ion-radio-group formControlName="protocolType" (ionChange)="onProtocolChangeEvent($event)">
+        <div radio-container register-type>
+            <ion-item charger-details-radio lines="none">
+              <ion-radio value="OCPP" mode="md"></ion-radio>
+              <ion-label>OCPP</ion-label>
+            </ion-item>
+
+            <ion-item  charger-details-radio lines="none">
+              <ion-radio value="EVCM" mode="md"></ion-radio>
+              <ion-label>EVCM</ion-label>
+            </ion-item>
+          </div>
+        </ion-radio-group>
+      </ion-item>
+      <div error-container>
+        <span *ngIf="(chargeStationForm.controls.protocolType.touched || submitted) && chargeStationForm.controls.protocolType.errors?.required"> Protocol type required </span>
+      </div>
+<!-- capacity input-->
+      <!-- <ion-item lines="none">
+          <ion-label charger-details-label position="stacked">Capacity</ion-label>
+          <ion-radio-group formControlName="capacity">
+          <div radio-container>
+            <div multi-container>
+              <ion-item charger-details-radio lines="none">
+                <ion-radio [disabled]= "isReadOnly" value="3.3" mode="md"></ion-radio>
+                <ion-label>3.3 KW</ion-label>
+              </ion-item>
+  
+              <ion-item  charger-details-radio lines="none">
+                <ion-radio [disabled]= "isReadOnly" value="7.2" mode="md"></ion-radio>
+                <ion-label>7.2 KW</ion-label>
+              </ion-item> 
+            </div>
+              <div multi-container>
+              <ion-item  charger-details-radio lines="none">
+                <ion-radio [disabled]= "isReadOnly" value="11" mode="md"></ion-radio>
+                <ion-label>11 KW</ion-label>
+              </ion-item>
+              <ion-item  charger-details-radio lines="none">
+                <ion-radio [disabled]= "isReadOnly" value="22" mode="md"></ion-radio>
+                <ion-label>22 KW</ion-label>
+              </ion-item>
+            </div>
+            </div>
+          </ion-radio-group>
+      </ion-item>
+      <div error-container>
+          <span *ngIf="(chargeStationForm.controls.capacity.touched || submitted) && chargeStationForm.controls.capacity.errors?.required">Capacity required </span>
+      </div> -->
+      <!--Capacity Types-->
+      <ion-item lines="none" *ngIf="pageParams?.type !== 'EDIT'">
+        <ion-label charger-details-label position="stacked">Type</ion-label>
+        <ion-select (ionChange)="onCapacityTypeChange($event)" formControlName="capacity_type" [interfaceOptions]="action_sheet_capacity_types" [(ngModel)]="selectedCapacityType" interface="action-sheet" placeholder="Select type">
+          <ion-select-option *ngFor="let types of chargerTypesResponse" [value]="types.name">{{types.name}}</ion-select-option>
+        </ion-select>
+      </ion-item>  
+      <div error-container>
+        <span *ngIf="(chargeStationForm.controls.capacity_type.touched || submitted) && chargeStationForm.controls.capacity_type.errors?.required">Type Required </span>
+      </div>
+    <!--Country selection-->
+    <!--country and capacity selection-->
+    <div country-capacity-selection-container *ngIf="pageParams?.type !== 'EDIT'">
+      <ion-item lines="none">
+        <ion-label charger-details-label position="stacked">Country</ion-label>
+        <ion-select (ionChange)="onCapacityCountryChange($event)" formControlName="capacity_country" [interfaceOptions]="action_sheet_capacity_types" [(ngModel)]="capacityCountry" interface="action-sheet" placeholder="Select country">
+          <ion-select-option *ngFor="let types of selectedCapacityCountryList" [value]="types.type">{{types.type}}</ion-select-option>
+        </ion-select>
+      </ion-item>  
+      <ion-item lines="none">
+        <ion-label charger-details-label position="stacked">Capacity</ion-label>
+        <ion-select (ionChange)="onCapacityValChange($event)" formControlName="capacity_value" [interfaceOptions]="action_sheet_capacity_types" [(ngModel)]="selectedCapacity" interface="action-sheet" placeholder="Select capacity">
+          <ion-select-option *ngFor="let capval of selectedCountryCapacities" [value]="capval">{{capval}}</ion-select-option>
+        </ion-select>
+      </ion-item> 
+    </div>
+    <div error-container>
+      <span *ngIf="((chargeStationForm.controls.capacity_country.touched || submitted) && chargeStationForm.controls.capacity_country.errors?.required) && ((chargeStationForm.controls.capacity_value.touched || submitted) && chargeStationForm.controls.capacity_value.errors?.required)">Please select all fields </span>
+    </div>
+<!--No of connectors input-->
+      <ion-item lines="none" *ngIf="pageParams?.type !== 'EDIT'">
+        <ion-label charger-details-label position="stacked">Connector Count</ion-label>
+        <ion-select (ionChange)="onConnectorValChange($event)" formControlName="noofconnectors" [interfaceOptions]="action_sheet_options" [(ngModel)]="connectorcountval" interface="action-sheet" placeholder="Select no of connectors">
+          <ion-select-option *ngFor="let connector of connectorCount" [value]="connector.val">{{connector.connector_id}}</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <div error-container>
+        <span *ngIf="(chargeStationForm.controls.noofconnectors.touched || submitted) && chargeStationForm.controls.noofconnectors.errors?.required">Select connectors count </span>
+    </div>
+    
+<!--Rate selection-->
+      <ion-item *ngIf="isCommercial">
+        <ion-label charger-details-label position="stacked">Rate of charge(Kwh)</ion-label>
+        <ion-input type="tel" [readonly]="isRateReadOnly" formControlName="rate" charger-details-input></ion-input>
+        <ion-icon  charger-details-icon-small [src]="rupeeIcon" slot="end"></ion-icon>
+      </ion-item>
+      <div error-container>
+        <span *ngIf="(chargeStationForm.controls.rate.touched || submitted) && chargeStationForm.controls.rate.errors?.required"> Charge rate required </span>
+        <span *ngIf="(chargeStationForm.controls.rate.touched || submitted) && chargeStationForm.controls.rate.errors?.pattern"> Invalid Characters entered </span>
+        <span *ngIf="(chargeStationForm.controls.rate.touched || submitted) && chargeStationForm.controls.rate.errors?.maxlength"> Rate must be in 1-99 range </span>
+      </div>
+
+      <div time-container *ngIf="!isFullDay">
+        <ion-item (click)="openTimePicker('start')">
+          <ion-label charger-details-label position="stacked">Start Time</ion-label>
+          <ion-input readonly formControlName="starttime" charger-details-input></ion-input>
+          <ion-icon  charger-details-icon-small [src]="chargeDatePickerIcon" slot="end"></ion-icon>
+        </ion-item>
+        
+
+        <ion-item (click)="openTimePicker('end')">
+          <ion-label charger-details-label position="stacked">End Time</ion-label>
+          <ion-input readonly formControlName="endtime" charger-details-input></ion-input>
+          <ion-icon  charger-details-icon-small [src]="chargeDatePickerIcon" slot="end"></ion-icon>
+        </ion-item>
+      </div>
+      <div timer-error-container>
+      <div error-container>
+        <span *ngIf="(chargeStationForm.controls.starttime.touched || submitted) && chargeStationForm.controls.starttime.errors?.required"> Required </span>
+      </div>
+      <div error-container>
+        <span *ngIf="(chargeStationForm.controls.endtime.touched || submitted) && chargeStationForm.controls.endtime.errors?.required"> Required </span>
+      </div>
+      </div>
+
+      <div toggle-selector-container>
+         <ion-label charger-details-label>Active</ion-label>
+         <ion-toggle formControlName="active"></ion-toggle>
+      </div>
+
+      <div toggle-selector-container>
+        <ion-label charger-details-label>24/7 Available</ion-label>
+        <ion-toggle formControlName="fullday" [checked]="isFullDay" (ionChange)="onFullDayChangeHandler($event)"></ion-toggle>
+     </div>
+
+     <ion-button button-regular expand="block" [disabled]="!(chargeStationForm.valid && isTimesValid)" type="submit">{{buttonText}}</ion-button>
+  </div>
+</form>
+
+
+</ion-content>

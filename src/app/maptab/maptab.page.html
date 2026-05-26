@@ -1,0 +1,47 @@
+<ion-content>
+  <app-loading *ngIf="isLoading" [showProgress]="showProgress" [statusText]="statusText"></app-loading>
+
+  <div *ngIf="isChargingActive" charging-status-container (click)="openChargeStartStopPage()">
+    <ion-label>Charging in progress</ion-label>
+    <ion-label>Tap to open</ion-label>
+  </div>
+
+  <div wallet-balance-container (click)="rechargeHandler()" [style.top]="isChargingActive ? '96px' : '64px'">
+    <ion-icon [src]="walletIconSrc"></ion-icon>
+    <ion-label>{{walletBalance === '0' ? 'Your wallet is empty' : 'Wallet Balance'}}</ion-label>
+    <ion-label>{{walletBalance === '0' ? 'Recharge' : '₹ '+walletBalance}}</ion-label>
+  </div>
+  
+  <agm-map *ngIf="!isLoading" #AgmMap (mapReady)="mapReady($event)"[latitude]="lat" [longitude]="lng" disableDefaultUI="true" [zoom]="zoomRadius">
+    <agm-marker [animation]="location.animation ? 'BOUNCE' : '' " (markerClick)="openMarkerInfo(i)" [iconUrl]="location.source === 'google' ? googleMarker : (location.status === 'inuse' ? busyMarker : location.status === 'available' ? availableMarker : disabledMarker)" *ngFor="let location of charger_locations; let i = index" [latitude]="location.latitude" [longitude]="location.longitude"></agm-marker>
+  </agm-map>
+    
+  <div *ngIf="!isLoading" pointer-info-container>
+    <ion-slides  pager="false" [options]="slideOpts" (ionSlideDidChange)="slideChanged($event)" #slides>
+      <ion-slide *ngFor="let loc of location_details">
+    <ion-card location-card>
+      <div location-name-details>
+          <div location-availability>
+            <ion-label>{{loc.hostname}}</ion-label> 
+           <div *ngIf="loc.active === '1'" [ngClass]="loc.chargeCount === '1' ? 'busy-container-style' : 'available-container-style'">
+            <ion-label label-style>{{loc.chargeCount === '1' ? 'Busy' : 'Available'}}</ion-label>
+          </div>
+          </div>
+      </div>
+      <div active-status-text>
+      <ion-label >{{loc.active === '1' ? 'Active' : 'Disabled'}}</ion-label>
+    </div>
+      <div address-container>
+        <ion-label address>{{loc.hostaddress}}</ion-label>
+      </div>
+      
+      <div location-buttons-container>
+        <ion-button  expand="block" fill="outline" pointer-buttons (click)="openDetails(loc)">Details</ion-button>
+        <ion-button  expand="block" fill="outline" pointer-buttons (click)="openDirections(loc)">Directions</ion-button>
+      </div>
+    </ion-card>
+    </ion-slide>
+    </ion-slides>
+  </div>
+</ion-content>
+

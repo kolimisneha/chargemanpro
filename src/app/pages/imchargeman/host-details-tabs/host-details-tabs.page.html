@@ -1,0 +1,23 @@
+
+
+<!-- 
+<app-header [title]="hostChargerTitle"
+redirectTo="chargemen-list"
+iconPath="../../../assets/icon/back_icon.svg"
+[secondaryIconPath]="setEdit ? '../../../assets/icon/edit_icon.svg' : ''"
+(onSecondaryIconClick)="editClickHandler()">
+</app-header> -->
+
+<ion-tabs #chargerdetails (ionTabsWillChange)="onTabChange($event)">
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="charger-details">
+      <ion-icon name="list-outline"></ion-icon>
+      <ion-label>Details</ion-label>
+    </ion-tab-button>
+
+    <ion-tab-button tab="charger-history">
+      <ion-icon name="return-up-back-outline"></ion-icon>
+      <ion-label>History</ion-label>
+    </ion-tab-button>
+  </ion-tab-bar>
+</ion-tabs>

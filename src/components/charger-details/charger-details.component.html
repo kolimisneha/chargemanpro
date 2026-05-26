@@ -1,0 +1,41 @@
+<div station-detail-parent>
+<div charge-name-container>
+  <ion-label name-style>{{chargerDetails.hostname}}</ion-label>
+  <ion-icon (click)="doAction('call')" [src]="callIconBlack"></ion-icon>
+</div>
+<div charge-address-container>
+  <ion-label charge-id>{{chargerDetails.deviceid}}</ion-label>
+  <ion-label charge-address>{{chargerDetails.hostaddress}}</ion-label>
+  <div chargerstatus-container-child>
+    <ion-label>{{chargerDetails.active === '1' ? 'Active' : 'Disabled'}}</ion-label>
+    <ion-label [ngClass]="chargerDetails.chargeCount === '1' ? 'charger-busy' : 'charger-available'">{{chargerDetails.active === '1' ? chargerDetails.chargeCount === '1' ? 'Busy' : 'Available': ''}}</ion-label>  
+  </div>
+  <div charge-type>
+    <ion-label >{{chargerDetails.chargettype}}</ion-label>
+    <ion-label>{{chargerDetails.distance}}</ion-label>
+  </div>
+</div>
+
+<div button-container>
+  <!-- <ion-button button-regular charge-button expand="block" (click)="doAction('navigateToCharge')">Charge</ion-button> -->
+  <ion-button  fill="outline" direction-button expand="block" (click)="doAction('directions')">Directions</ion-button>
+</div>
+
+<div power-details-container>
+  <div power-details>
+    <ion-icon [src]="chargerPlugIcon"></ion-icon>
+    <ion-label type-style>{{chargerDetails.capacity === '3.3' || chargerDetails.capacity === '7.2' ? 'AC' : 'DC'}}</ion-label>
+    <ion-label heading-style>Charger Type</ion-label>
+  </div>
+  <div power-details>
+    <ion-icon [src]="chargerWalletIcon"></ion-icon>
+    <ion-label type-style>Rs {{chargerDetails.rph}}/Kw</ion-label>
+    <ion-label heading-style>Price</ion-label>
+  </div>
+  <div power-details>
+    <ion-icon [src]="chargerPowerIcon"></ion-icon>
+    <ion-label type-style>{{chargerDetails.capacity}} Kw</ion-label>
+    <ion-label heading-style>Power</ion-label>
+  </div>
+</div>
+</div>

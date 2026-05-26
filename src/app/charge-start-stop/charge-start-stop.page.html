@@ -1,0 +1,125 @@
+<!-- <app-header title="" iconPath="../../../assets/icon/back_icon.svg"></app-header> -->
+<ion-content content-color>
+  <!--Header-->
+  <div charge-header-container>
+    <ion-icon
+      (click)="navigateBack()"
+      charge-back-button
+      [src]="chargerBackIcon"
+    ></ion-icon>
+    <img charge-image src="../../assets/icon/charge-process-bg.svg" />
+  </div>
+  <!--Charge details-->
+  <div charge-details-container>
+    <!--Initial charge start screen-->
+    <div *ngIf="!isChargeStarted">
+    <div charge-address-container>
+      <ion-label name-style>{{pageParams.hostname}}</ion-label>
+      <ion-label desc-style>{{pageParams.hostaddress}}</ion-label>
+    </div>
+
+    <div power-details-container>
+      <div power-details>
+        <ion-icon [src]="chargerPlugIcon"></ion-icon>
+        <ion-label type-style>{{pageParams.capacity}}</ion-label>
+        <ion-label heading-style>Charger Type</ion-label>
+      </div>
+      <div power-details>
+        <ion-icon [src]="chargerWalletIcon"></ion-icon>
+        <ion-label type-style>Rs {{pageParams.rph}}/Kw</ion-label>
+        <ion-label heading-style>Price</ion-label>
+      </div>
+      <div power-details>
+        <ion-icon [src]="chargerPowerIcon"></ion-icon>
+        <ion-label type-style>{{pageParams.capacity}} KW</ion-label>
+        <ion-label heading-style>Capacity</ion-label>
+      </div>
+    </div>
+
+    <div slot-booking-container>
+      
+      <div slot-details-container>
+          <ion-label slot-label>Skip duration</ion-label>
+          <ion-checkbox (ionChange)="onSkipDurationHandler($event)"></ion-checkbox>
+      </div>
+
+      <div slot-details-container>
+        <ion-label slot-label>Auto Re-Start</ion-label>
+        <ion-checkbox (ionChange)="onAutoChargeHandler($event)" [(ngModel)]="isDurationSkipped" [disabled]="isDurationSkipped"></ion-checkbox>
+    </div>
+    <div resume-hint-container>
+      <ion-label>Avail this option during night time charge or to resume charge automatically when charge stops due to interruption</ion-label>
+    </div>
+
+      <div slot-details-container *ngIf="!isDurationSkipped">
+       
+        <ion-label slot-label>Select Duration<span>*</span></ion-label>
+        <div timer-parent-container>
+          <ion-icon (click)="decrementTimer()" [src]="timerDecrementIcon"></ion-icon>
+          <div timer-text>
+            <ion-label>{{timerVal}}</ion-label>
+            <ion-label timer-value>Min</ion-label>
+          </div>
+          <ion-icon (click)="incrementTimer()" [src]="timerIncrementIcon"></ion-icon>
+        </div>
+      </div>
+    </div>
+    <div class="" style="margin-top: 50px;">
+      <ion-button button-regular start-charge expand="block" [disabled]="isStartButtonDisabled" (click)="startChargeProcess()">Start Charging</ion-button>
+    </div>
+     <!-- home.page.html --> 
+  </div>
+  <!--End of initial start charge screen-->
+
+  <!--Charge process screen-->
+  <div *ngIf="isChargeStarted">
+    <div charge-status-container>
+      <img vehicle-icon [src]="chargeVehicleIcon"/>
+      <!--Charging text-->
+      <div charging-text-container> 
+        <ion-label status-heading>Status</ion-label>
+          <div battery-container>
+            <ion-icon [ngClass]="startBlink ? 'blink' : 'no-blink'" name="battery-charging-outline"></ion-icon>
+            <ion-label charging-status-text>{{chargeStatusText}}</ion-label>
+          </div>
+          <div timer-display-container>
+            <ion-label timer-text>{{hourVal}} Hr {{minVal}} Min ago</ion-label>
+            <!-- <ion-label timer-text>Requested dur.: {{requestedDuration}}</ion-label> -->
+          </div>
+      </div>
+     
+  
+    </div>
+     <!--Station-details-->
+     <div power-details-container>
+      <div power-details>
+        <ion-icon [src]="chargerWalletIcon"></ion-icon>
+        <ion-label type-style>₹ {{pageParams.rph}}/Kw</ion-label>
+        <ion-label heading-style>Price</ion-label>
+      </div>
+      <div power-details>
+        <ion-icon [src]="energyIcon"></ion-icon>
+        <ion-label type-style>{{chargeVal ?? 0}} WH</ion-label>
+        <ion-label heading-style>Energy</ion-label>
+      </div>
+      <div power-details>
+        <ion-icon [src]="chargerPowerIcon"></ion-icon>
+        <ion-label type-style>{{pageParams.capacity}} Kw</ion-label>
+        <ion-label heading-style>Capacity</ion-label>
+      </div>
+    </div>
+
+    <!--Charge fare-->
+    <div slot-charge-fare-container>
+      <ion-label fare-heading>Requested Duration(HH:MM)</ion-label>
+      <ion-label fare-value>{{requestedDuration}}</ion-label>
+    </div>
+    <div slot-charge-fare-container>
+      <ion-label fare-heading>Charging Fee</ion-label>
+      <ion-label fare-value>₹ {{walletConsumed ?? 0}}</ion-label>
+    </div>
+    <ion-button button-regular expand="block" [disabled]="isStopButtonDisabled" (click)="manualStopCharge()">Stop Charging</ion-button>
+  </div>  
+  </div>
+
+</ion-content>

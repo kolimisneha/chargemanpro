@@ -1,0 +1,110 @@
+<!-- <ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" icon="../../../assets/icon/back_icon.svg"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Wallet</ion-title>
+  </ion-toolbar>
+</ion-header> -->
+<app-header title="Wallet" redirectTo='dashboard' iconPath="../../../assets/icon/back_icon.svg"></app-header>
+<ion-refresher slot="fixed" (ionRefresh)="loadTransactions(true, $event)">
+  <ion-refresher-content></ion-refresher-content>
+</ion-refresher>
+<ion-content content-color>
+  <div wallet-parent-container>
+  <ion-label wallet-page-heading>Available Balance in wallet</ion-label>
+  <div wallet-display-container>
+    <ion-icon wallet-icon [src]="walletBalanceIcon"></ion-icon>
+    <ion-label wallet-amount>Rs {{walletBalance}}</ion-label>
+  </div>
+
+
+  <div>
+    <div wallet-buttons-container>
+      <ion-button  expand="block" fill="outline" recharge-button (click)="openRecharge()">Recharge</ion-button>
+      <!-- <ion-button  expand="block" withdraw-button fill="outline" (click)="openWithDraw()">Withdraw</ion-button> -->
+    </div>
+  </div>
+
+  <div transactions-container>
+    <ion-label>Transactions</ion-label>
+    <div *ngIf="(transactions.length > 0)">
+      <div *ngFor="let transaction of transactions" transactions-parent-container>
+        <div transaction-details>
+          <ion-icon slot="start" [src]="transaction.type === 'Withdraw' ? consumeIcon : transaction.type === 'Consume' ? withdrawIcon : rechargeIcon"></ion-icon>
+          <div>
+          <ion-label transaction-type>{{transaction.type}}</ion-label>
+          <div>
+            <ion-label transaction-date>{{transaction.transactiondate}}</ion-label>
+          </div>
+          </div>
+        </div>
+        <ion-label [ngClass]="transaction.type === 'Withdraw' ? 'consume-style' : transaction.type === 'Consume' ? 'withdraw-style' :'recharge-style'">₹ {{transaction.walletamount}}</ion-label>
+      </div>
+    </div>
+    <div transactions-empty-container *ngIf="(transactions.length == 0)">
+      <ion-label>{{statusText}}</ion-label>
+    </div>
+  </div>
+</div>
+  <!-- <ion-grid>
+    <ion-row>
+      <ion-col>
+        <div>
+          <div class="" style="color:gray;font-size: small;font-weight: 600;margin-bottom: 10px;">Available Balance in Wallet</div>
+          <ion-item lines="none"  style="font-size: larger;color:#8eba47;font-weight: 800;">
+            <ion-icon slot="start" name="folder" id="foldericon"></ion-icon>
+            <ion-label>Rs.45</ion-label>
+          </ion-item>
+        </div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <div><ion-button  color="success" expand="block" fill="outline" (click)="openRecharge()">Recharge</ion-button></div>
+      </ion-col>
+      <ion-col>
+        <div><ion-button  color="danger" expand="block" fill="outline" routerLink="../wallet/withdraw">Withdraw</ion-button></div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <div class="" style="color:rgb(0, 0, 0);font-size: medium;font-weight: 600;">Transactions</div>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <div>
+          <ion-row>
+            <ion-col size="2">
+              <div><ion-icon name="arrow-back" style="border:2px solid rgb(172, 0, 0);padding:4px;border-radius: 50%;color:rgb(172, 0, 0)"></ion-icon></div>
+            </ion-col>
+            <ion-col>
+              <div>
+                <div class="" style="color:rgb(0, 0, 0);font-size: small;font-weight: 600;">Withdrawn</div>
+                <div class="" style="color:rgb(161, 161, 161);font-size: x-small;font-weight: 400;">12 SEP 03:45 PM</div>
+              </div>
+            </ion-col>
+            <ion-col size="4" style="text-align: right;">
+              <div class="" style="color:rgb(172, 0, 0);font-size: medium;font-weight: 600;margin-top: 8px;">Rs.35</div>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col size="2">
+              <div><ion-icon name="arrow-forward" style="border:2px solid rgb(0, 109, 0);padding:4px;border-radius: 50%;color:rgb(0, 109, 0)"></ion-icon></div>
+            </ion-col>
+            <ion-col>
+              <div>
+                <div class="" style="color:rgb(0, 0, 0);font-size: small;font-weight: 600;">Recharge</div>
+                <div class="" style="color:rgb(161, 161, 161);font-size: x-small;font-weight: 400;">Today 07:00 PM</div>
+              </div>
+            </ion-col>
+            <ion-col size="4" style="text-align: right;">
+              <div class="" style="color:rgb(0, 109, 0);font-size: medium;font-weight: 600;margin-top: 8px;">Rs.42</div>
+            </ion-col>
+          </ion-row>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid> -->
+</ion-content>

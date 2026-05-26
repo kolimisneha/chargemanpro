@@ -1,0 +1,129 @@
+<ion-content>
+  <ion-row >
+    <ion-col>
+    <ion-img src="https://www.constructionweekonline.in/cloud/2021/11/24/oI96oT6C-Story-2-104.jpg"></ion-img>
+    </ion-col>
+  </ion-row>
+  <ion-row *ngIf="start">
+    <ion-col>
+      <ion-grid>
+        <ion-row>
+          <ion-col>
+            <div style="font-size: larger;color:#8eba47;font-weight: 800;">Cyber Port 1</div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col>
+            <div style="text-align:left;">
+              <div style="font-size: small;color:gray;margin-top:5px">Electric Vehicle Charging Station</div>
+              <div style="font-size: small;color:gray;margin-top:10px">Kothuru, Andra Pradesh</div>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row style="border-bottom: 2px solid gainsboro;">
+          <ion-col >
+            <div style="text-align: center;">
+            <div class=""><ion-icon  style="font-size: 25px;" name="flash"></ion-icon></div>
+            <div class="" style="font-size: x-small;color:rgb(0, 0, 0);margin-top:10px;font-weight: 600;">Type 2</div>
+            <div class="" style="font-size: xx-small;color:rgb(155, 155, 155);margin-top:10px">Charger Type</div>
+            </div>
+          </ion-col>
+          <ion-col>
+            <div style="text-align: center;">
+              <div class=""><ion-icon  style="font-size: 25px;" name="folder"></ion-icon></div>
+              <div class="" style="font-size: x-small;color:rgb(0, 0, 0);margin-top:10px;font-weight: 600;">RS.33/h</div>
+              <div class="" style="font-size: xx-small;color:rgb(155, 155, 155);margin-top:10px">Price</div>
+            </div>
+          </ion-col>
+          <ion-col>
+            <div style="text-align: center;">
+              <div class=""><ion-icon  style="font-size: 25px;" name="battery-charging"></ion-icon></div>
+              <div class="" style="font-size: x-small;color:rgb(0, 0, 0);margin-top:10px;font-weight: 600;">21kw</div>
+              <div class="" style="font-size: xx-small;color:rgb(155, 155, 155);margin-top:10px">Power</div>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row><ion-col><div style="font-size: small;font-weight: 700;">Slot Booking</div></ion-col></ion-row>
+        <ion-item>
+          <ion-label><div style="font-size: small;font-weight: 400;">Select Start Time</div></ion-label>
+          <ion-select interface="popover"  style="font-size: small;font-weight: 400;">
+            <ion-select-option value="nes">03:45 AM</ion-select-option>
+            <ion-select-option value="n64">option 2</ion-select-option>
+            <ion-select-option value="ps">option 3</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label><div style="font-size: small;font-weight: 400;">Select End Time</div></ion-label>
+          <ion-select interface="popover"  style="font-size: small;font-weight: 400;">
+            <ion-select-option value="nes">03:45 AM</ion-select-option>
+            <ion-select-option value="n64">option 2</ion-select-option>
+            <ion-select-option value="ps">option 3</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <ion-item>
+          <ion-label><div style="font-size: small;font-weight: 400;">Select Date</div></ion-label>
+          <input style="border:0;font-size: small;font-weight: 400;" type="date"><ion-icon name="calendar"></ion-icon>
+        </ion-item>
+        <ion-item>
+          <ion-label><div style="font-size: small;font-weight: 400;">Set Duration (Minutes)</div></ion-label>
+          <ion-input style="border:0;font-size: small;font-weight: 400;text-align: right;" type="number"></ion-input>
+        </ion-item>
+        </ion-grid>
+        <div style="text-align: center;margin-top: 20px;">
+          <ion-button style="width:300px;color:white;font-weight: 600;" (click)="startcharging()">Start Charging</ion-button>
+        </div>
+    </ion-col>
+  </ion-row>
+  <ion-row *ngIf="stop">
+    <ion-col>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="4">
+            <div  style="text-align: center;">
+                <img style="height:100px;width:100px;border-radius: 50px;" src="https://x305.com/wp-content/uploads/2019/06/bmw-i8-av38-forged-wheels-alex-vega-auto-firm-1-320x202.jpg">
+            </div>
+          </ion-col>
+          <ion-col>
+            <div>
+              <div style="text-align:left;">
+                <div style="font-size: x-small;color:gray;font-weight: 600;margin-top:10px">Status</div>
+                <div style="font-size: large;color:rgb(0, 0, 0);font-weight: 600;margin-top:10px">Charging</div>
+                <div style="font-size: x-small;color:rgb(0, 0, 0);margin-top:10px">5 min ago</div>
+              </div>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row style="border-bottom: 2px solid gainsboro;">
+          <ion-col >
+            <div style="text-align: center;">
+            <div class=""><ion-icon name="timer" style="font-size: 25px;"></ion-icon></div>
+            <div class="" style="font-size: x-small;color:rgb(0, 0, 0);margin-top:10px;font-weight: 600;">00:01:00</div>
+            <div class="" style="font-size: xx-small;color:rgb(155, 155, 155);margin-top:10px">Time Elapsed</div>
+            </div>
+          </ion-col>
+          <ion-col>
+            <div style="text-align: center;">
+              <div class=""><ion-icon name="flash" style="font-size: 25px;"></ion-icon></div>
+              <div class="" style="font-size: x-small;color:rgb(0, 0, 0);margin-top:10px;font-weight: 600;">3.32 kwh</div>
+              <div class="" style="font-size: xx-small;color:rgb(155, 155, 155);margin-top:10px">Energy</div>
+            </div>
+          </ion-col>
+          <ion-col>
+            <div style="text-align: center;">
+              <div class=""><ion-icon name="battery-charging" style="font-size: 25px;"></ion-icon></div>
+              <div class="" style="font-size: x-small;color:rgb(0, 0, 0);margin-top:10px;font-weight: 600;">21kw</div>
+              <div class="" style="font-size: xx-small;color:rgb(155, 155, 155);margin-top:10px">Power</div>
+            </div>
+          </ion-col>
+        </ion-row>
+        <ion-row>
+          <ion-col><div class=""  style="font-size: x-small;color:rgb(0, 0, 0);margin-top:10px;font-weight: 600;">Charging Fee</div></ion-col>
+          <ion-col><div class=""  style="font-size: x-small;color:rgb(0, 0, 0);margin-top:10px;font-weight: 600;text-align: right;">Rs.33.0</div></ion-col>
+        </ion-row>
+        </ion-grid>
+        <div style="text-align: center;margin-top: 30px;">
+          <ion-button color="danger" style="width:300px;color:white;font-weight: 600;" routerLink="../../history/historydetails">Stop Charging</ion-button>
+        </div>
+    </ion-col>
+  </ion-row>
+</ion-content>

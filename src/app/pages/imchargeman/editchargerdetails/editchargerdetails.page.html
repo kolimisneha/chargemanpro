@@ -1,0 +1,56 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title style="font-weight: 600;">Edit</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item>
+    <ion-label position="stacked" style="font-weight: 600;font-size: medium;">Select Location</ion-label>
+    <ion-input ></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="stacked" style="font-weight: 600;font-size: medium;">Enter Device ID</ion-label>
+    <ion-input ></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="stacked" style="font-weight: 600;font-size: medium;">Enter a Name of your Device</ion-label>
+    <ion-input ></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="stacked" style="font-weight: 600;font-size: medium;">Stacked Label</ion-label>
+    <ion-input ></ion-input>
+  </ion-item>
+  <ion-item>
+    <ion-label position="stacked" style="font-weight: 600;font-size: medium;">Enter a rate of your Device (kwh)</ion-label>
+    <ion-input ></ion-input>
+  </ion-item>
+  <ion-row>
+    <ion-col>
+      <ion-item>
+        <ion-label position="stacked" style="font-weight: 600;font-size: medium;">Start Time</ion-label>
+        <ion-input ></ion-input>
+      </ion-item>
+    </ion-col>
+    <ion-col>
+      <ion-item>
+        <ion-label position="stacked" style="font-weight: 600;font-size: medium;">End Time</ion-label>
+        <ion-input ></ion-input>
+      </ion-item>
+    </ion-col>
+  </ion-row>
+  <ion-item lines="none">
+    <ion-label><ion-text style="font-weight: 600;font-size: small;">Active</ion-text></ion-label>
+    <ion-toggle  name="kiwi" color="primary" checked></ion-toggle>
+  </ion-item>
+  <ion-item lines="none">
+    <ion-label><ion-text style="font-weight: 600;font-size: small;">Available 24/7</ion-text></ion-label>
+    <ion-toggle name="kiwi" color="primary" checked></ion-toggle>
+  </ion-item>
+  <div style="text-align: center;margin-top: 20px;">
+    <ion-button style="width:300px;color:white;font-weight: 600;">Save Changes</ion-button>
+  </div>
+</ion-content>
