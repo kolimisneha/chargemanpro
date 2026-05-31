@@ -94,7 +94,7 @@ registerBackButton() {
   })
 }
 
-  initializeApp() {
+  async initializeApp() {
     setTimeout(() => {
       SplashScreen.hide();
     }, 2000);
@@ -109,6 +109,7 @@ registerBackButton() {
     //   // api key for local development
     //   'API_KEY_FOR_BROWSER_DEBUG': 'AIzaSyA_gSzPNC40ioDPHIb7kMkYFClDihdhhx4'
     // });
+    await this.authService.authReady;
     this.authService.authState.subscribe((res) => {
       if(res) {
         this.navController.navigateRoot(['/pages'])
