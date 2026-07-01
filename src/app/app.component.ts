@@ -40,7 +40,7 @@ export class AppComponent {
             this.utils.displayDialog(KEYS.DIALOG_TYPE_PROMPT, DISPLAY_MESSAGES.DIALOG_TITLE_INFO, DISPLAY_MESSAGES.APP_VERSION_UPDATE_TEXT+' '+platfromText,[buttonOkText, DISPLAY_MESSAGES.BUTTON_TEXT_CANCEL]).then((res) => {
               if(res === 1) {
                 if(platform === 'android') {
-                  this.utils.openWebSite('play.google.com/store/apps/details?id=com.chargeman.evgracias', KEYS.URL_TYPE_EXTERNAL)
+                  this.utils.openWebSite('play.google.com/store/apps/details?id=com.chargeman.app', KEYS.URL_TYPE_EXTERNAL)
                 } else {
                  this.utils.openWebSite('itms-apps://itunes.apple.com/app/', KEYS.URL_TYPE_INTERNAL);
                 }
