@@ -427,28 +427,39 @@ export class Utils {
       this.call.callNumber(mobileNumber, false);
     }
 
-    launchMaps(lat,long) {
-      if(Capacitor.getPlatform() === 'android') {
-      this.launchNavigator.isAppAvailable(this.launchNavigator.APP.GOOGLE_MAPS).then((maps) => {
-        let app;
-        if(maps) {
-          app = this.launchNavigator.APP.GOOGLE_MAPS;
-          this.launchNavigator.navigate([lat, long], {app: app})
-        } else {
-          this.displayDialog(constants.KEYS.DIALOG_TYPE_ALERT, constants.DISPLAY_MESSAGES.ERR_DIALOG_TITLE, constants.DISPLAY_MESSAGES.MAPS_ERR,[constants.DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
-        }
-      })
-    } else if(Capacitor.getPlatform() === 'ios' || Capacitor.getPlatform() === 'web'){
-      this.launchNavigator.isAppAvailable(this.launchNavigator.APP.GOOGLE_MAPS || this.launchNavigator.APP.APPLE_MAPS).then((maps) => {
-        let app;
-        if(maps) {
-          app = this.launchNavigator.APP.APPLE_MAPS || this.launchNavigator.APP.GOOGLE_MAPS;
-          this.launchNavigator.navigate([lat, long], {app: app})
-        } else {
-          this.displayDialog(constants.KEYS.DIALOG_TYPE_ALERT, constants.DISPLAY_MESSAGES.ERR_DIALOG_TITLE, constants.DISPLAY_MESSAGES.MAPS_ERR,[constants.DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
-        }
-      })
+    launchMaps(lat, long) {
+      const platform = Capacitor.getPlatform();
+
+      if (platform === 'android') {
+        this.launchNavigator.isAppAvailable(this.launchNavigator.APP.GOOGLE_MAPS).then((maps) => {
+          if (maps) {
+            this.launchNavigator.navigate([lat, long], { app: this.launchNavigator.APP.GOOGLE_MAPS });
+          } else {
+            this.openMapsUrl(lat, long);
+          }
+        }).catch(() => {
+          this.openMapsUrl(lat, long);
+        });
+      } else if (platform === 'ios') {
+        const appToCheck = this.launchNavigator.APP.APPLE_MAPS || this.launchNavigator.APP.GOOGLE_MAPS;
+        this.launchNavigator.isAppAvailable(appToCheck).then((maps) => {
+          if (maps) {
+            const app = this.launchNavigator.APP.APPLE_MAPS || this.launchNavigator.APP.GOOGLE_MAPS;
+            this.launchNavigator.navigate([lat, long], { app });
+          } else {
+            this.openMapsUrl(lat, long);
+          }
+        }).catch(() => {
+          this.openMapsUrl(lat, long);
+        });
+      } else {
+        this.openMapsUrl(lat, long);
+      }
     }
+
+    private openMapsUrl(lat, long) {
+      const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${long}`;
+      window.open(url, '_blank');
     }
     
     updateValues(type:string, value: any) {

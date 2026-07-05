@@ -120,17 +120,24 @@ export class MaptabPage implements OnInit {
   ionViewDidEnter() {
    // Update charging status on every entry (matching hometab logic)
    this.utils.getStoredUserDetails().then((details) => {
-     const chargeCount = details?.chargeCount ?? '0';
+     const chargeCount = String(details?.chargeCount ?? '0');
      this.isChargingActive = chargeCount !== '0';
    });
    this.utils.chargeStatusObs.subscribe(async (res) => {
      const details = await this.utils.getStoredUserDetails();
-     const chargeCount = details?.chargeCount ?? '0';
+     const chargeCount = String(details?.chargeCount ?? '0');
      this.isChargingActive = chargeCount !== '0' || res === true;
    });
 
-    // Fetch wallet balance from API (was in hometab before)
+    // Fetch wallet balance from API
     this.utils.getStoredUserDetails().then((details) => {
+      if (!details) {
+        this.utils.getStoredDetails(constants.KEYS.WALLET_BALANCE).then((res) => {
+          const balance = parseFloat(res?.value);
+          this.walletBalance = isNaN(balance) ? '0' : balance.toFixed(2);
+        });
+        return;
+      }
       const walletBody = { "mobile": details.mobile };
       this.chargemanReq.postRequestDetails(constants.RELATIVE_URLS.GET_WALLET_BALANCE, walletBody).subscribe((res: any) => {
         this.walletBalance = parseFloat(res.balance).toFixed(2) ?? '0';

@@ -5,20 +5,87 @@ agm-map {
 
 [charging-status-container] {
   position: fixed;
-  top: 64px;
+  top: 88px;
   left: 0;
   right: 0;
   z-index: 100;
-  margin: 0 !important;
-  border-radius: 0;
+  display: flex;
+  align-items: center;
+  background: var(--ion-color-primary);
+  color: #fff;
+  margin: 8px 16px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  gap: 8px;
   cursor: pointer;
+}
+
+[charging-status-container] ion-icon:first-child {
+  font-size: 22px;
+  color: #fff;
+}
+
+[charging-status-container] ion-icon:last-child {
+  font-size: 16px;
+  color: rgba(255,255,255,0.7);
+  margin-left: auto;
+}
+
+[charging-info] {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+
+[charging-info] ion-label:first-child {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+[charging-tap] {
+  font-size: 11px;
+  opacity: 0.85;
 }
 
 [wallet-balance-container] {
   position: fixed;
+  top: 88px;
   left: 0;
   right: 0;
   z-index: 100;
-  margin: 0 18px !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 16px;
+  padding: 8px 14px;
+  border-radius: 8px;
   cursor: pointer;
+}
+
+[wallet-balance-container] ion-icon {
+  font-size: 22px;
+  color: #fff;
+}
+
+[wallet-label] {
+  font-size: 12px;
+  opacity: 0.9;
+  flex-shrink: 0;
+}
+
+[wallet-value] {
+  font-size: 15px;
+  font-weight: 700;
+  flex: 1;
+}
+
+[wallet-action] {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--ion-color-primary);
+  color: #fff;
+  flex-shrink: 0;
 }

@@ -67,6 +67,10 @@ export class AddchargerdetailsPage implements OnInit {
     {
       val:3,
       connector_id:3
+    },
+    {
+      val:4,
+      connector_id:4
     }]
   constructor(private utils: Utils, private diagnostics: Diagnostic, private formBuilder: FormBuilder, private chargemanreq: ChargemanRequestService, private scanner: BarcodeScanner) { }
 

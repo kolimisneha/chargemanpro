@@ -63,11 +63,14 @@ export class ChargeStartStopPage implements OnInit {
   timer_req: any
   chargeDurationTimerValue = '00:00';
   chargeDurationTimerInterval: any;
+  chargeStartTime: number = 0;
   isAutoCharge: boolean;
   hourVal: any = '00';
   minVal: any = '00';
   requestedDuration: string = '-'
- async ngOnInit() {
+  selectedGun: number = null;
+  guns: number[] = [1, 2, 3, 4];
+  async ngOnInit() {
      this.pageParams = this.utils.getPageParams()?.charge_details; 
 
      if (!this.pageParams || !this.pageParams.devicetype || !this.pageParams.deviceid) {
@@ -117,6 +120,7 @@ export class ChargeStartStopPage implements OnInit {
         // this.utils.storeDetails(KEYS.IS_CHARGING, 1);
         if(this.pageParams.transactionid !== undefined) {
           if(this.chargingTimer == undefined)  {
+            this.chargeStartTime = Date.now();
             this.startChargeInterval(this.pageParams.transactionid);
           }
         } else {
@@ -129,6 +133,10 @@ export class ChargeStartStopPage implements OnInit {
 
   navigateBack() {
     this.navCtrl.navigateBack(['/pages/sidemenu'])
+  }
+
+  selectGun(gun: number) {
+    this.selectedGun = gun;
   }
 
   startCharging() {
@@ -301,7 +309,7 @@ export class ChargeStartStopPage implements OnInit {
           
           if(deviceType.toLowerCase() === "ocpp") {
             device_command_body = {
-                "connectorId": parseInt(this.pageParams.connectorid) == 0 ? 1 : parseInt(this.pageParams.connectorid),
+                "connectorId": this.selectedGun,
                 "chargingProfileId": 1,
                 "transactionId": parseInt(res.status),
                 "stackLevel": 1,
@@ -313,7 +321,7 @@ export class ChargeStartStopPage implements OnInit {
             device_command_body = {
                 "type": "START_CHARGING",
                 "payload": {
-                  "connectorId": this.pageParams.connectorid || "1",
+                  "connectorId": this.selectedGun,
                   "idTag": this.pageParams.deviceid,
                   "reservationId": "0",
                   "Timestamp": this.utils.getCurrentTimeStamp(),
@@ -400,6 +408,18 @@ export class ChargeStartStopPage implements OnInit {
       this.timer_req.subscribe((res: any) => {
         if(res && res.length > 0 && res[0]) {
           console.log('Charge interval response:', res[0]);
+
+          if (!this.isDurationSkipped && this.chargeStartTime > 0) {
+            const elapsedSec = (Date.now() - this.chargeStartTime) / 1000;
+            const durationSec = this.timerVal * 60;
+            if (elapsedSec >= durationSec) {
+              clearInterval(this.chargingTimer);
+              this.chargeStoppedAutomatically = true;
+              this.startBlink = false;
+              this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
+              return;
+            }
+          }
           
           this.walletConsumed = parseFloat(res[0].consumewallet || 0).toFixed(2);
           this.chargeVal = parseFloat(res[0].chargevalue || 0).toFixed(2);
@@ -581,6 +601,7 @@ export class ChargeStartStopPage implements OnInit {
           this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_CHARGING;
           this.utils.presentToast(DISPLAY_MESSAGES.START_CHARGE_SUCCESS,[], 4000);
           this.utils.storeDetails(KEYS.CHARGE_STATUS, KEYS.CHARGE_CHARGING);
+          this.chargeStartTime = Date.now();
           this.startChargeInterval(res[0].transactionid);
         } else {
           this.chargingStatus = false;

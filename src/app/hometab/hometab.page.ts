@@ -23,7 +23,7 @@ export class HometabPage implements OnInit {
   walletSubscription: Subscription;
   products = [];
   coordinates: any;
-  chargeCount: any;
+  chargeCount: any = '0';
   chargeStatus: boolean = false;
   walletBalanceSubscriber: Subscription;
   chargeCountSubscriber: Subscription;
@@ -137,7 +137,7 @@ export class HometabPage implements OnInit {
     
     //  if(!this.isApiCalled) {
       const details = await this.utils.getStoredUserDetails();
-      this.chargeCount = details.chargeCount ?? '0';
+      this.chargeCount = String(details.chargeCount ?? '0');
       this.walletSubscription = this.utils.walletObs.subscribe((sub) => {
         if(sub === '') {
           // this.walletBalance = '0';
@@ -150,10 +150,13 @@ export class HometabPage implements OnInit {
         }
       })
       this.utils.chargeStatusObs.subscribe(async (res) => {
-        
-              const count = await this.utils.getStoredUserDetails();
-              this.chargeCount = count.chargeCount ?? '0';
-              this.chargeStatus = res;
+        try {
+          const count = await this.utils.getStoredUserDetails();
+          this.chargeCount = count.chargeCount ?? '0';
+          this.chargeStatus = res;
+        } catch (e) {
+          console.error('Failed to update charge status:', e);
+        }
       })
     //  }
     //  this.isApiCalled = false;

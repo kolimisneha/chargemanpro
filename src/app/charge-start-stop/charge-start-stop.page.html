@@ -64,8 +64,22 @@
         </div>
       </div>
     </div>
-    <div class="" style="margin-top: 50px;">
-      <ion-button button-regular start-charge expand="block" [disabled]="isStartButtonDisabled" (click)="startChargeProcess()">Start Charging</ion-button>
+    <div gun-selection-container>
+      <ion-label slot-label>Select Gun<span>*</span></ion-label>
+      <div gun-options>
+        <div
+          class="gun-option"
+          *ngFor="let gun of guns"
+          [class.gun-selected]="selectedGun === gun"
+          (click)="selectGun(gun)"
+        >
+          <img src="../../assets/icon/gun.jpg" alt="Gun {{ gun }}" />
+          <ion-label>Gun {{ gun }}</ion-label>
+        </div>
+      </div>
+    </div>
+    <div class="" style="margin-top: 20px;">
+      <ion-button button-regular start-charge expand="block" [disabled]="isStartButtonDisabled || !selectedGun" (click)="startChargeProcess()">Start Charging</ion-button>
     </div>
      <!-- home.page.html --> 
   </div>

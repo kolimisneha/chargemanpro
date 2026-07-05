@@ -7,15 +7,16 @@
   <ion-refresher slot="fixed" (ionRefresh)="fetchDashboardDetails(true, $event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  <div charging-status-container *ngIf="(chargeCount !== '0' || chargeStatus === true)">
+  <div charging-status-container *ngIf="(chargeCount !== '0' || chargeStatus === true)" (click)="openChargeStartStopPage()">
     <ion-label>Charging in progress</ion-label>
-    <ion-label (click)="openChargeStartStopPage()">Tap to open</ion-label>
+    <ion-label>Tap to open</ion-label>
   </div>
-    <div wallet-balance-container>
-      <ion-icon [src]="walletIconSrc"></ion-icon>
-      <ion-label>{{walletBalance === '0' ? 'Your wallet is empty' : 'Wallet Balance'}}</ion-label>
-      <ion-label (click)="rechargeHandler()">{{walletBalance === '0' ? 'Recharge' : '₹ '+walletBalance}}</ion-label>
-    </div>
+  <!-- <div wallet-balance-container (click)="rechargeHandler()">
+    <ion-icon [src]="walletIconSrc"></ion-icon>
+    <ion-label>Wallet Balance</ion-label>
+    <ion-label>{{walletBalance === '0' || walletBalance === '0.00' ? 'Your wallet is empty' : '₹ '+walletBalance}}</ion-label>
+    <ion-label *ngIf="walletBalance === '0' || walletBalance === '0.00'">Recharge</ion-label>
+  </div> -->
   
   
 
