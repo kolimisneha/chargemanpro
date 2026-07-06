@@ -1,6 +1,6 @@
 ion-content {
   --padding-top: env(safe-area-inset-top, 0px);
-  --padding-bottom: env(safe-area-inset-bottom, 0px);
+  --padding-bottom: 0px;
 }
 
 [heading-style-one] {
@@ -482,7 +482,7 @@ ios in-toolbar {
 }
 
 [home-tab-bar] {
-  height: calc(56px + env(safe-area-inset-bottom, 0px));
+  height: 52px;
   padding-bottom: env(safe-area-inset-bottom, 0px);
   background:  var(--chargemen-grey);
   box-shadow: 0px 0px 4px rgb(0 0 0 / 25%);
@@ -1549,7 +1549,7 @@ ion-button {
 /*Map styles**/ 
 [pointer-info-container] {
   position: absolute;
-  bottom: 2%;
+  bottom: 15px;
   width: 100%;
 }
 

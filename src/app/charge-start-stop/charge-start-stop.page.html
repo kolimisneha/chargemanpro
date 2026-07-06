@@ -45,7 +45,7 @@
 
       <div slot-details-container>
         <ion-label slot-label>Auto Re-Start</ion-label>
-        <ion-checkbox (ionChange)="onAutoChargeHandler($event)" [(ngModel)]="isDurationSkipped" [disabled]="isDurationSkipped"></ion-checkbox>
+        <ion-checkbox (ionChange)="onAutoChargeHandler($event)" [(ngModel)]="isAutoCharge" [disabled]="isDurationSkipped"></ion-checkbox>
     </div>
     <div resume-hint-container>
       <ion-label>Avail this option during night time charge or to resume charge automatically when charge stops due to interruption</ion-label>

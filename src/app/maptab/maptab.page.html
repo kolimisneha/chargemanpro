@@ -13,7 +13,7 @@
   <div *ngIf="!isChargingActive" wallet-balance-container (click)="rechargeHandler()">
     <ion-icon [src]="walletIconSrc"></ion-icon>
     <ion-label wallet-label>{{walletBalance === '0' || walletBalance === '0.00' ? 'Your wallet is empty' : 'Wallet Balance'}}</ion-label>
-    <ion-label wallet-value>{{walletBalance === '0' || walletBalance === '0.00' ? '' : '₹ '+walletBalance}}</ion-label>
+    <ion-label wallet-value *ngIf="walletBalance !== '0' && walletBalance !== '0.00'">{{'₹ '+walletBalance}}</ion-label>
     <ion-label wallet-action *ngIf="walletBalance === '0' || walletBalance === '0.00'">Recharge</ion-label>
   </div>
   

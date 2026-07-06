@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, NavigationExtras, Router } from '@angular/router';
 import { IonRouterOutlet, ModalController, NavController } from '@ionic/angular';
-import { Observable, Subscription } from 'rxjs';
-import { flatMap, map, mergeMap } from 'rxjs/operators';
+import { Observable, Subscription, Subject, interval, of } from 'rxjs';
+import { flatMap, map, mergeMap, exhaustMap, takeUntil, catchError } from 'rxjs/operators';
 import { CHARGE_STATUS_TYPES, DISPLAY_MESSAGES, KEYS, RELATIVE_URLS } from '../constants';
 import { ChargemanRequestService } from '../services/chargeman-request.service';
 import { Utils } from '../services/utils.service';
@@ -65,6 +65,8 @@ export class ChargeStartStopPage implements OnInit {
   chargeDurationTimerInterval: any;
   chargeStartTime: number = 0;
   isAutoCharge: boolean;
+  isPollingStatus: boolean = false;
+  private destroy$: Subject<void> = new Subject<void>();
   hourVal: any = '00';
   minVal: any = '00';
   requestedDuration: string = '-'
@@ -207,9 +209,7 @@ export class ChargeStartStopPage implements OnInit {
       next: async (res: any) => {
         console.log('Device command response:', res);
         this.startBlink = false;
-        if (this.chargingTimer) {
-          clearInterval(this.chargingTimer);
-        }
+        this.destroy$.next();
         if (deviceType.toLowerCase() === 'ocpp') {
           if (!res.success) {
             this.isChargeStopped = false;
@@ -384,153 +384,141 @@ export class ChargeStartStopPage implements OnInit {
     }
   }
 
-   startChargeInterval(response) {
+  startChargeInterval(response) {
     this.isChargeStopped = false;
     this.isStartButtonDisabled = false;
     const interval_body = {
       transactionid: response
     };
-    this.timer_req = this.chargeReq.postRequestDetails(RELATIVE_URLS.CHECK_CHARGE, interval_body);
     let values = [];
     let counter = 0;
-    
+
     if(this.chargeDurationTimerInterval === undefined) {
       const selectedDuration = this.isDurationSkipped ? 60 : this.timerVal;
       this.utils.storeDetails(KEYS.SELECTED_DURATION, selectedDuration);
-      let selectedDurationInHrs = this.utils.getDurationInHours(selectedDuration);
     }
-    
-    this.chargingTimer = setInterval(async () => {
+
+    this.chargingTimer = interval(10000).pipe(
+      exhaustMap(() => this.chargeReq.postRequestDetails(RELATIVE_URLS.CHECK_CHARGE, interval_body).pipe(
+        catchError(err => {
+          console.error('Charge interval error:', err);
+          return of(null);
+        })
+      )),
+      takeUntil(this.destroy$)
+    ).subscribe((res: any) => {
+      if(!res || !(res.length > 0) || !res[0]) {
+        console.warn('Invalid response in charge interval:', res);
+        return;
+      }
+
       this.isChargeStopped = false;
       this.storedDetails.chargeCount = '1';
       this.utils.storeDetails(KEYS.USER_DETAILS, JSON.stringify(this.storedDetails));
-      
-      this.timer_req.subscribe((res: any) => {
-        if(res && res.length > 0 && res[0]) {
-          console.log('Charge interval response:', res[0]);
+      console.log('Charge interval response:', res[0]);
 
-          if (!this.isDurationSkipped && this.chargeStartTime > 0) {
-            const elapsedSec = (Date.now() - this.chargeStartTime) / 1000;
-            const durationSec = this.timerVal * 60;
-            if (elapsedSec >= durationSec) {
-              clearInterval(this.chargingTimer);
-              this.chargeStoppedAutomatically = true;
-              this.startBlink = false;
-              this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
-              return;
-            }
-          }
-          
-          this.walletConsumed = parseFloat(res[0].consumewallet || 0).toFixed(2);
-          this.chargeVal = parseFloat(res[0].chargevalue || 0).toFixed(2);
-          this.powerVal = res[0].kwh || '0';
-          const device_status = (res[0].status || '').toLowerCase();
-          
-          let duration = this.utils.convertDateTimeFormat((res[0].minuteago || '0.0').split('.')[0], "HH:mm:ss", "HH:mm");
-          this.hourVal = duration.split(':')[0];
-          this.minVal = duration.split(':')[1];
-          
-          const deviceProtocol = this.deviceProtocolDetails.deviceProtocol || this.pageParams?.devicetype || 'evcm';
-          
-          if(!this.isAutoCharge) {
-            if(device_status === 'stopped' && deviceProtocol.toLowerCase() === "evcm") {
-              clearInterval(this.chargingTimer);
-              const transaction_details: NavigationExtras = {
-                state: {
-                  transactionid: response
-                }
-              };
-              this.utils.navigateTo(KEYS.NAV_FORWARD_WITH_OPT, '/charge-glance', transaction_details);
-              this.storedDetails.chargeCount = '0';
-              this.utils.storeDetails(KEYS.USER_DETAILS, JSON.stringify(this.storedDetails));
-              const reason = res[0].reason || '';
-              this.utils.updateValues(KEYS.CHARGE_STATUS, false);
-              let displayMessage = (reason.toLowerCase() === 'timeout' || reason.toLowerCase() === 'expired') 
-                ? DISPLAY_MESSAGES.DEVICE_DURATION_LIMIT_REACHED 
-                : DISPLAY_MESSAGES.DEVICE_COMM_ERR;
-              this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.DIALOG_TITLE_INFO, displayMessage, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
-            }
-            
-            if(!this.isAutoCharge) {
-              if(values.length === 0) { 
-                values[0] = this.chargeVal;
-              } else {
-                values[1] = this.chargeVal;
-                let res = this.compareValues(values);
-                if(res) {
-                  counter++;
-                  if(counter == 9) {
-                    clearInterval(this.chargingTimer);
-                    values = [];
-                    counter = 0;
-                    this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE,DISPLAY_MESSAGES.DEVICE_INTERRUPTION_ERR, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
-                    this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
-                  }
-                } else {
-                  counter = 0;
-                  values[0] = this.chargeVal;
-                }
-              }
-            }
-          }
-          
-          if(!this.isSelfCharge) {
-            let remainingBalance: any = parseFloat(this.initialWalletBalance || 0) - parseFloat(this.walletConsumed || 0);
-            remainingBalance = (parseFloat(remainingBalance)).toFixed(2);
-            if(remainingBalance <= 0 ) {
-              remainingBalance = 0;
-              this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_INSUFFICIENT;
-              clearInterval(this.chargingTimer);
-              this.chargeStoppedAutomatically = true;
-              this.startBlink = false;
-              this.stopCharging(CHARGE_STATUS_TYPES.INSUFF_FUNDS);
-              this.utils.displayDialog(KEYS.DIALOG_TYPE_PROMPT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.WALLET_BALANCE_ERROR_3, [DISPLAY_MESSAGES.WALLET_DIALOG_TEXT_NAVIGATE, DISPLAY_MESSAGES.BUTTON_TEXT_CANCEL]).then((res) => {
-                if(res == 1) {
-                  this.utils.navigateTo(KEYS.NAV_FORWARD, '/pages/sidemenu/wallet');
-                } else {
-                  this.utils.navigateTo(KEYS.NAV_FORWARD, '/charge-glance');
-                }
-              });
-            } else {
-              this.utils.updateValues(KEYS.UPDATE_WALLET_TYPE, remainingBalance);
-              this.utils.storeDetails(KEYS.WALLET_BALANCE, remainingBalance);
-              this.walletBalance = { value: remainingBalance };
-            }
-          }
-          
-          if(device_status === 'stopped' && deviceProtocol.toLowerCase() === "ocpp") {
-            clearInterval(this.chargingTimer);
-            const transaction_details: NavigationExtras = {
-              state: {
-                transactionid: response
-              }
-            };
-            this.utils.navigateTo(KEYS.NAV_FORWARD_WITH_OPT, '/charge-glance', transaction_details);
-            this.storedDetails.chargeCount = '0';
-            this.utils.storeDetails(KEYS.USER_DETAILS, JSON.stringify(this.storedDetails));
-            const reason = res[0].reason || '';
-            this.utils.updateValues(KEYS.CHARGE_STATUS, false);
-            let displayMessage = (reason.toLowerCase() === 'timeout' || reason.toLowerCase() === 'expired') 
-              ? DISPLAY_MESSAGES.DEVICE_DURATION_LIMIT_REACHED 
-              : DISPLAY_MESSAGES.DEVICE_COMM_ERR;
-            this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.DIALOG_TITLE_INFO, displayMessage, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
-          }
-        } else {
-          console.warn('Invalid response in charge interval:', res);
+      if (!this.isDurationSkipped && this.chargeStartTime > 0) {
+        const elapsedSec = (Date.now() - this.chargeStartTime) / 1000;
+        const durationSec = this.timerVal * 60;
+        if (elapsedSec >= durationSec) {
+          this.destroy$.next();
+          this.chargeStoppedAutomatically = true;
+          this.startBlink = false;
+          this.chargeStatusText = CHARGE_STATUS_TYPES.TIMEOUT_ERR;
+          this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
+          return;
         }
-      }, (err) => {
-        console.error('Charge interval error:', err);
-      });
-    }, 10000);
+      }
+
+      this.walletConsumed = parseFloat(res[0].consumewallet || 0).toFixed(2);
+      this.chargeVal = parseFloat(res[0].chargevalue || 0).toFixed(2);
+      this.powerVal = res[0].kwh || '0';
+      const device_status = (res[0].status || '').toLowerCase();
+
+      let duration = this.utils.convertDateTimeFormat((res[0].minuteago || '0.0').split('.')[0], "HH:mm:ss", "HH:mm");
+      this.hourVal = duration.split(':')[0];
+      this.minVal = duration.split(':')[1];
+
+      const deviceProtocol = this.deviceProtocolDetails.deviceProtocol || this.pageParams?.devicetype || 'evcm';
+
+      if(!this.isAutoCharge) {
+        if(device_status === 'stopped' && deviceProtocol.toLowerCase() === "evcm") {
+          this.destroy$.next();
+          const transaction_details: NavigationExtras = { state: { transactionid: response } };
+          this.utils.navigateTo(KEYS.NAV_FORWARD_WITH_OPT, '/charge-glance', transaction_details);
+          this.storedDetails.chargeCount = '0';
+          this.utils.storeDetails(KEYS.USER_DETAILS, JSON.stringify(this.storedDetails));
+          const reason = res[0].reason || '';
+          this.utils.updateValues(KEYS.CHARGE_STATUS, false);
+          let displayMessage = (reason.toLowerCase() === 'timeout' || reason.toLowerCase() === 'expired')
+            ? DISPLAY_MESSAGES.DEVICE_DURATION_LIMIT_REACHED
+            : DISPLAY_MESSAGES.DEVICE_COMM_ERR;
+          this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.DIALOG_TITLE_INFO, displayMessage, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
+          return;
+        }
+
+        if(!this.isAutoCharge) {
+          if(values.length === 0) {
+            values[0] = this.chargeVal;
+          } else {
+            values[1] = this.chargeVal;
+            if(this.compareValues(values)) {
+              counter++;
+              if(counter == 9) {
+                this.destroy$.next();
+                values = []; counter = 0;
+                this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.DEVICE_INTERRUPTION_ERR, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
+                this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
+              }
+            } else {
+              counter = 0; values[0] = this.chargeVal;
+            }
+          }
+        }
+      }
+
+      if(!this.isSelfCharge) {
+        let remainingBalance: any = parseFloat(this.initialWalletBalance || 0) - parseFloat(this.walletConsumed || 0);
+        remainingBalance = parseFloat(remainingBalance).toFixed(2);
+        if(remainingBalance <= 0) {
+          remainingBalance = 0;
+          this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_INSUFFICIENT;
+          this.destroy$.next();
+          this.chargeStoppedAutomatically = true;
+          this.startBlink = false;
+          this.stopCharging(CHARGE_STATUS_TYPES.INSUFF_FUNDS);
+          this.utils.displayDialog(KEYS.DIALOG_TYPE_PROMPT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.WALLET_BALANCE_ERROR_3, [DISPLAY_MESSAGES.WALLET_DIALOG_TEXT_NAVIGATE, DISPLAY_MESSAGES.BUTTON_TEXT_CANCEL]).then((r) => {
+            this.utils.navigateTo(KEYS.NAV_FORWARD, r == 1 ? '/pages/sidemenu/wallet' : '/charge-glance');
+          });
+          return;
+        } else {
+          this.utils.updateValues(KEYS.UPDATE_WALLET_TYPE, remainingBalance);
+          this.utils.storeDetails(KEYS.WALLET_BALANCE, remainingBalance);
+          this.walletBalance = { value: remainingBalance };
+        }
+      }
+
+      if(device_status === 'stopped' && deviceProtocol.toLowerCase() === "ocpp") {
+        this.destroy$.next();
+        const transaction_details: NavigationExtras = { state: { transactionid: response } };
+        this.utils.navigateTo(KEYS.NAV_FORWARD_WITH_OPT, '/charge-glance', transaction_details);
+        this.storedDetails.chargeCount = '0';
+        this.utils.storeDetails(KEYS.USER_DETAILS, JSON.stringify(this.storedDetails));
+        const reason = res[0].reason || '';
+        this.utils.updateValues(KEYS.CHARGE_STATUS, false);
+        let displayMessage = (reason.toLowerCase() === 'timeout' || reason.toLowerCase() === 'expired')
+          ? DISPLAY_MESSAGES.DEVICE_DURATION_LIMIT_REACHED
+          : DISPLAY_MESSAGES.DEVICE_COMM_ERR;
+        this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.DIALOG_TITLE_INFO, displayMessage, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
+      }
+    });
   }
 
   ionViewWillLeave() {
     this.timeout = null;
-    this.startChargeReq = null;
-    this.timer_req = null;
-    clearInterval(this.chargingTimer)
+    this.destroy$.next();
+    this.destroy$.complete();
     clearInterval(this.chargeDurationTimerInterval)
-    
   }
 
 
@@ -558,12 +546,20 @@ export class ChargeStartStopPage implements OnInit {
   }
 
   getChargingStatus(transactionId) {
+    if (this.isPollingStatus) return;
+    this.isPollingStatus = true;
+
+    if (this.startChargeReq) {
+      this.startChargeReq.unsubscribe();
+    }
+
     const details = {
       transactionid: transactionId,
     }
     this.startChargeReq = this.chargeReq.postRequestDetails(RELATIVE_URLS.CHARGING_STATUS,details).subscribe((res: any) => {
       if(res[0].status.toUpperCase() === 'REQUESTED') {
         this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_PROCESSING;
+        this.isPollingStatus = false;
         this.getChargingStatus(transactionId);
         this.isChargeStarted = true;
         this.isChargeStopped = false;
@@ -601,8 +597,10 @@ export class ChargeStartStopPage implements OnInit {
           this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_CHARGING;
           this.utils.presentToast(DISPLAY_MESSAGES.START_CHARGE_SUCCESS,[], 4000);
           this.utils.storeDetails(KEYS.CHARGE_STATUS, KEYS.CHARGE_CHARGING);
-          this.chargeStartTime = Date.now();
-          this.startChargeInterval(res[0].transactionid);
+          if (!this.chargingTimer || this.chargingTimer.closed) {
+            this.chargeStartTime = Date.now();
+            this.startChargeInterval(res[0].transactionid);
+          }
         } else {
           this.chargingStatus = false;
           this.isChargeStarted = false;
@@ -614,8 +612,10 @@ export class ChargeStartStopPage implements OnInit {
           this.stopCharging(CHARGE_STATUS_TYPES.DEVICE_ERR);
           this.utils.navigateTo(KEYS.NAV_FORWARD, '/charge-glance')
         }
+        this.isPollingStatus = false;
       }
     }, (err) => {
+        this.isPollingStatus = false;
         this.isChargeStarted = false;
         this.isChargeStopped = true;
         this.chargingStatus = false;
