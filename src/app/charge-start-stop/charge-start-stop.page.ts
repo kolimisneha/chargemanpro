@@ -385,6 +385,7 @@ export class ChargeStartStopPage implements OnInit {
   }
 
   startChargeInterval(response) {
+    this.chargeStartTime = Date.now();
     this.isChargeStopped = false;
     this.isStartButtonDisabled = false;
     const interval_body = {
@@ -416,19 +417,6 @@ export class ChargeStartStopPage implements OnInit {
       this.storedDetails.chargeCount = '1';
       this.utils.storeDetails(KEYS.USER_DETAILS, JSON.stringify(this.storedDetails));
       console.log('Charge interval response:', res[0]);
-
-      if (!this.isDurationSkipped && this.chargeStartTime > 0) {
-        const elapsedSec = (Date.now() - this.chargeStartTime) / 1000;
-        const durationSec = this.timerVal * 60;
-        if (elapsedSec >= durationSec) {
-          this.destroy$.next();
-          this.chargeStoppedAutomatically = true;
-          this.startBlink = false;
-          this.chargeStatusText = CHARGE_STATUS_TYPES.TIMEOUT_ERR;
-          this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
-          return;
-        }
-      }
 
       this.walletConsumed = parseFloat(res[0].consumewallet || 0).toFixed(2);
       this.chargeVal = parseFloat(res[0].chargevalue || 0).toFixed(2);
@@ -464,7 +452,7 @@ export class ChargeStartStopPage implements OnInit {
             values[1] = this.chargeVal;
             if(this.compareValues(values)) {
               counter++;
-              if(counter == 9) {
+              if(counter == 30) {
                 this.destroy$.next();
                 values = []; counter = 0;
                 this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.DEVICE_INTERRUPTION_ERR, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
@@ -495,6 +483,19 @@ export class ChargeStartStopPage implements OnInit {
           this.utils.updateValues(KEYS.UPDATE_WALLET_TYPE, remainingBalance);
           this.utils.storeDetails(KEYS.WALLET_BALANCE, remainingBalance);
           this.walletBalance = { value: remainingBalance };
+        }
+      }
+
+      if (!this.isDurationSkipped && this.chargeStartTime > 0) {
+        const elapsedSec = (Date.now() - this.chargeStartTime) / 1000;
+        const durationSec = this.timerVal * 60;
+        if (elapsedSec >= durationSec) {
+          this.destroy$.next();
+          this.chargeStoppedAutomatically = true;
+          this.startBlink = false;
+          this.chargeStatusText = CHARGE_STATUS_TYPES.TIMEOUT_ERR;
+          this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
+          return;
         }
       }
 
@@ -563,13 +564,14 @@ export class ChargeStartStopPage implements OnInit {
         this.getChargingStatus(transactionId);
         this.isChargeStarted = true;
         this.isChargeStopped = false;
+        this.startBlink = true;
         this.chargingStatus = false;
         this.isStartButtonDisabled = false;
         this.isStopButtonDisabled = true;
         if(this.timeout == null || this.timeout == undefined) { 
         this.timeout = setTimeout(() => {
           this.isTimedout = true;
-        }, 60000)
+        }, this.timerVal * 60000)
         }
         if(this.isTimedout) {
           this.timeout = null;

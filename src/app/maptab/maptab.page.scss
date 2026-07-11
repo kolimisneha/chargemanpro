@@ -53,7 +53,7 @@ agm-map {
 
 [wallet-balance-container] {
   position: fixed;
-  top: 88px;
+  top: 95px;
   left: 0;
   right: 0;
   z-index: 100;
@@ -63,6 +63,8 @@ agm-map {
   margin: 8px 16px;
   padding: 8px 14px;
   border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   cursor: pointer;
 }
 
@@ -73,8 +75,8 @@ agm-map {
 
 [wallet-label] {
   flex: 1;
-  text-align: center;
-  font-size: 12px;
+  text-align: left;
+  font-size: 14px;
   opacity: 0.9;
   white-space: nowrap;
   overflow: hidden;
