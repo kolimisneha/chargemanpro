@@ -39,7 +39,7 @@ def patch_elf_16kb(so_path):
                     continue
                 f.seek(ph_offset + 48)
                 p_align = struct.unpack(endian + 'Q', f.read(8))[0]
-                if p_align == 0x1000:
+                if p_align != 0x4000:
                     f.seek(ph_offset + 48)
                     f.write(struct.pack(endian + 'Q', 0x4000))
                     patched += 1
@@ -49,7 +49,7 @@ def patch_elf_16kb(so_path):
                     continue
                 f.seek(ph_offset + 28)
                 p_align = struct.unpack(endian + 'I', f.read(4))[0]
-                if p_align == 0x1000:
+                if p_align != 0x4000:
                     f.seek(ph_offset + 28)
                     f.write(struct.pack(endian + 'I', 0x4000))
                     patched += 1
@@ -157,7 +157,10 @@ def patch_aab(aab_path, keystore, storepass, keyalias, keypass):
                 for f in files:
                     file_path = os.path.join(root, f)
                     arcname = os.path.relpath(file_path, tmpdir)
-                    z.write(file_path, arcname)
+                    if f.endswith('.so'):
+                        z.write(file_path, arcname, zipfile.ZIP_STORED)
+                    else:
+                        z.write(file_path, arcname)
 
         # Re-sign
         print("Re-signing AAB...")

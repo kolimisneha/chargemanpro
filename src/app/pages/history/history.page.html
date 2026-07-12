@@ -42,10 +42,17 @@
       <div separator></div>
 
       <div other-details-container>
-        
         <div detail-container>
           <ion-label>{{history.chargevalue}}Kw</ion-label>
           <ion-label>(consumed)</ion-label>
+        </div>
+        <div detail-container>
+          <ion-label>₹ {{history.cgstvalue}}</ion-label>
+          <ion-label>(CGST-{{history.cgst}}%)</ion-label>
+        </div>
+        <div detail-container>
+          <ion-label>₹ {{history.sgstvalue}}</ion-label>
+          <ion-label>(SGST-{{history.sgst}}%)</ion-label>
         </div>
         <div detail-container>
           <ion-label>₹ {{history.consumewallet}}</ion-label>

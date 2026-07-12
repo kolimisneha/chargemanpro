@@ -49,6 +49,8 @@ export class HistoryPage implements OnInit {
             
             
             item.consumewallet = parseFloat(item.consumewallet).toFixed(2) ?? '-';
+            item.cgstvalue = parseFloat(item.cgstvalue).toFixed(2);
+            item.sgstvalue = parseFloat(item.sgstvalue).toFixed(2);
           })
           this.chargerHistory = res;
         }else {
