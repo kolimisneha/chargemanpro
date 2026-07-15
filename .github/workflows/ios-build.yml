@@ -25,8 +25,11 @@ jobs:
       - name: Build Angular app
         run: npx ng build --configuration production
 
+      - name: Sync Capacitor iOS
+        run: npx cap sync ios
+
       - name: Install CocoaPods
-        run: sudo gem install cocoapods && pod install
+        run: pod install
         working-directory: ios/App
 
       - name: Build iOS (unsigned)
