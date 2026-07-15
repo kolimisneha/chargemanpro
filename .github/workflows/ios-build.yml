@@ -17,17 +17,16 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 16
-          cache: npm
+          node-version: 18
 
       - name: Install dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm install --legacy-peer-deps
 
       - name: Build Angular app
         run: npx ng build --configuration production
 
       - name: Install CocoaPods
-        run: pod install
+        run: sudo gem install cocoapods && pod install
         working-directory: ios/App
 
       - name: Build iOS (unsigned)
@@ -43,7 +42,7 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
-            clean build 2>&1 | xcpretty
+            clean build
 
       - name: Create IPA
         run: |
