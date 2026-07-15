@@ -9,11 +9,11 @@ export const environment = {
   useProxy: true,
 };
 
- export const SERVER_URL: string = 'http://103.72.79.50/cs_services/';
+ export const SERVER_URL: string = 'http://server.evchargeman.com/cs_services/';
 // export const SERVER_URL: string = 'https://evchargeman.com/cs_services/';
 //export const DEVICE_SOCKET_URL: string = 'http://103.72.79.50:5679/';
-export const DEVICE_SOCKET_URL: string = 'http://103.72.79.50:5679/'; // TO BE CHANGED
-export const DEVICE_SOCKET_OCPP_URL:string = 'http://103.72.79.50:5678/charging-station/'
+export const DEVICE_SOCKET_URL: string = 'http://server.evchargeman.com:5679/';
+export const DEVICE_SOCKET_OCPP_URL:string = 'http://server.evchargeman.com:5678/charging-station/'
 export const RAZR_PAY_IFSC_URL: string = 'https://ifsc.razorpay.com/';
 export const SMS_URL: string = 'https://49.50.67.32/smsapi/jsonapi.jsp';
 
