@@ -8,6 +8,7 @@ import { ChargemanRequestService } from '../services/chargeman-request.service';
 import { Utils } from '../services/utils.service';
 import { IChargeStartStop } from './charge-start-stop-interface';
 import { DEVICE_SOCKET_OCPP_URL, DEVICE_SOCKET_URL } from 'src/environments/environment';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-charge-start-stop',
@@ -103,9 +104,10 @@ export class ChargeStartStopPage implements OnInit {
         transactionid: this.pageParams.transactionid
       }
       this.chargeReq.postRequestDetails(RELATIVE_URLS.CHARGING_SUMMARY, transaction_details).subscribe(async (res) => {
-        // let selectedDuration = await (await this.utils.getStoredDetails(KEYS.SELECTED_DURATION)).value;
-        // selectedDuration = this.utils.getDurationInHours(selectedDuration);
-        // this.startChargeDurationInterval(this.pageParams.transactionTimer, selectedDuration);
+        let storedDuration = await this.utils.getStoredDetails(KEYS.SELECTED_DURATION);
+        if (storedDuration && storedDuration.value) {
+          this.timerVal = parseInt(storedDuration.value);
+        }
         this.walletConsumed = parseFloat(res[0].consumewallet).toFixed(2);
         this.chargeVal = parseFloat(res[0].chargevalue).toFixed(2);
         this.powerVal = parseFloat(res[0].kwh).toFixed(2);
@@ -122,7 +124,8 @@ export class ChargeStartStopPage implements OnInit {
         // this.utils.storeDetails(KEYS.IS_CHARGING, 1);
         if(this.pageParams.transactionid !== undefined) {
           if(this.chargingTimer == undefined)  {
-            this.chargeStartTime = Date.now();
+            const elapsedSeconds = moment.duration(res[0].minuteago).asSeconds();
+            this.chargeStartTime = Date.now() - (elapsedSeconds * 1000);
             this.startChargeInterval(this.pageParams.transactionid);
           }
         } else {

@@ -167,16 +167,16 @@ export class MaptabPage implements OnInit {
 
    this.isMapDataLoaded = true;
    this.zoomRadius = 13.8;
-   this.mapRadius = 30;
+    this.mapRadius = 10;
 
-   this.mapObservable = this.utils.mapOptObs.subscribe((res) => {
-     if (res.type === 'widget') {
-       this.zoomRadius = res.zoom;
-       this.mapRadius = res.radius;
-     } else {
-       this.zoomRadius = 13.8;
-       this.mapRadius = 30;
-     }
+    this.mapObservable = this.utils.mapOptObs.subscribe((res) => {
+      if (res.type === 'widget') {
+        this.zoomRadius = res.zoom;
+        this.mapRadius = res.radius;
+      } else {
+        this.zoomRadius = 13.8;
+        this.mapRadius = 10;
+      }
    });
 
     this.statusText = constants.DISPLAY_MESSAGES.LOADING_MAPS_TEXT1;
@@ -265,13 +265,9 @@ export class MaptabPage implements OnInit {
   const apiKey = environment.mapsKey;
   const radiusMeters = Math.min(this.mapRadius * 1000, 50000);
   const searchKeywords = [
-    'electric vehicle charging',
     'EV charging station',
-    'car charger',
     'Tata Power',
-    'Jio-bp',
-    'Tesla',
-    'charge point'
+    'Jio-bp'
   ];
 
   console.log('=== GOOGLE PLACES API CALL ===');
@@ -284,7 +280,7 @@ export class MaptabPage implements OnInit {
 async loadGooglePlacesWithKeywords(apiKey: string, radiusMeters: number, keywords: string[]) {
   let allResults: any[] = [];
   let totalPagesLoaded = 0;
-  const maxPagesPerKeyword = 3;
+  const maxPagesPerKeyword = 1;
 
   const processResults = (data: any) => {
     if (data.status === 'OK' && data.results?.length > 0) {
@@ -307,8 +303,6 @@ async loadGooglePlacesWithKeywords(apiKey: string, radiusMeters: number, keyword
       let page = 1;
       
       while (pageToken && page < maxPagesPerKeyword) {
-        await new Promise(res => setTimeout(res, 2000));
-        
         const nextPage: any = await new Promise((resolve, reject) => {
           this.chargemanReq.getGooglePlaces(this.lat, this.lng, radiusMeters, 'electric_vehicle_charging_station', apiKey, '', pageToken).subscribe(resolve, reject);
         });
@@ -321,7 +315,6 @@ async loadGooglePlacesWithKeywords(apiKey: string, radiusMeters: number, keyword
       console.error(`Error searching keyword "${keyword}":`, err);
     }
     
-    await new Promise(res => setTimeout(res, 1000));
   }
 
   console.log(`Total raw results: ${allResults.length}`);
