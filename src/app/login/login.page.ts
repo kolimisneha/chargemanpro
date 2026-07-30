@@ -120,14 +120,6 @@ export class LoginPage implements OnInit {
             this.login2 = true;
             this.startOtpTimer();   
             this.otp = res.otp;
-            if (res.otp.toString().length === 4) {
-              setTimeout(() => {
-                this.enteredOTP = res.otp.toString();
-                setTimeout(() => {
-                  this.login();
-                }, 1000);
-              }, 3000);
-            }
           }
         }, (err) => {
           this.isLoading = false;

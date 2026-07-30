@@ -8,6 +8,7 @@ import { ChargemanRequestService } from '../services/chargeman-request.service';
 import { Utils } from '../services/utils.service';
 import { IChargeStartStop } from './charge-start-stop-interface';
 import { DEVICE_SOCKET_OCPP_URL, DEVICE_SOCKET_URL } from 'src/environments/environment';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-charge-start-stop',
@@ -66,6 +67,7 @@ export class ChargeStartStopPage implements OnInit {
   chargeStartTime: number = 0;
   isAutoCharge: boolean;
   isPollingStatus: boolean = false;
+  walletFailCounter: number = 0;
   private destroy$: Subject<void> = new Subject<void>();
   hourVal: any = '00';
   minVal: any = '00';
@@ -103,9 +105,10 @@ export class ChargeStartStopPage implements OnInit {
         transactionid: this.pageParams.transactionid
       }
       this.chargeReq.postRequestDetails(RELATIVE_URLS.CHARGING_SUMMARY, transaction_details).subscribe(async (res) => {
-        // let selectedDuration = await (await this.utils.getStoredDetails(KEYS.SELECTED_DURATION)).value;
-        // selectedDuration = this.utils.getDurationInHours(selectedDuration);
-        // this.startChargeDurationInterval(this.pageParams.transactionTimer, selectedDuration);
+        let selectedDuration = (await this.utils.getStoredDetails(KEYS.SELECTED_DURATION))?.value;
+        if (selectedDuration) {
+          this.timerVal = selectedDuration;
+        }
         this.walletConsumed = parseFloat(res[0].consumewallet).toFixed(2);
         this.chargeVal = parseFloat(res[0].chargevalue).toFixed(2);
         this.powerVal = parseFloat(res[0].kwh).toFixed(2);
@@ -291,8 +294,8 @@ export class ChargeStartStopPage implements OnInit {
       const start_body = {
         "mobile": this.storedDetails.mobile,
         "deviceid": this.pageParams.deviceid,
-        "chargedate": "2022-02-01",
-        "starttime": "12:00:00",
+        "chargedate": moment().format('YYYY-MM-DD'),
+        "starttime": moment().format('YYYY-MM-DD HH:mm:ss'),
         "duration": this.isDurationSkipped ? 0 : this.timerVal,
         "kwh": this.pageParams.rph,
         "createdby": this.storedDetails.name,
@@ -403,6 +406,14 @@ export class ChargeStartStopPage implements OnInit {
       exhaustMap(() => this.chargeReq.postRequestDetails(RELATIVE_URLS.CHECK_CHARGE, interval_body).pipe(
         catchError(err => {
           console.error('Charge interval error:', err);
+          this.walletFailCounter++;
+          if (this.walletFailCounter >= 12) {
+            this.destroy$.next();
+            this.chargeStoppedAutomatically = true;
+            this.startBlink = false;
+            this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
+            this.utils.presentToast('Wallet not responding. Charging stopped.', [], 3000);
+          }
           return of(null);
         })
       )),
@@ -410,10 +421,19 @@ export class ChargeStartStopPage implements OnInit {
     ).subscribe((res: any) => {
       if(!res || !(res.length > 0) || !res[0]) {
         console.warn('Invalid response in charge interval:', res);
+        this.walletFailCounter++;
+        if (this.walletFailCounter >= 12) {
+          this.destroy$.next();
+          this.chargeStoppedAutomatically = true;
+          this.startBlink = false;
+          this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
+          this.utils.presentToast('Wallet not responding. Charging stopped.', [], 3000);
+        }
         return;
       }
 
       this.isChargeStopped = false;
+      this.walletFailCounter = 0;
       this.storedDetails.chargeCount = '1';
       this.utils.storeDetails(KEYS.USER_DETAILS, JSON.stringify(this.storedDetails));
       console.log('Charge interval response:', res[0]);
@@ -447,19 +467,19 @@ export class ChargeStartStopPage implements OnInit {
 
         if(!this.isAutoCharge) {
           if(values.length === 0) {
-            values[0] = this.chargeVal;
+            values[0] = this.walletConsumed;
           } else {
-            values[1] = this.chargeVal;
+            values[1] = this.walletConsumed;
             if(this.compareValues(values)) {
               counter++;
-              if(counter == 30) {
+              if(counter == 12) {
                 this.destroy$.next();
                 values = []; counter = 0;
                 this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.DEVICE_INTERRUPTION_ERR, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
                 this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
               }
             } else {
-              counter = 0; values[0] = this.chargeVal;
+              counter = 0; values[0] = this.walletConsumed;
             }
           }
         }
@@ -486,10 +506,12 @@ export class ChargeStartStopPage implements OnInit {
         }
       }
 
-      if (!this.isDurationSkipped && this.chargeStartTime > 0) {
-        const elapsedSec = (Date.now() - this.chargeStartTime) / 1000;
+      if (!this.isDurationSkipped && this.timerVal > 0) {
+        const minuteago = (res[0].minuteago || '0.0').split('.')[0];
+        const parts = minuteago.split(':');
+        const serverElapsedSec = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
         const durationSec = this.timerVal * 60;
-        if (elapsedSec >= durationSec) {
+        if (serverElapsedSec >= durationSec) {
           this.destroy$.next();
           this.chargeStoppedAutomatically = true;
           this.startBlink = false;
@@ -519,6 +541,7 @@ export class ChargeStartStopPage implements OnInit {
     this.timeout = null;
     this.destroy$.next();
     this.destroy$.complete();
+    this.walletFailCounter = 0;
     clearInterval(this.chargeDurationTimerInterval)
   }
 

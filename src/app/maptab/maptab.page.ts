@@ -48,7 +48,10 @@ export class MaptabPage implements OnInit {
   busyMarker = "../../assets/icon/map_busy_icon.png";
   availableMarker = '../../assets/icon/map_available_icon.png';
   disabledMarker = '../../assets/icon/map_disabled_icon.png';
-  googleMarker = '../../assets/icon/map_google_marker.svg';
+  googleMarker = {
+    url: '../../assets/icon/map_google_marker.svg',
+    scaledSize: { width: 32, height: 32 }
+  };
 
   // Wallet properties
   walletBalance: any = '0';
@@ -167,7 +170,7 @@ export class MaptabPage implements OnInit {
 
    this.isMapDataLoaded = true;
    this.zoomRadius = 13.8;
-   this.mapRadius = 30;
+   this.mapRadius = 10;
 
    this.mapObservable = this.utils.mapOptObs.subscribe((res) => {
      if (res.type === 'widget') {
@@ -175,7 +178,7 @@ export class MaptabPage implements OnInit {
        this.mapRadius = res.radius;
      } else {
        this.zoomRadius = 13.8;
-       this.mapRadius = 30;
+       this.mapRadius = 10;
      }
    });
 
@@ -265,13 +268,9 @@ export class MaptabPage implements OnInit {
   const apiKey = environment.mapsKey;
   const radiusMeters = Math.min(this.mapRadius * 1000, 50000);
   const searchKeywords = [
-    'electric vehicle charging',
     'EV charging station',
-    'car charger',
     'Tata Power',
-    'Jio-bp',
-    'Tesla',
-    'charge point'
+    'Jio-bp'
   ];
 
   console.log('=== GOOGLE PLACES API CALL ===');
@@ -284,7 +283,7 @@ export class MaptabPage implements OnInit {
 async loadGooglePlacesWithKeywords(apiKey: string, radiusMeters: number, keywords: string[]) {
   let allResults: any[] = [];
   let totalPagesLoaded = 0;
-  const maxPagesPerKeyword = 3;
+  const maxPagesPerKeyword = 1;
 
   const processResults = (data: any) => {
     if (data.status === 'OK' && data.results?.length > 0) {
