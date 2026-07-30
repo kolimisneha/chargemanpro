@@ -465,24 +465,7 @@ export class ChargeStartStopPage implements OnInit {
           return;
         }
 
-        if(!this.isAutoCharge) {
-          if(values.length === 0) {
-            values[0] = this.walletConsumed;
-          } else {
-            values[1] = this.walletConsumed;
-            if(this.compareValues(values)) {
-              counter++;
-              if(counter == 12) {
-                this.destroy$.next();
-                values = []; counter = 0;
-                this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.DEVICE_INTERRUPTION_ERR, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
-                this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
-              }
-            } else {
-              counter = 0; values[0] = this.walletConsumed;
-            }
-          }
-        }
+
       }
 
       if(!this.isSelfCharge) {
@@ -556,6 +539,7 @@ export class ChargeStartStopPage implements OnInit {
 
   onSkipDurationHandler(event) {
     this.isDurationSkipped = event.target.checked;
+    this.isAutoCharge = event.target.checked;
   }
 
   incrementTimer() {
@@ -682,6 +666,7 @@ export class ChargeStartStopPage implements OnInit {
    */
    onAutoChargeHandler(event: any) {
     this.isAutoCharge = event.target.checked;
+    this.isDurationSkipped = event.target.checked;
   }
   
 }
