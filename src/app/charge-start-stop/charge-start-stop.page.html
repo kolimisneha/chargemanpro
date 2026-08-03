@@ -40,7 +40,10 @@
       
       <div slot-details-container>
           <ion-label slot-label>Skip duration</ion-label>
-          <ion-checkbox (ionChange)="onSkipDurationHandler($event)"></ion-checkbox>
+          <ion-checkbox 
+  [(ngModel)]="isDurationSkipped" 
+  (ionChange)="onSkipDurationHandler($event)">
+</ion-checkbox>
       </div>
 
       <div slot-details-container>

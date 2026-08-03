@@ -67,7 +67,6 @@ export class ChargeStartStopPage implements OnInit {
   chargeStartTime: number = 0;
   isAutoCharge: boolean;
   isPollingStatus: boolean = false;
-  walletFailCounter: number = 0;
   private destroy$: Subject<void> = new Subject<void>();
   hourVal: any = '00';
   minVal: any = '00';
@@ -403,37 +402,21 @@ export class ChargeStartStopPage implements OnInit {
     }
 
     this.chargingTimer = interval(10000).pipe(
-      exhaustMap(() => this.chargeReq.postRequestDetails(RELATIVE_URLS.CHECK_CHARGE, interval_body).pipe(
+exhaustMap(() => this.chargeReq.postRequestDetails(RELATIVE_URLS.CHECK_CHARGE, interval_body).pipe(
         catchError(err => {
           console.error('Charge interval error:', err);
-          this.walletFailCounter++;
-          if (this.walletFailCounter >= 12) {
-            this.destroy$.next();
-            this.chargeStoppedAutomatically = true;
-            this.startBlink = false;
-            this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
-            this.utils.presentToast('Wallet not responding. Charging stopped.', [], 3000);
-          }
           return of(null);
         })
       )),
+
       takeUntil(this.destroy$)
     ).subscribe((res: any) => {
-      if(!res || !(res.length > 0) || !res[0]) {
+if(!res || !(res.length > 0) || !res[0]) {
         console.warn('Invalid response in charge interval:', res);
-        this.walletFailCounter++;
-        if (this.walletFailCounter >= 12) {
-          this.destroy$.next();
-          this.chargeStoppedAutomatically = true;
-          this.startBlink = false;
-          this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
-          this.utils.presentToast('Wallet not responding. Charging stopped.', [], 3000);
-        }
         return;
       }
 
       this.isChargeStopped = false;
-      this.walletFailCounter = 0;
       this.storedDetails.chargeCount = '1';
       this.utils.storeDetails(KEYS.USER_DETAILS, JSON.stringify(this.storedDetails));
       console.log('Charge interval response:', res[0]);
@@ -520,14 +503,12 @@ export class ChargeStartStopPage implements OnInit {
     });
   }
 
-  ionViewWillLeave() {
+ionViewWillLeave() {
     this.timeout = null;
     this.destroy$.next();
     this.destroy$.complete();
-    this.walletFailCounter = 0;
     clearInterval(this.chargeDurationTimerInterval)
   }
-
 
   compareValues(arrayValues) {
     if(parseFloat(arrayValues[0]) === parseFloat(arrayValues[1])) {
