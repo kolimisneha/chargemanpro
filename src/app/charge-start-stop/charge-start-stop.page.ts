@@ -472,20 +472,20 @@ if(!res || !(res.length > 0) || !res[0]) {
         }
       }
 
-      if (!this.isDurationSkipped && this.timerVal > 0) {
-        const minuteago = (res[0].minuteago || '0.0').split('.')[0];
-        const parts = minuteago.split(':');
-        const serverElapsedSec = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
-        const durationSec = this.timerVal * 60;
-        if (serverElapsedSec >= durationSec) {
-          this.destroy$.next();
-          this.chargeStoppedAutomatically = true;
-          this.startBlink = false;
-          this.chargeStatusText = CHARGE_STATUS_TYPES.TIMEOUT_ERR;
-          this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
-          return;
-        }
-      }
+if (!this.isDurationSkipped && !this.isAutoCharge && this.timerVal > 0) {
+    const minuteago = (res[0].minuteago || '0.0').split('.')[0];
+    const parts = minuteago.split(':');
+    const serverElapsedSec = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+    const durationSec = this.timerVal * 60;
+  if (serverElapsedSec >= durationSec) {
+    this.destroy$.next();
+    this.chargeStoppedAutomatically = true;
+    this.startBlink = false;
+    this.chargeStatusText = CHARGE_STATUS_TYPES.TIMEOUT_ERR;
+    this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
+    return;
+  }
+}
 
       if(device_status === 'stopped' && deviceProtocol.toLowerCase() === "ocpp") {
         this.destroy$.next();
