@@ -6,7 +6,6 @@ export const environment = {
   production: false,
   mapsKey: 'AIzaSyDHEXL-Lz053W9F-3rkjulmcigkfd9GBcE',
   razorpay_key: 'rzp_live_JncRuMt5pzKhOn',
-  useProxy: true,
 };
 
  export const SERVER_URL: string = 'http://server.evchargeman.com/cs_services/';

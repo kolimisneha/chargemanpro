@@ -165,27 +165,34 @@ export class HometabPage implements OnInit {
 
 
   async openChargeStartStopPage() {
-    let updatedDetails = await this.utils.getStoredUserDetails();
-    let deviceDetails = await (await this.utils.getStoredDetails(constants.KEYS.DEVICE_DETAILS)).value ?? updatedDetails.rph;
-    let chargeCount = updatedDetails.chargeCount;
-    let transactionid = updatedDetails.transactionid;
-    let deviceid = updatedDetails.deviceid
-    let devicetype = await (await this.utils.getStoredDetails(constants.KEYS.DEVICE_DETAILS)).value ?? updatedDetails.devicetype;
-    
-    const chargerDetails = {
-      chargeCount: chargeCount,
-      transactionid: transactionid,
-      rph: JSON.parse(deviceDetails).rph ?? deviceDetails,
-      deviceid: deviceid,
-      devicetype: JSON.parse(devicetype).devicetype ?? devicetype
-      //devicetype: "ocpp"
-    }
+    try {
+      const updatedDetails = await this.utils.getStoredUserDetails();
+      const storedDeviceValue = (await this.utils.getStoredDetails(constants.KEYS.DEVICE_DETAILS))?.value;
+      let storedDeviceDetails: any = {};
+      if (storedDeviceValue) {
+        try {
+          storedDeviceDetails = JSON.parse(storedDeviceValue);
+        } catch (e) {
+          console.error('Invalid stored device details:', e);
+        }
+      }
+      const chargerDetails = {
+        chargeCount: updatedDetails.chargeCount,
+        transactionid: updatedDetails.transactionid,
+        rph: storedDeviceDetails.rph ?? updatedDetails.rph,
+        deviceid: storedDeviceDetails.deviceid ?? updatedDetails.deviceid,
+        devicetype: storedDeviceDetails.devicetype ?? updatedDetails.devicetype
+      }
     const chargeDetails: NavigationExtras = {
       state: {
         charge_details: chargerDetails
       }
     }
     this.utils.navigateTo(constants.KEYS.NAV_FORWARD_WITH_OPT, '/charge-start-stop', chargeDetails)
+    } catch (e) {
+      console.error('Failed to open charge page:', e);
+      this.utils.presentToast(constants.DISPLAY_MESSAGES.DISPLAY_PROCESS_ERR, [], 3000);
+    }
   }
 
   ionViewDidLeave() {

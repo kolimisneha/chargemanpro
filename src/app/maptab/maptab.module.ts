@@ -10,14 +10,17 @@ import { MaptabPage } from './maptab.page';
 import { AgmMap, AgmMarker } from '@agm/core';
 import { LoadingComponentComponent } from 'src/components/loading-component/loading-component.component';
 
+import { AgmCoreModule } from '@agm/core';
+
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
     MaptabPageRoutingModule,
+    AgmCoreModule
   ],
-  declarations: [MaptabPage, AgmMap, AgmMarker, LoadingComponentComponent],
+  declarations: [MaptabPage, LoadingComponentComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MaptabPageModule {}

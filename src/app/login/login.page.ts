@@ -32,7 +32,7 @@ export class LoginPage implements OnInit {
   otpValidationLoading: boolean = false;
   showOtpValidationProgress: boolean = false;
   otpValidationStatusText: string = '';
-  selectedCCID: string = "+00";
+  selectedCCID: string = "+91";
   countryCodes: any = [];
   constructor(
     private router: Router,
@@ -217,11 +217,23 @@ export class LoginPage implements OnInit {
 /**
  * Resetting values
  */
-  ionViewWillEnter() {
+  async ionViewWillEnter() {
     this.login1 = true;
     this.login2 = false;
     this.enteredMobileNumber = '';
     this.enteredOTP = '';
+
+    // If a persistent login flag exists, skip the login screen entirely.
+    // This guards against the startup navigation race where the router
+    // lands on /login before the auth check has finished.
+    const authState = this.auth.isAuthenticated();
+    const loggedIn = await this.auth.isLoggedIn();
+    if (loggedIn || authState) {
+      if (!authState) {
+        this.auth.setLoginFlag();
+      }
+      this.navCtrl.navigateRoot(['/pages']);
+    }
   }
 
   onKeypress(event, type) {

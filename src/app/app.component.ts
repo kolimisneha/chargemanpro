@@ -24,48 +24,16 @@ import { Capacitor } from '@capacitor/core';
 export class AppComponent {
   @ViewChild(IonRouterOutlet, {static: true}) routerOutlet: IonRouterOutlet;
 
-  constructor(private authService: Authentication, private navController: NavController, private platform: Platform, private menuCtrl: MenuController, 
-              private utils: Utils, private chargeReq: ChargemanRequestService ,private location: Location, private insomnia: Insomnia, private router: Router, private screenOrientation: ScreenOrientation, private appVersion: AppVersion) {
-  this.platform.ready().then(async () => {
-      let appversion = await this.appVersion.getVersionNumber();
-      
-      this.chargeReq.getRequestDetails(RELATIVE_URLS.GET_APP_VERSION).subscribe((res: any) => {
-        
-        if(res && res.updatedversion) {
-     
-          if(parseFloat(res.updatedversion) > parseFloat(appversion)) {
-            const platform = Capacitor.getPlatform();
-            const platfromText = platform === 'android' ? DISPLAY_MESSAGES.VERSION_TEXT_PLAYSTORE : platform === 'ios' ? DISPLAY_MESSAGES.VERSION_TEXT_APPSTORE : '';
-            const buttonOkText = platform === 'android' ? DISPLAY_MESSAGES.GO_TO_PLAYSTORE : platform === 'ios' ? DISPLAY_MESSAGES.GO_TO_APPSTORE : '';
-            this.utils.displayDialog(KEYS.DIALOG_TYPE_PROMPT, DISPLAY_MESSAGES.DIALOG_TITLE_INFO, DISPLAY_MESSAGES.APP_VERSION_UPDATE_TEXT+' '+platfromText,[buttonOkText, DISPLAY_MESSAGES.BUTTON_TEXT_CANCEL]).then((res) => {
-              if(res === 1) {
-                if(platform === 'android') {
-                  this.utils.openWebSite('play.google.com/store/apps/details?id=com.chargeman.app', KEYS.URL_TYPE_EXTERNAL)
-                } else {
-                 this.utils.openWebSite('itms-apps://itunes.apple.com/app/', KEYS.URL_TYPE_INTERNAL);
-                }
-              } else {
-                this.initializeApp();
-                this.registerBackButton();
-                this.insomnia.keepAwake();
-              }
-            })
-          } else {
-              this.initializeApp();
-              this.registerBackButton();
-              this.insomnia.keepAwake();
-          }
-        } else {
-              this.initializeApp();
-              this.registerBackButton();
-              this.insomnia.keepAwake();
-        }
-      }, () => {
-          this.initializeApp();
-          this.registerBackButton();
-          this.insomnia.keepAwake();
-      })
-      
+  constructor(private authService: Authentication, private navController: NavController, private platform: Platform, private menuCtrl: MenuController,
+            private utils: Utils, private chargeReq: ChargemanRequestService, private location: Location, private insomnia: Insomnia, private router: Router, private screenOrientation: ScreenOrientation, private appVersion: AppVersion) {
+  this.platform.ready().then(() => {
+      // Initialize the app immediately so navigation works without waiting for network/plugin version calls
+      this.initializeApp();
+      this.registerBackButton();
+      this.insomnia.keepAwake();
+
+      // Check app version asynchronously in the background
+      this.checkAppVersion();
   })
 }
 
@@ -94,6 +62,34 @@ registerBackButton() {
   })
 }
 
+async checkAppVersion() {
+  try {
+    let appversion = await this.appVersion.getVersionNumber();
+    this.chargeReq.getRequestDetails(RELATIVE_URLS.GET_APP_VERSION).subscribe((res: any) => {
+      if(res && res.updatedversion) {
+        if(parseFloat(res.updatedversion) > parseFloat(appversion)) {
+          const platform = Capacitor.getPlatform();
+          const platfromText = platform === 'android' ? DISPLAY_MESSAGES.VERSION_TEXT_PLAYSTORE : platform === 'ios' ? DISPLAY_MESSAGES.VERSION_TEXT_APPSTORE : '';
+          const buttonOkText = platform === 'android' ? DISPLAY_MESSAGES.GO_TO_PLAYSTORE : platform === 'ios' ? DISPLAY_MESSAGES.GO_TO_APPSTORE : '';
+          this.utils.displayDialog(KEYS.DIALOG_TYPE_PROMPT, DISPLAY_MESSAGES.DIALOG_TITLE_INFO, DISPLAY_MESSAGES.APP_VERSION_UPDATE_TEXT+' '+platfromText,[buttonOkText, DISPLAY_MESSAGES.BUTTON_TEXT_CANCEL]).then((res) => {
+            if(res === 1) {
+              if(platform === 'android') {
+                this.utils.openWebSite('play.google.com/store/apps/details?id=com.chargeman.app', KEYS.URL_TYPE_EXTERNAL)
+              } else {
+                this.utils.openWebSite('itms-apps://itunes.apple.com/app/', KEYS.URL_TYPE_INTERNAL);
+              }
+            }
+          })
+        }
+      }
+    }, (err) => {
+      console.error("App version check request failed:", err);
+    });
+  } catch(e) {
+    console.error("Failed to get local app version number:", e);
+  }
+}
+
   async initializeApp() {
     setTimeout(() => {
       SplashScreen.hide();
@@ -110,13 +106,30 @@ registerBackButton() {
     //   'API_KEY_FOR_BROWSER_DEBUG': 'AIzaSyA_gSzPNC40ioDPHIb7kMkYFClDihdhhx4'
     // });
     await this.authService.authReady;
-    this.authService.authState.subscribe((res) => {
-      if(res) {
-        this.navController.navigateRoot(['/pages'])
+    // Directly check stored login flag to decide navigation
+    const isLoggedIn = await this.authService.isLoggedIn();
+    if (isLoggedIn) {
+      this.navController.navigateRoot(['/pages']).catch(err => {
+        console.error('Navigation to /pages failed: ' + err.message);
+      });
+    } else {
+      this.navController.navigateRoot(['']).catch(err => {
+        console.error('Navigation to login failed: ' + err.message);
+      });
+    }
+    // Also keep subscription for any future auth state changes
+    this.authService.authState.subscribe(res => {
+      // If auth state changes after app init, navigate accordingly
+      if (res) {
+        this.navController.navigateRoot(['/pages']).catch(err => {
+          console.error('Auth state change navigation to /pages failed: ' + err.message);
+        });
       } else {
-        this.navController.navigateRoot(['']);
+        this.navController.navigateRoot(['']).catch(err => {
+          console.error('Auth state change navigation to login failed: ' + err.message);
+        });
       }
-    })
+    });
 
     Network.addListener('networkStatusChange', status => {
       if(status.connected === false) {

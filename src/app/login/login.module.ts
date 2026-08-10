@@ -11,6 +11,8 @@ import { HeaderComponent } from 'src/components/header/header.component';
 import { LoadingComponentComponent } from 'src/components/loading-component/loading-component.component';
 import { CountryPickerModalComponent } from './country-picker-modal/country-picker-modal.component';
 
+import { SharedModule } from '../shared/shared.module';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -18,9 +20,10 @@ import { CountryPickerModalComponent } from './country-picker-modal/country-pick
     IonicModule,
     LoginPageRoutingModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    SharedModule
   ],
-  declarations: [LoginPage, LoadingComponentComponent, CountryPickerModalComponent],
+  declarations: [LoginPage, CountryPickerModalComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class LoginPageModule {}

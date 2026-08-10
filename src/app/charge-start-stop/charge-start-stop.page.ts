@@ -545,47 +545,69 @@ ionViewWillLeave() {
     const details = {
       transactionid: transactionId,
     }
-    this.startChargeReq = this.chargeReq.postRequestDetails(RELATIVE_URLS.CHARGING_STATUS,details).subscribe((res: any) => {
-      if(res[0].status.toUpperCase() === 'REQUESTED') {
+    this.startChargeReq = this.chargeReq.postRequestDetails(RELATIVE_URLS.CHARGING_STATUS, details).subscribe((res: any) => {
+      if (res[0].status.toUpperCase() === 'REQUESTED') {
         this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_PROCESSING;
-        this.isPollingStatus = false;
-        this.getChargingStatus(transactionId);
         this.isChargeStarted = true;
         this.isChargeStopped = false;
         this.startBlink = true;
         this.chargingStatus = false;
         this.isStartButtonDisabled = false;
         this.isStopButtonDisabled = true;
-        if(this.timeout == null || this.timeout == undefined) { 
-        this.timeout = setTimeout(() => {
-          this.isTimedout = true;
-        }, this.timerVal * 60000)
+
+        // BUG FIX 1: Use a fixed 30-second device-acceptance timeout.
+        // Previously used `timerVal * 60000` which is the user's chosen
+        // CHARGE DURATION (e.g. 5 min). That caused the session to be
+        // killed after 5 min even during active charging, because
+        // isTimedout became true while still in the REQUESTED polling loop.
+        if (this.timeout == null || this.timeout == undefined) {
+          this.timeout = setTimeout(() => {
+            this.isTimedout = true;
+          }, 30000); // 30 seconds for device to accept the start command
         }
-        if(this.isTimedout) {
+
+        if (this.isTimedout) {
           this.timeout = null;
-          this.startChargeReq.unsubscribe();
+          if (this.startChargeReq) { this.startChargeReq.unsubscribe(); }
           this.isChargeStarted = false;
           this.isChargeStopped = true;
           this.chargingStatus = false;
           this.isStartButtonDisabled = false;
           this.isStopButtonDisabled = true;
           this.isTimedout = false;
+          this.isPollingStatus = false;
           this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
           this.chargeStoppedAutomatically = true;
           this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.DEVICE_TIME_OUT_ERR, DISPLAY_MESSAGES.DEVICE_TIME_OUT_ERR_TEXT, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
+          return;
         }
+
+        // BUG FIX 2: Wait 3 seconds before the next status check.
+        // Previously the recursive call was immediate (no delay), causing
+        // rapid-fire HTTP requests that hammered the server and created
+        // race conditions with the acceptance timeout.
+        this.isPollingStatus = false;
+        setTimeout(() => {
+          this.getChargingStatus(transactionId);
+        }, 3000);
+
       } else {
+        // Clear the acceptance timeout — device responded
+        if (this.timeout) {
+          clearTimeout(this.timeout);
+          this.timeout = null;
+        }
+        this.isTimedout = false;
         this.chargingStatus = true;
-        if(res[0].status.toUpperCase() === 'ACCEPTED') {
+
+        if (res[0].status.toUpperCase() === 'ACCEPTED') {
           this.isChargeStarted = true;
           this.isChargeStopped = false;
           this.startBlink = true;
           this.chargingStatus = true;
           this.isStopButtonDisabled = false;
-          this.isTimedout = false;
-          this.timeout = null;
           this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_CHARGING;
-          this.utils.presentToast(DISPLAY_MESSAGES.START_CHARGE_SUCCESS,[], 4000);
+          this.utils.presentToast(DISPLAY_MESSAGES.START_CHARGE_SUCCESS, [], 4000);
           this.utils.storeDetails(KEYS.CHARGE_STATUS, KEYS.CHARGE_CHARGING);
           if (!this.chargingTimer || this.chargingTimer.closed) {
             this.chargeStartTime = Date.now();
@@ -596,22 +618,21 @@ ionViewWillLeave() {
           this.isChargeStarted = false;
           this.isChargeStopped = true;
           this.isStartButtonDisabled = false;
-          this.timeout = null;
           this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_ERR;
           this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.DEVICE_COMM_ERR, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
           this.stopCharging(CHARGE_STATUS_TYPES.DEVICE_ERR);
-          this.utils.navigateTo(KEYS.NAV_FORWARD, '/charge-glance')
+          this.utils.navigateTo(KEYS.NAV_FORWARD, '/charge-glance');
         }
         this.isPollingStatus = false;
       }
     }, (err) => {
-        this.isPollingStatus = false;
-        this.isChargeStarted = false;
-        this.isChargeStopped = true;
-        this.chargingStatus = false;
-        this.isStartButtonDisabled = false;
-        this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.STOP_CHARGE_ERR, [DISPLAY_MESSAGES.BUTTON_TEXT_OK])
-    })
+      this.isPollingStatus = false;
+      this.isChargeStarted = false;
+      this.isChargeStopped = true;
+      this.chargingStatus = false;
+      this.isStartButtonDisabled = false;
+      this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.STOP_CHARGE_ERR, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
+    });
   }
 
 
