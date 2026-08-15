@@ -19,9 +19,9 @@ jobs:
   build:
     runs-on: macos-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v5
         with:
           node-version: 18
 
@@ -73,7 +73,7 @@ jobs:
 
       - name: Save generated signing files for reuse (first run only)
         if: env.APP_STORE_CERT_P12 == ''
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: apple-signing-files
           path: ${{ runner.temp }}/certs_out
@@ -86,7 +86,7 @@ jobs:
           fastlane release
 
       - name: Upload .ipa artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: EVChargeMan.ipa
           path: ios/build/*.ipa
