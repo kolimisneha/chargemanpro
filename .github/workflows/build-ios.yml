@@ -32,7 +32,9 @@ jobs:
         run: |
           npm run build -- --prod
           npx cap add ios
-          sed -i '' "s/platform :ios, '12.0'/platform :ios, '14.0'/" ios/App/Podfile
+          cp fastlane/ios-Podfile.template ios/App/Podfile
+          sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = 12.0/IPHONEOS_DEPLOYMENT_TARGET = 15.0/g" ios/App/App.xcodeproj/project.pbxproj
+          grep "platform :ios" ios/App/Podfile
           npx cap sync ios
 
       - name: Set up Fastlane
