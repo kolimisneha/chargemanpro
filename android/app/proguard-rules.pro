@@ -19,3 +19,38 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Do not shrink, obfuscate, or optimize the app code. R8 still runs and
+# produces the mapping.txt file that Play Console requires, while the app
+# binary stays byte-for-byte behaviorally identical.
+-dontshrink
+-dontobfuscate
+-dontoptimize
+-dontpreverify
+
+-keepattributes SourceFile,LineNumberTable
+
+# Suppress warnings for classes referenced by Cordova/Capacitor plugins
+# that are resolved only at runtime.
+-dontwarn com.google.android.gms.**
+-dontwarn com.google.firebase.**
+-dontwarn com.razorpay.**
+-dontwarn com.squareup.**
+-dontwarn org.apache.cordova.**
+-dontwarn androidx.**
+-dontwarn javax.**
+-dontwarn kotlin.**
+-dontwarn okhttp3.**
+-dontwarn retrofit2.**
+-dontwarn io.branch.**
+-dontwarn com.android.volley.**
+-dontwarn uk.co.workingedge.**
+-dontwarn com.hp.**
+-dontwarn org.jetbrains.**
+-dontwarn com.google.maps.**
+-dontwarn com.getcapacitor.**
+-dontwarn com.ionicframework.**
+-dontwarn com.github.**
+-dontwarn org.apache.commons.**
+-dontwarn org.json.**
+-dontwarn android.**
