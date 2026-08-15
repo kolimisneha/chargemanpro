@@ -34,7 +34,13 @@ jobs:
           npx cap add ios
           cp fastlane/ios-Podfile.template ios/App/Podfile
           sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = 12.0/IPHONEOS_DEPLOYMENT_TARGET = 15.0/g" ios/App/App.xcodeproj/project.pbxproj
+          echo "=== Podfile platform line (must be 15.0): ==="
           grep "platform :ios" ios/App/Podfile
+          echo "=== Podfile head: ==="
+          head -3 ios/App/Podfile
+          echo "=== pbxproj deployment targets: ==="
+          grep "IPHONEOS_DEPLOYMENT_TARGET" ios/App/App.xcodeproj/project.pbxproj
+          test "$(grep -c 'platform :ios, .15.0.' ios/App/Podfile)" = "1" || { echo "FAIL: Podfile platform is not 15.0"; exit 1; }
           npx cap sync ios
 
       - name: Set up Fastlane
