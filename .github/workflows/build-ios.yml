@@ -30,12 +30,15 @@ jobs:
       - name: Install npm dependencies
         run: npm install
 
-      - name: Build web app and add iOS platform
+      - name: Build web app
+        run: npm run build -- --prod
+
+      - name: Add iOS platform
+        run: npx cap add ios
+
+      - name: Force deployment target 15.0 and verify
         run: |
           echo "WORKFLOW_COMMIT=$(git rev-parse --short HEAD)"
-          echo "=== expected: echo/template lines appear ONLY if workflow >= 3e3fc86 ==="
-          npm run build -- --prod
-          npx cap add ios
           cp fastlane/ios-Podfile.template ios/App/Podfile
           sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = 12.0/IPHONEOS_DEPLOYMENT_TARGET = 15.0/g" ios/App/App.xcodeproj/project.pbxproj
           echo "=== Podfile platform line (must be 15.0): ==="
@@ -45,9 +48,19 @@ jobs:
           echo "=== pbxproj deployment targets: ==="
           grep "IPHONEOS_DEPLOYMENT_TARGET" ios/App/App.xcodeproj/project.pbxproj
           test "$(grep -c 'platform :ios, .15.0.' ios/App/Podfile)" = "1" || { echo "FAIL: Podfile platform is not 15.0"; exit 1; }
-          npx cap sync ios
 
-      - name: Upload Podfile for inspection (runs even on failure)
+      - name: Sync iOS (pod install)
+        run: npx cap sync ios
+
+      - name: Dump Podfile state after sync (runs even on failure)
+        if: always()
+        run: |
+          echo "=== Podfile content at end of run: ==="
+          cat ios/App/Podfile
+          echo "=== pbxproj deployment targets: ==="
+          grep "IPHONEOS_DEPLOYMENT_TARGET" ios/App/App.xcodeproj/project.pbxproj
+
+      - name: Upload debug files (runs even on failure)
         if: always()
         uses: actions/upload-artifact@v5
         with:
