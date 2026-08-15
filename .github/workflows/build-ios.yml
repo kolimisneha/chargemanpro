@@ -32,6 +32,8 @@ jobs:
 
       - name: Build web app and add iOS platform
         run: |
+          echo "WORKFLOW_COMMIT=$(git rev-parse --short HEAD)"
+          echo "=== expected: echo/template lines appear ONLY if workflow >= 3e3fc86 ==="
           npm run build -- --prod
           npx cap add ios
           cp fastlane/ios-Podfile.template ios/App/Podfile
