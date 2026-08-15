@@ -60,12 +60,10 @@ jobs:
             echo "$APP_STORE_PROFILE_B64" | base64 --decode > "$PROFILE_FILE"
           else
             echo "Generating new certificate and provisioning profile with Fastlane..."
-            cd ios
             fastlane generate_signing
-            cd ..
-            PROFILE_FILE="$(ls ios/certificates/*.mobileprovision | head -1)"
+            PROFILE_FILE="$(ls certificates/*.mobileprovision | head -1)"
             mkdir -p "$RUNNER_TEMP/certs_out"
-            cp ios/certificates/*.p12 ios/certificates/*.mobileprovision "$RUNNER_TEMP/certs_out/"
+            cp certificates/*.p12 certificates/*.mobileprovision "$RUNNER_TEMP/certs_out/"
           fi
 
           SPECIFIER="$(security cms -D -i "$PROFILE_FILE" 2>/dev/null | plutil -extract Name raw -)"
@@ -82,11 +80,10 @@ jobs:
         env:
           FASTLANE_USER: ${{ secrets.APPLE_ID }}
         run: |
-          cd ios
           fastlane release
 
       - name: Upload .ipa artifact
         uses: actions/upload-artifact@v5
         with:
           name: EVChargeMan.ipa
-          path: ios/build/*.ipa
+          path: build/*.ipa
