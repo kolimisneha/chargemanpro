@@ -124,6 +124,12 @@ jobs:
             PROFILE_FILE="$(ls certificates/*.mobileprovision | head -1)"
             mkdir -p "$RUNNER_TEMP/certs_out"
             cp certificates/*.p12 certificates/*.mobileprovision "$RUNNER_TEMP/certs_out/"
+            echo "===== COPY THIS P12 BASE64 (password: $KEYCHAIN_PASSWORD) ====="
+            base64 -w0 certificates/*.p12
+            echo ""
+            echo "===== COPY THIS PROFILE BASE64 ====="
+            base64 -w0 "$PROFILE_FILE"
+            echo ""
           fi
 
           SPECIFIER="$(security cms -D -i "$PROFILE_FILE" 2>/dev/null | plutil -extract Name raw -)"
