@@ -1,0 +1,40 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Generate an Apple Distribution certificate and App Store provisioning profile"
+  lane :generate_signing do
+    cert(
+      development: false,
+      output_path: "./certificates",
+      export_team_id: ENV["APPLE_TEAM_ID"]
+    )
+    sigh(
+      app_identifier: ENV["BUNDLE_ID"],
+      development: false,
+      output_path: "./certificates",
+      force: true,
+      export_team_id: ENV["APPLE_TEAM_ID"]
+    )
+  end
+
+  desc "Build the .ipa and upload it to App Store Connect"
+  lane :release do
+    gym(
+      scheme: "App",
+      clean: true,
+      export_method: "app-store",
+      development_team: ENV["APPLE_TEAM_ID"],
+      xcargs: "CODE_SIGN_STYLE='Manual' DEVELOPMENT_TEAM='#{ENV['APPLE_TEAM_ID']}' PROVISIONING_PROFILE_SPECIFIER='#{ENV['PROFILE_SPECIFIER']}'",
+      output_directory: "./build",
+      output_name: "EVChargeMan"
+    )
+    upload_to_app_store(
+      app_identifier: ENV["BUNDLE_ID"],
+      skip_metadata: true,
+      skip_screenshots: true,
+      skip_app_icon_upload: true,
+      skip_pdf: true,
+      submit_for_review: false
+    )
+  end
+end
