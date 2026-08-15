@@ -3,6 +3,14 @@ default_platform(:ios)
 platform :ios do
   desc "List all apps and their bundle IDs in App Store Connect"
   lane :list_apps do
+    token = Spaceship::ConnectAPI::Token.create(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+      key: ENV["APP_STORE_CONNECT_API_KEY_KEY"],
+      is_key_content_base64: true,
+      in_house: false
+    )
+    Spaceship::ConnectAPI.client = Spaceship::ConnectAPI::Client.new(token: token)
     Spaceship::ConnectAPI::App.all.each do |app|
       UI.message("#{app.name} | BUNDLE_ID=#{app.bundle_id} | SKU=#{app.sku}")
     end
