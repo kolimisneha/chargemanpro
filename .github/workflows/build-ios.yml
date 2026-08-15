@@ -9,7 +9,7 @@ on:
       - 'v*'
 
 env:
-  BUNDLE_ID: com.chargeman.app
+  BUNDLE_ID: evchargeman.io
   APPLE_ID: ${{ secrets.APPLE_ID || 'director@evgracias.com' }}
   APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID || 'QDG4B42LM2' }}
   FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
@@ -92,9 +92,6 @@ jobs:
         run: |
           if ! command -v fastlane &>/dev/null; then gem install fastlane -NV; fi
           fastlane --version
-
-      - name: List App Store Connect apps
-        run: fastlane list_apps
 
       - name: Install signing identity (or generate a new one)
         env:
