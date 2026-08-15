@@ -33,6 +33,20 @@ jobs:
       - name: Build web app
         run: npm run build -- --prod
 
+      - name: Patch Capacitor iOS template to iOS 15
+        run: |
+          set -e
+          ARCH="$RUNNER_TEMP/ios-template"
+          mkdir -p "$ARCH"
+          cd node_modules/@capacitor/cli/assets
+          tar xzf ios-template.tar.gz -C "$ARCH"
+          sed -i '' "s/platform :ios, '12.0'/platform :ios, '15.0'/" "$ARCH/App/Podfile"
+          sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = 12.0/IPHONEOS_DEPLOYMENT_TARGET = 15.0/g" "$ARCH/App/App.xcodeproj/project.pbxproj"
+          grep -n "platform :ios" "$ARCH/App/Podfile"
+          grep -c "IPHONEOS_DEPLOYMENT_TARGET = 15.0" "$ARCH/App/App.xcodeproj/project.pbxproj"
+          tar czf ios-template.tar.gz -C "$ARCH" .
+          echo "template patched to iOS 15"
+
       - name: Add iOS platform
         run: npx cap add ios
 
