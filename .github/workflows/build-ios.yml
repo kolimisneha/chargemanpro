@@ -13,6 +13,9 @@ env:
   APPLE_ID: ${{ secrets.APPLE_ID || 'director@evgracias.com' }}
   APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID || 'QDG4B42LM2' }}
   FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
+  APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.ASC_API_KEY_ID }}
+  APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
+  APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.ASC_API_KEY }}
   APP_STORE_CERT_P12: ${{ secrets.APP_STORE_CERT_P12 }}
   APP_STORE_CERT_P12_PASSWORD: ${{ secrets.APP_STORE_CERT_P12_PASSWORD }}
   APP_STORE_PROFILE_B64: ${{ secrets.APP_STORE_PROFILE_B64 }}
@@ -94,8 +97,8 @@ jobs:
           FASTLANE_USER: ${{ secrets.APPLE_ID }}
         run: |
           set -e
-          if [ -z "$FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD" ]; then
-            echo "::error::Missing APPLE_APP_SPECIFIC_PASSWORD secret. Add it under Settings -> Secrets and variables -> Actions."
+          if [ -z "$APP_STORE_CONNECT_API_KEY_KEY_ID" ] || [ -z "$APP_STORE_CONNECT_API_KEY_ISSUER_ID" ] || [ -z "$APP_STORE_CONNECT_API_KEY_KEY" ]; then
+            echo "::error::Missing App Store Connect API key secrets (ASC_API_KEY_ID, ASC_API_ISSUER_ID, ASC_API_KEY). Create an API key at appstoreconnect.apple.com -> Users and Access -> Integrations -> App Store Connect API, then add these 3 repo secrets."
             exit 1
           fi
           KEYCHAIN="$RUNNER_TEMP/build.keychain"

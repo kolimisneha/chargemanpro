@@ -6,14 +6,26 @@ platform :ios do
     cert(
       development: false,
       output_path: "./certificates",
-      team_id: ENV["APPLE_TEAM_ID"]
+      team_id: ENV["APPLE_TEAM_ID"],
+      api_key: {
+        key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+        issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+        key: ENV["APP_STORE_CONNECT_API_KEY_KEY"],
+        is_key_content_base64: true
+      }
     )
     sigh(
       app_identifier: ENV["BUNDLE_ID"],
       development: false,
       output_path: "./certificates",
       force: true,
-      team_id: ENV["APPLE_TEAM_ID"]
+      team_id: ENV["APPLE_TEAM_ID"],
+      api_key: {
+        key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+        issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+        key: ENV["APP_STORE_CONNECT_API_KEY_KEY"],
+        is_key_content_base64: true
+      }
     )
   end
 
@@ -34,7 +46,13 @@ platform :ios do
       skip_screenshots: true,
       skip_app_icon_upload: true,
       skip_pdf: true,
-      submit_for_review: false
+      submit_for_review: false,
+      api_key: {
+        key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+        issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+        key: ENV["APP_STORE_CONNECT_API_KEY_KEY"],
+        is_key_content_base64: true
+      }
     )
   end
 end
