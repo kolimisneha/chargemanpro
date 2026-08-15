@@ -93,6 +93,9 @@ jobs:
           if ! command -v fastlane &>/dev/null; then gem install fastlane -NV; fi
           fastlane --version
 
+      - name: List App Store Connect apps
+        run: fastlane list_apps
+
       - name: Install signing identity (or generate a new one)
         env:
           FASTLANE_USER: ${{ secrets.APPLE_ID }}

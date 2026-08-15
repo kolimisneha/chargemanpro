@@ -1,6 +1,13 @@
 default_platform(:ios)
 
 platform :ios do
+  desc "List all apps and their bundle IDs in App Store Connect"
+  lane :list_apps do
+    Spaceship::ConnectAPI::App.all.each do |app|
+      UI.message("#{app.name} | BUNDLE_ID=#{app.bundle_id} | SKU=#{app.sku}")
+    end
+  end
+
   desc "Generate an Apple Distribution certificate and App Store provisioning profile"
   lane :generate_signing do
     cert(
