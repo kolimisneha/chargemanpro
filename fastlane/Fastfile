@@ -6,14 +6,14 @@ platform :ios do
     cert(
       development: false,
       output_path: "./certificates",
-      export_team_id: ENV["APPLE_TEAM_ID"]
+      team_id: ENV["APPLE_TEAM_ID"]
     )
     sigh(
       app_identifier: ENV["BUNDLE_ID"],
       development: false,
       output_path: "./certificates",
       force: true,
-      export_team_id: ENV["APPLE_TEAM_ID"]
+      team_id: ENV["APPLE_TEAM_ID"]
     )
   end
 
