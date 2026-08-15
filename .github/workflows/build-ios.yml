@@ -94,7 +94,7 @@ jobs:
           FASTLANE_USER: ${{ secrets.APPLE_ID }}
         run: |
           set -e
-          if [ -z "$FASTLANE_PASSWORD" ]; then
+          if [ -z "$FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD" ]; then
             echo "::error::Missing APPLE_APP_SPECIFIC_PASSWORD secret. Add it under Settings -> Secrets and variables -> Actions."
             exit 1
           fi
