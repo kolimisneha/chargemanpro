@@ -96,6 +96,7 @@ jobs:
       - name: Install signing identity (or generate a new one)
         env:
           FASTLANE_USER: ${{ secrets.APPLE_ID }}
+          KEYCHAIN_PASSWORD: build
         run: |
           set -e
           if [ -z "$APP_STORE_CONNECT_API_KEY_KEY_ID" ] || [ -z "$APP_STORE_CONNECT_API_KEY_ISSUER_ID" ] || [ -z "$APP_STORE_CONNECT_API_KEY_KEY" ]; then
@@ -103,21 +104,22 @@ jobs:
             exit 1
           fi
           KEYCHAIN="$RUNNER_TEMP/build.keychain"
+          security create-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security default-keychain -s "$KEYCHAIN"
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+          security set-keychain-settings -lut 21600 "$KEYCHAIN"
 
           if [ -n "$APP_STORE_CERT_P12" ]; then
             echo "Reusing existing certificate and provisioning profile from secrets."
             echo "$APP_STORE_CERT_P12" | base64 --decode > "$RUNNER_TEMP/cert.p12"
-            security create-keychain -p "" "$KEYCHAIN"
-            security default-keychain -s "$KEYCHAIN"
-            security unlock-keychain -p "" "$KEYCHAIN"
-            security set-keychain-settings -lut 21600 "$KEYCHAIN"
-            security import "$RUNNER_TEMP/cert.p12" -k "$KEYCHAIN" -P "$APP_STORE_CERT_P12_PASSWORD" -T /usr/bin/codesign
-            security set-key-partition-list -S apple-tool:,apple: -s -k "" "$KEYCHAIN"
+            security import "$RUNNER_TEMP/cert.p12" -k "$KEYCHAIN" -P "${APP_STORE_CERT_P12_PASSWORD:-$KEYCHAIN_PASSWORD}" -T /usr/bin/codesign
+            security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
             mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
             PROFILE_FILE="$HOME/Library/MobileDevice/Provisioning Profiles/EVChargeMan_AppStore.mobileprovision"
             echo "$APP_STORE_PROFILE_B64" | base64 --decode > "$PROFILE_FILE"
           else
             echo "Generating new certificate and provisioning profile with Fastlane..."
+            export KEYCHAIN_PATH="$KEYCHAIN"
             fastlane generate_signing
             PROFILE_FILE="$(ls certificates/*.mobileprovision | head -1)"
             mkdir -p "$RUNNER_TEMP/certs_out"

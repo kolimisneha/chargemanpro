@@ -7,6 +7,8 @@ platform :ios do
       development: false,
       output_path: "./certificates",
       team_id: ENV["APPLE_TEAM_ID"],
+      keychain_path: ENV["KEYCHAIN_PATH"],
+      keychain_password: ENV["KEYCHAIN_PASSWORD"],
       api_key: {
         key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
         issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
