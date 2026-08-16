@@ -86,7 +86,7 @@ jobs:
           path: |
             ios/App/Podfile
             ios/App/App.xcodeproj/project.pbxproj
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Set up Fastlane
         run: |
@@ -108,23 +108,30 @@ jobs:
           security default-keychain -s "$KEYCHAIN"
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
           security set-keychain-settings -lut 21600 "$KEYCHAIN"
+          P12_PASS="${APP_STORE_CERT_P12_PASSWORD:-$KEYCHAIN_PASSWORD}"
 
-          if [ -n "$APP_STORE_CERT_P12" ]; then
-            echo "Reusing existing certificate and provisioning profile from secrets."
+          REGENERATE=0
+          if [ -n "$APP_STORE_CERT_P12" ] && [ -n "$APP_STORE_PROFILE_B64" ]; then
+            echo "Trying to reuse certificate and provisioning profile from secrets."
             echo "$APP_STORE_CERT_P12" | base64 --decode > "$RUNNER_TEMP/cert.p12"
-            P12_PASS="${APP_STORE_CERT_P12_PASSWORD:-$KEYCHAIN_PASSWORD}"
-            if ! openssl pkcs12 -in "$RUNNER_TEMP/cert.p12" -passin "pass:$P12_PASS" -noout 2>/dev/null; then
-              echo "::error::APP_STORE_CERT_P12 secret is invalid or truncated. Re-copy the ENTIRE p12 base64 line from the run log (it starts with 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQ' and ends with '=='), then update the secret and re-run."
-              exit 1
+            if openssl pkcs12 -in "$RUNNER_TEMP/cert.p12" -passin "pass:$P12_PASS" -noout 2>/dev/null; then
+              security import "$RUNNER_TEMP/cert.p12" -k "$KEYCHAIN" -P "$P12_PASS" -T /usr/bin/codesign
+              security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
+              mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
+              PROFILE_FILE="$HOME/Library/MobileDevice/Provisioning Profiles/EVChargeMan_AppStore.mobileprovision"
+              echo "$APP_STORE_PROFILE_B64" | base64 --decode > "$PROFILE_FILE"
+            else
+              echo "::warning::APP_STORE_CERT_P12 secret is invalid or truncated. Regenerating fresh signing files instead."
+              REGENERATE=1
             fi
-            security import "$RUNNER_TEMP/cert.p12" -k "$KEYCHAIN" -P "$P12_PASS" -T /usr/bin/codesign
-            security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
-            mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
-            PROFILE_FILE="$HOME/Library/MobileDevice/Provisioning Profiles/EVChargeMan_AppStore.mobileprovision"
-            echo "$APP_STORE_PROFILE_B64" | base64 --decode > "$PROFILE_FILE"
           else
+            REGENERATE=1
+          fi
+
+          if [ "$REGENERATE" = "1" ]; then
             echo "Generating new certificate and provisioning profile with Fastlane..."
             export KEYCHAIN_PATH="$KEYCHAIN"
+            fastlane cleanup_certs
             fastlane generate_signing
             PROFILE_FILE="$(ls certificates/*.mobileprovision | head -1)"
             mkdir -p "$RUNNER_TEMP/certs_out"
@@ -140,12 +147,12 @@ jobs:
           SPECIFIER="$(security cms -D -i "$PROFILE_FILE" 2>/dev/null | plutil -extract Name raw -)"
           echo "PROFILE_SPECIFIER=$SPECIFIER" >> "$GITHUB_ENV"
 
-      - name: Save generated signing files for reuse (first run only)
-        if: env.APP_STORE_CERT_P12 == ''
+      - name: Save generated signing files for reuse
         uses: actions/upload-artifact@v5
         with:
           name: apple-signing-files
           path: ${{ runner.temp }}/certs_out
+          if-no-files-found: warn
 
       - name: Build .ipa and upload to App Store Connect
         env:
