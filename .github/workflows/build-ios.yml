@@ -10,6 +10,7 @@ on:
 
 env:
   BUNDLE_ID: evchargeman.io
+  APP_VERSION: '1.3.9'
   APPLE_ID: ${{ secrets.APPLE_ID || 'director@evgracias.com' }}
   APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID || 'QDG4B42LM2' }}
   FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
@@ -56,6 +57,13 @@ jobs:
           echo "WORKFLOW_COMMIT=$(git rev-parse --short HEAD)"
           cp fastlane/ios-Podfile.template ios/App/Podfile
           sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = 12.0/IPHONEOS_DEPLOYMENT_TARGET = 15.0/g" ios/App/App.xcodeproj/project.pbxproj
+          BUILD_NUMBER=$(date +%s)
+          echo "BUILD_NUMBER=$BUILD_NUMBER" >> "$GITHUB_ENV"
+          plutil -replace CFBundleShortVersionString -string "$APP_VERSION" ios/App/App/Info.plist
+          plutil -replace CFBundleVersion -string "$BUILD_NUMBER" ios/App/App/Info.plist
+          echo "=== Info.plist version keys: ==="
+          plutil -extract CFBundleShortVersionString raw ios/App/App/Info.plist
+          plutil -extract CFBundleVersion raw ios/App/App/Info.plist
           echo "=== Podfile platform line (must be 15.0): ==="
           grep "platform :ios" ios/App/Podfile
           echo "=== Podfile head: ==="
