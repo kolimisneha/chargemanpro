@@ -170,20 +170,94 @@ jobs:
           path: ${{ runner.temp }}/certs_out
           if-no-files-found: warn
 
-      - name: Set manual code signing on the App target only
+      - name: Add privacy manifest and set manual code signing on the App target only
         run: |
           ruby -e '
             require "xcodeproj"
+            app_dir = "ios/App/App"
+            manifest = File.join(app_dir, "PrivacyInfo.xcprivacy")
+            File.write(manifest, <<~PLIST
+              <?xml version="1.0" encoding="UTF-8"?>
+              <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+              <plist version="1.0">
+              <dict>
+                <key>NSPrivacyTracking</key>
+                <false/>
+                <key>NSPrivacyTrackingDomains</key>
+                <array/>
+                <key>NSPrivacyCollectedDataTypes</key>
+                <array/>
+                <key>NSPrivacyAccessedAPITypes</key>
+                <array>
+                  <dict>
+                    <key>NSPrivacyAccessedAPIType</key>
+                    <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
+                    <key>NSPrivacyAccessedAPITypeReasons</key>
+                    <array>
+                      <string>C617.1</string>
+                      <string>3B52.1</string>
+                      <string>1C8F.1</string>
+                    </array>
+                  </dict>
+                  <dict>
+                    <key>NSPrivacyAccessedAPIType</key>
+                    <string>NSPrivacyAccessedAPICategorySystemBootTime</string>
+                    <key>NSPrivacyAccessedAPITypeReasons</key>
+                    <array>
+                      <string>35F9.1</string>
+                      <string>8FFB.1</string>
+                      <string>3D61.1</string>
+                    </array>
+                  </dict>
+                  <dict>
+                    <key>NSPrivacyAccessedAPIType</key>
+                    <string>NSPrivacyAccessedAPICategoryDiskSpace</string>
+                    <key>NSPrivacyAccessedAPITypeReasons</key>
+                    <array>
+                      <string>E174.1</string>
+                      <string>85F4.1</string>
+                      <string>DDA9.1</string>
+                      <string>B13.3</string>
+                    </array>
+                  </dict>
+                  <dict>
+                    <key>NSPrivacyAccessedAPIType</key>
+                    <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
+                    <key>NSPrivacyAccessedAPITypeReasons</key>
+                    <array>
+                      <string>CA92.1</string>
+                      <string>1C8F.1</string>
+                      <string>C56D.1</string>
+                      <string>AC6B.1</string>
+                      <string>4F7B.1</string>
+                    </array>
+                  </dict>
+                </array>
+              </dict>
+              </plist>
+            PLIST
+            )
+            puts "Wrote #{manifest}"
             project = Xcodeproj::Project.open("ios/App/App.xcodeproj")
-            project.targets.each do |target|
-              next unless target.name == "App"
-              target.build_configurations.each do |config|
-                next unless config.name == "Release"
-                config.build_settings["CODE_SIGN_STYLE"] = "Manual"
-                config.build_settings["CODE_SIGN_IDENTITY"] = "Apple Distribution"
-                config.build_settings["DEVELOPMENT_TEAM"] = ENV["APPLE_TEAM_ID"]
-                config.build_settings["PROVISIONING_PROFILE_SPECIFIER"] = ENV["PROFILE_SPECIFIER"]
-              end
+            target = project.targets.find { |t| t.name == "App" }
+            unless target
+              raise "App target not found"
+            end
+            ref = target.resources_build_phase.files_references.find do |r|
+              r.respond_to?(:path) && r.path.to_s == "PrivacyInfo.xcprivacy"
+            end
+            unless ref
+              group = project.main_group["App"] || project.main_group.new_group("App")
+              file_ref = group.new_file("PrivacyInfo.xcprivacy")
+              target.resources_build_phase.add_file_reference(file_ref)
+              puts "Added PrivacyInfo.xcprivacy to App target Resources"
+            end
+            target.build_configurations.each do |config|
+              next unless config.name == "Release"
+              config.build_settings["CODE_SIGN_STYLE"] = "Manual"
+              config.build_settings["CODE_SIGN_IDENTITY"] = "Apple Distribution"
+              config.build_settings["DEVELOPMENT_TEAM"] = ENV["APPLE_TEAM_ID"]
+              config.build_settings["PROVISIONING_PROFILE_SPECIFIER"] = ENV["PROFILE_SPECIFIER"]
             end
             project.save
             puts "Patched App target signing settings for PROFILE_SPECIFIER=#{ENV["PROFILE_SPECIFIER"]}"
