@@ -64,6 +64,15 @@ jobs:
           echo "=== Info.plist version keys: ==="
           plutil -extract CFBundleShortVersionString raw ios/App/App/Info.plist
           plutil -extract CFBundleVersion raw ios/App/App/Info.plist
+          plutil -insert NSCameraUsageDescription -string "Used to scan QR codes on charging stations and to include photos in charging reports." ios/App/App/Info.plist
+          plutil -insert NSPhotoLibraryUsageDescription -string "Used to select photos of charging stations to include in reports." ios/App/App/Info.plist
+          plutil -insert NSMicrophoneUsageDescription -string "Used to record audio and video notes when reporting issues at charging stations." ios/App/App/Info.plist
+          plutil -insert NSMotionUsageDescription -string "Used to access motion data to improve driving and parking guidance." ios/App/App/Info.plist
+          plutil -insert NSContactsUsageDescription -string "Used to share charging station reports with your contacts." ios/App/App/Info.plist
+          plutil -insert NSCalendarsUsageDescription -string "Used to schedule charging sessions and reminders in your calendar." ios/App/App/Info.plist
+          echo "=== Info.plist purpose strings: ==="
+          plutil -extract NSCameraUsageDescription raw ios/App/App/Info.plist
+          plutil -extract NSPhotoLibraryUsageDescription raw ios/App/App/Info.plist
           echo "=== Podfile platform line (must be 15.0): ==="
           grep "platform :ios" ios/App/Podfile
           echo "=== Podfile head: ==="
