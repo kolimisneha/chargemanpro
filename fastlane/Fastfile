@@ -70,8 +70,6 @@ platform :ios do
       app_identifier: ENV["BUNDLE_ID"],
       skip_metadata: true,
       skip_screenshots: true,
-      skip_app_icon_upload: true,
-      skip_pdf: true,
       submit_for_review: false,
       api_key: {
         key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
