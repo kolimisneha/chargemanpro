@@ -71,6 +71,7 @@ platform :ios do
       skip_metadata: true,
       skip_screenshots: true,
       submit_for_review: false,
+      run_precheck_before_submit: false,
       api_key: {
         key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
         issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
