@@ -95,6 +95,13 @@ jobs:
           plutil -insert NSMotionUsageDescription -string "Used to access motion data to improve driving and parking guidance." ios/App/App/Info.plist
           plutil -insert NSContactsUsageDescription -string "Used to share charging station reports with your contacts." ios/App/App/Info.plist
           plutil -insert NSCalendarsUsageDescription -string "Used to schedule charging sessions and reminders in your calendar." ios/App/App/Info.plist
+          plutil -insert NSLocationWhenInUseUsageDescription -string "Used to find nearby charging stations and show the distance to them." ios/App/App/Info.plist
+          plutil -insert NSLocationAlwaysAndWhenInUseUsageDescription -string "Used to notify you when you are near a saved charging station." ios/App/App/Info.plist
+          plutil -insert NSBluetoothAlwaysUsageDescription -string "Used to connect to and control your EV charger via Bluetooth." ios/App/App/Info.plist
+          plutil -insert NSBluetoothPeripheralUsageDescription -string "Used to connect to your EV charger via Bluetooth." ios/App/App/Info.plist
+          plutil -insert NSFaceIDUsageDescription -string "Used to securely sign in to your EVChargeMan account." ios/App/App/Info.plist
+          plutil -insert NSUserTrackingUsageDescription -string "Used to deliver relevant charging offers and improve the app experience." ios/App/App/Info.plist
+          plutil -insert NSSpeechRecognitionUsageDescription -string "Used to support voice search for charging stations." ios/App/App/Info.plist
           echo "=== Info.plist purpose strings: ==="
           plutil -extract NSCameraUsageDescription raw ios/App/App/Info.plist
           plutil -extract NSPhotoLibraryUsageDescription raw ios/App/App/Info.plist
