@@ -56,7 +56,6 @@ platform :ios do
       clean: true,
       export_method: "app-store",
       export_team_id: ENV["APPLE_TEAM_ID"],
-      xcargs: "CODE_SIGN_STYLE='Manual' CODE_SIGN_IDENTITY='Apple Distribution' DEVELOPMENT_TEAM='#{ENV['APPLE_TEAM_ID']}' PROVISIONING_PROFILE_SPECIFIER='#{ENV['PROFILE_SPECIFIER']}'",
       output_directory: "./build",
       output_name: "EVChargeMan"
     )
