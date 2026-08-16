@@ -112,7 +112,12 @@ jobs:
           if [ -n "$APP_STORE_CERT_P12" ]; then
             echo "Reusing existing certificate and provisioning profile from secrets."
             echo "$APP_STORE_CERT_P12" | base64 --decode > "$RUNNER_TEMP/cert.p12"
-            security import "$RUNNER_TEMP/cert.p12" -k "$KEYCHAIN" -P "${APP_STORE_CERT_P12_PASSWORD:-$KEYCHAIN_PASSWORD}" -T /usr/bin/codesign
+            P12_PASS="${APP_STORE_CERT_P12_PASSWORD:-$KEYCHAIN_PASSWORD}"
+            if ! openssl pkcs12 -in "$RUNNER_TEMP/cert.p12" -passin "pass:$P12_PASS" -noout 2>/dev/null; then
+              echo "::error::APP_STORE_CERT_P12 secret is invalid or truncated. Re-copy the ENTIRE p12 base64 line from the run log (it starts with 'LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQ' and ends with '=='), then update the secret and re-run."
+              exit 1
+            fi
+            security import "$RUNNER_TEMP/cert.p12" -k "$KEYCHAIN" -P "$P12_PASS" -T /usr/bin/codesign
             security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
             mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
             PROFILE_FILE="$HOME/Library/MobileDevice/Provisioning Profiles/EVChargeMan_AppStore.mobileprovision"
