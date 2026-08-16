@@ -100,7 +100,6 @@ jobs:
           plutil -insert NSBluetoothAlwaysUsageDescription -string "Used to connect to and control your EV charger via Bluetooth." ios/App/App/Info.plist
           plutil -insert NSBluetoothPeripheralUsageDescription -string "Used to connect to your EV charger via Bluetooth." ios/App/App/Info.plist
           plutil -insert NSFaceIDUsageDescription -string "Used to securely sign in to your EVChargeMan account." ios/App/App/Info.plist
-          plutil -insert NSUserTrackingUsageDescription -string "Used to deliver relevant charging offers and improve the app experience." ios/App/App/Info.plist
           plutil -insert NSSpeechRecognitionUsageDescription -string "Used to support voice search for charging stations." ios/App/App/Info.plist
           echo "=== Info.plist purpose strings: ==="
           plutil -extract NSCameraUsageDescription raw ios/App/App/Info.plist
