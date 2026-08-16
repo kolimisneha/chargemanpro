@@ -17,9 +17,6 @@ env:
   APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.ASC_API_ISSUER_ID }}
   APP_STORE_CONNECT_API_KEY_KEY: ${{ secrets.ASC_API_KEY }}
   SPACESHIP_CONNECT_API_IN_HOUSE: 'false'
-  APP_STORE_CERT_P12: ${{ secrets.APP_STORE_CERT_P12 }}
-  APP_STORE_CERT_P12_PASSWORD: ${{ secrets.APP_STORE_CERT_P12_PASSWORD }}
-  APP_STORE_PROFILE_B64: ${{ secrets.APP_STORE_PROFILE_B64 }}
 
 jobs:
   build:
@@ -93,7 +90,7 @@ jobs:
           if ! command -v fastlane &>/dev/null; then gem install fastlane -NV; fi
           fastlane --version
 
-      - name: Install signing identity (or generate a new one)
+      - name: Generate signing certificate and provisioning profile
         env:
           FASTLANE_USER: ${{ secrets.APPLE_ID }}
           KEYCHAIN_PASSWORD: build
@@ -108,46 +105,17 @@ jobs:
           security default-keychain -s "$KEYCHAIN"
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
           security set-keychain-settings -lut 21600 "$KEYCHAIN"
-          P12_PASS="${APP_STORE_CERT_P12_PASSWORD:-$KEYCHAIN_PASSWORD}"
-
-          REGENERATE=0
-          if [ -n "$APP_STORE_CERT_P12" ] && [ -n "$APP_STORE_PROFILE_B64" ]; then
-            echo "Trying to reuse certificate and provisioning profile from secrets."
-            echo "$APP_STORE_CERT_P12" | base64 --decode > "$RUNNER_TEMP/cert.p12"
-            if openssl pkcs12 -in "$RUNNER_TEMP/cert.p12" -passin "pass:$P12_PASS" -noout 2>/dev/null; then
-              security import "$RUNNER_TEMP/cert.p12" -k "$KEYCHAIN" -P "$P12_PASS" -T /usr/bin/codesign
-              security set-key-partition-list -S apple-tool:,apple: -s -k "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
-              mkdir -p "$HOME/Library/MobileDevice/Provisioning Profiles"
-              PROFILE_FILE="$HOME/Library/MobileDevice/Provisioning Profiles/EVChargeMan_AppStore.mobileprovision"
-              echo "$APP_STORE_PROFILE_B64" | base64 --decode > "$PROFILE_FILE"
-            else
-              echo "::warning::APP_STORE_CERT_P12 secret is invalid or truncated. Regenerating fresh signing files instead."
-              REGENERATE=1
-            fi
-          else
-            REGENERATE=1
-          fi
-
-          if [ "$REGENERATE" = "1" ]; then
-            echo "Generating new certificate and provisioning profile with Fastlane..."
-            export KEYCHAIN_PATH="$KEYCHAIN"
-            fastlane cleanup_certs
-            fastlane generate_signing
-            PROFILE_FILE="$(ls certificates/*.mobileprovision | head -1)"
-            mkdir -p "$RUNNER_TEMP/certs_out"
-            cp certificates/*.p12 certificates/*.mobileprovision "$RUNNER_TEMP/certs_out/"
-            echo "===== COPY THIS P12 BASE64 (password: $KEYCHAIN_PASSWORD) ====="
-            openssl base64 -A -in certificates/*.p12
-            echo ""
-            echo "===== COPY THIS PROFILE BASE64 ====="
-            openssl base64 -A -in "$PROFILE_FILE"
-            echo ""
-          fi
-
+          export KEYCHAIN_PATH="$KEYCHAIN"
+          fastlane cleanup_certs
+          fastlane generate_signing
+          PROFILE_FILE="$(ls certificates/*.mobileprovision | head -1)"
+          mkdir -p "$RUNNER_TEMP/certs_out"
+          cp certificates/*.p12 certificates/*.mobileprovision "$RUNNER_TEMP/certs_out/"
           SPECIFIER="$(security cms -D -i "$PROFILE_FILE" 2>/dev/null | plutil -extract Name raw -)"
           echo "PROFILE_SPECIFIER=$SPECIFIER" >> "$GITHUB_ENV"
+          echo "Generated certificate and profile. PROFILE_SPECIFIER=$SPECIFIER"
 
-      - name: Save generated signing files for reuse
+      - name: Save generated signing files (backup artifact)
         uses: actions/upload-artifact@v5
         with:
           name: apple-signing-files
