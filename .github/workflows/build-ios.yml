@@ -52,8 +52,30 @@ jobs:
       - name: Add iOS platform
         run: npx cap add ios
 
-      - name: Generate app icon and splash from resources
-        run: npx capacitor-assets generate --ios
+      - name: Generate app icons from resources into template icon set
+        run: |
+          ICON_SRC="$GITHUB_WORKSPACE/resources/icon.png"
+          SET="ios/App/App/Assets.xcassets/AppIcon.appiconset"
+          test -d "$SET" || { echo "FAIL: no AppIcon.appiconset at $SET"; exit 1; }
+          for f in "$SET"/AppIcon-*.png; do
+            base=$(basename "$f")
+            size=$(echo "$base" | sed -E 's/AppIcon-([^@]+)@.*/\1/')
+            if echo "$size" | grep -q 'x'; then
+              w=$(echo "$size" | cut -dx -f1)
+              h=$(echo "$size" | cut -dx -f2)
+            else
+              w="$size"
+              h="$size"
+            fi
+            s=$(echo "$base" | sed -E 's/.*@([0-9]+)x.*/\1/')
+            pw=$(awk -v a="$w" -v b="$s" 'BEGIN{printf "%d", a*b+0.5}')
+            ph=$(awk -v a="$h" -v b="$s" 'BEGIN{printf "%d", a*b+0.5}')
+            sips -z "$ph" "$pw" "$ICON_SRC" --out "$f" >/dev/null
+            echo "generated $base -> ${pw}x${ph}"
+          done
+          echo "=== AppIcon set after generation: ==="
+          ls "$SET" | grep -c "\.png$" | xargs echo "icon PNGs:"
+          grep -c '"filename"' "$SET/Contents.json" | xargs echo "Contents.json entries:"
 
       - name: Force deployment target 15.0 and verify
         run: |
