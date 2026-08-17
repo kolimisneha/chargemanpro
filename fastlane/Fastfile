@@ -88,6 +88,7 @@ platform :ios do
   desc "Upload .ipa to App Store Connect"
   lane :upload do
     upload_to_app_store(
+      ipa: "build/EVChargeMan.ipa",
       app_identifier: ENV["BUNDLE_ID"],
       skip_metadata: true,
       skip_screenshots: true,
