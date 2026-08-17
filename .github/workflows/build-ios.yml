@@ -87,6 +87,7 @@ jobs:
           echo "BUILD_NUMBER=$BUILD_NUMBER" >> "$GITHUB_ENV"
           plutil -replace CFBundleShortVersionString -string "$APP_VERSION" ios/App/App/Info.plist
           plutil -replace CFBundleVersion -string "$BUILD_NUMBER" ios/App/App/Info.plist
+          plutil -insert MinimumOSVersion -string "15.0" ios/App/App/Info.plist 2>/dev/null || plutil -replace MinimumOSVersion -string "15.0" ios/App/App/Info.plist
           echo "=== Info.plist version keys: ==="
           plutil -extract CFBundleShortVersionString raw ios/App/App/Info.plist
           plutil -extract CFBundleVersion raw ios/App/App/Info.plist
@@ -96,6 +97,11 @@ jobs:
           plutil -insert NSPhotoLibraryUsageDescription -string "Used to select photos of charging stations to include in reports." ios/App/App/Info.plist
           plutil -insert NSLocationWhenInUseUsageDescription -string "Used to find nearby charging stations and show the distance to them." ios/App/App/Info.plist
           plutil -insert NSLocationAlwaysAndWhenInUseUsageDescription -string "Used to notify you when you are near a saved charging station." ios/App/App/Info.plist
+          plutil -insert NSCalendarsUsageDescription -string "Used to add charging sessions to your calendar." ios/App/App/Info.plist
+          plutil -insert NSContactsUsageDescription -string "Used to share charging station details with your contacts." ios/App/App/Info.plist
+          plutil -insert NSMicrophoneUsageDescription -string "Used to record audio notes for charging reports." ios/App/App/Info.plist
+          plutil -insert NSMotionUsageDescription -string "Used to track movement while navigating to a charging station." ios/App/App/Info.plist
+          plutil -insert NSBluetoothAlwaysUsageDescription -string "Used to communicate with EV chargers via Bluetooth." ios/App/App/Info.plist
 
           echo "=== Info.plist purpose strings: ==="
           plutil -extract NSCameraUsageDescription raw ios/App/App/Info.plist
