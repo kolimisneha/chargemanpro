@@ -299,21 +299,54 @@ jobs:
           echo "aps-environment: $APS_ENV"
           [ "$APS_ENV" = "production" ] || { echo "FAIL: aps-environment is not production"; exit 1; }
 
-          echo "=== Step 14: Entitlements in provisioning profile match ==="
-          ENT_TEAM=$(plutil -extract Entitlements.com.apple.developer.team-identifier raw /tmp/profile.plist)
-          echo "Profile entitlements team-identifier: $ENT_TEAM"
-          [ "$ENT_TEAM" = "QDG4B42LM2" ] || { echo "FAIL: Profile entitlements team-identifier mismatch"; exit 1; }
+          echo "=== Step 14: Compare binary entitlements against provisioning profile ==="
+          codesign -d --entitlements :- extracted/Payload/App.app/App > /tmp/binary_entitlements.plist 2>/dev/null
+          plutil -convert xml1 /tmp/binary_entitlements.plist
 
-          ENT_GTA=$(plutil -extract Entitlements.get-task-allow raw /tmp/profile.plist)
-          echo "Profile entitlements get-task-allow: $ENT_GTA"
-          [ "$ENT_GTA" = "false" ] || { echo "FAIL: Profile entitlements get-task-allow is not false"; exit 1; }
+          MISMATCH=0
+          for KEY in \
+            "com.apple.developer.team-identifier:QDG4B42LM2" \
+            "application-identifier:QDG4B42LM2.evchargeman.io" \
+            "get-task-allow:false" \
+            "aps-environment:production"; do
+            KEY_NAME="${KEY%%:*}"
+            EXPECTED="${KEY#*:}"
+            BIN_VAL=$(plutil -extract "$KEY_NAME" raw /tmp/binary_entitlements.plist 2>/dev/null || echo "__MISSING__")
+            PROF_VAL=$(plutil -extract "Entitlements.$KEY_NAME" raw /tmp/profile.plist 2>/dev/null || echo "__MISSING__")
+            echo "  $KEY_NAME"
+            echo "    binary:  $BIN_VAL"
+            echo "    profile: $PROF_VAL"
+            if [ "$BIN_VAL" != "$PROF_VAL" ]; then
+              echo "    MISMATCH (expected $EXPECTED)"
+              MISMATCH=1
+            elif [ "$BIN_VAL" != "$EXPECTED" ]; then
+              echo "    MISMATCH (expected $EXPECTED)"
+              MISMATCH=1
+            else
+              echo "    OK"
+            fi
+          done
 
-          ENT_APP_ID=$(plutil -extract Entitlements.application-identifier raw /tmp/profile.plist)
-          echo "Profile entitlements application-identifier: $ENT_APP_ID"
-          [ "$ENT_APP_ID" = "QDG4B42LM2.evchargeman.io" ] || { echo "FAIL: Profile entitlements application-identifier mismatch"; exit 1; }
+          KEY_NAME="keychain-access-groups"
+          BIN_VAL=$(plutil -extract "$KEY_NAME" raw /tmp/binary_entitlements.plist 2>/dev/null || echo "__MISSING__")
+          PROF_VAL=$(plutil -extract "Entitlements.$KEY_NAME" raw /tmp/profile.plist 2>/dev/null || echo "__MISSING__")
+          echo "  $KEY_NAME"
+          echo "    binary:  $BIN_VAL"
+          echo "    profile: $PROF_VAL"
+          if [ "$BIN_VAL" != "$PROF_VAL" ]; then
+            echo "    MISMATCH"
+            MISMATCH=1
+          else
+            echo "    OK"
+          fi
 
-          echo "Note: Step 6 (codesign --verify --deep --strict) confirmed the binary entitlements"
-          echo "match this provisioning profile. A valid code signature guarantees entitlements match."
+          echo ""
+          if [ "$MISMATCH" = "0" ]; then
+            echo "Entitlements match: PASS"
+          else
+            echo "FAIL: Binary entitlements do not match provisioning profile"
+            exit 1
+          fi
 
           echo ""
           echo "============================================"
