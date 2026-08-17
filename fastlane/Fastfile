@@ -1,7 +1,7 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Revoke oldest distribution certificate only if at the 3-cert limit"
+  desc "Revoke oldest distribution certificate if near the 3-cert limit"
   lane :cleanup_certs do
     token = Spaceship::ConnectAPI::Token.create(
       key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
@@ -12,18 +12,26 @@ platform :ios do
     )
     Spaceship::ConnectAPI.client = Spaceship::ConnectAPI::Client.new(token: token)
 
-    dist_certs = Spaceship::ConnectAPI::Certificate.all.select do |cert|
-      cert.certificate_type.to_s.include?("DISTRIBUTION")
+    all_certs = Spaceship::ConnectAPI::Certificate.all
+    UI.message("All certificates on account: #{all_certs.count}")
+    all_certs.each do |cert|
+      UI.message("  #{cert.id} | type=#{cert.certificate_type} | name=#{cert.name} | created=#{cert.created_date}")
     end
 
-    UI.message("Found #{dist_certs.count} distribution certificate(s)")
+    dist_certs = all_certs.select do |cert|
+      cert_type = cert.certificate_type.to_s.upcase
+      cert_type.include?("DISTRIBUTION") || cert_type.include?("IOS_APP_STORE") || cert_type.include?("MAC_APP_STORE")
+    end
 
-    if dist_certs.count >= 3
+    UI.message("Distribution/App Store certificates: #{dist_certs.count}")
+
+    if dist_certs.count >= 2
       oldest = dist_certs.min_by { |c| c.created_date || Time.at(0) }
-      UI.message("Revoking oldest certificate: #{oldest.id} (#{oldest.certificate_type}, created #{oldest.created_date})")
+      UI.message("Revoking oldest certificate to free a slot: #{oldest.id} (#{oldest.certificate_type}, created #{oldest.created_date})")
       oldest.delete!
+      UI.message("Certificate revoked successfully")
     else
-      UI.message("Under the 3-cert limit, no revocation needed")
+      UI.message("Under the limit, no revocation needed")
     end
   end
 
