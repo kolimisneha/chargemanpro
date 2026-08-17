@@ -150,6 +150,7 @@ jobs:
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
           security set-keychain-settings -lut 21600 "$KEYCHAIN"
           export KEYCHAIN_PATH="$KEYCHAIN"
+          fastlane cleanup_certs
           fastlane generate_signing
           PROFILE_FILE="$(ls certificates/*.mobileprovision | head -1)"
           mkdir -p "$RUNNER_TEMP/certs_out"

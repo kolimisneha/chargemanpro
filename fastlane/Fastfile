@@ -1,6 +1,32 @@
 default_platform(:ios)
 
 platform :ios do
+  desc "Revoke oldest distribution certificate only if at the 3-cert limit"
+  lane :cleanup_certs do
+    token = Spaceship::ConnectAPI::Token.create(
+      key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
+      issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
+      key: ENV["APP_STORE_CONNECT_API_KEY_KEY"],
+      is_key_content_base64: true,
+      in_house: false
+    )
+    Spaceship::ConnectAPI.client = Spaceship::ConnectAPI::Client.new(token: token)
+
+    dist_certs = Spaceship::ConnectAPI::Certificate.all.select do |cert|
+      cert.certificate_type.to_s.include?("DISTRIBUTION")
+    end
+
+    UI.message("Found #{dist_certs.count} distribution certificate(s)")
+
+    if dist_certs.count >= 3
+      oldest = dist_certs.min_by { |c| c.created_date || Time.at(0) }
+      UI.message("Revoking oldest certificate: #{oldest.id} (#{oldest.certificate_type}, created #{oldest.created_date})")
+      oldest.delete!
+    else
+      UI.message("Under the 3-cert limit, no revocation needed")
+    end
+  end
+
   desc "Generate an Apple Distribution certificate and App Store provisioning profile"
   lane :generate_signing do
     cert(
