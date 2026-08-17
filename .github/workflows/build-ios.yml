@@ -299,11 +299,13 @@ jobs:
           [ "$APS_ENV" = "production" ] || { echo "FAIL: aps-environment is not production"; exit 1; }
 
           echo "=== Step 14: Entitlements in binary match ==="
-          CODESIGN_TEAM=$(codesign -d --entitlements - extracted/Payload/App.app | plutil -extract "com.apple.developer.team-identifier" raw -)
+          codesign -d --entitlements - extracted/Payload/App.app > /tmp/entitlements.bin
+          plutil -convert xml1 /tmp/entitlements.bin -o /tmp/entitlements.plist
+          CODESIGN_TEAM=$(plutil -extract "com.apple.developer.team-identifier" raw /tmp/entitlements.plist)
           echo "Binary team-identifier: $CODESIGN_TEAM"
           [ "$CODESIGN_TEAM" = "QDG4B42LM2" ] || { echo "FAIL: Binary team-identifier mismatch"; exit 1; }
 
-          CODESIGN_GET_TASK=$(codesign -d --entitlements - extracted/Payload/App.app | plutil -extract "get-task-allow" raw -)
+          CODESIGN_GET_TASK=$(plutil -extract "get-task-allow" raw /tmp/entitlements.plist)
           echo "Binary get-task-allow: $CODESIGN_GET_TASK"
           [ "$CODESIGN_GET_TASK" = "false" ] || { echo "FAIL: Binary get-task-allow is not false"; exit 1; }
 
