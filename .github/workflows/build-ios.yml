@@ -300,14 +300,21 @@ jobs:
           [ "$APS_ENV" = "production" ] || { echo "FAIL: aps-environment is not production"; exit 1; }
 
           echo "=== Step 14: Entitlements in binary match ==="
-          codesign -d --entitlements - extracted/Payload/App.app | plutil -convert xml1 - -o /tmp/entitlements.plist
-          CODESIGN_TEAM=$(plutil -extract "com.apple.developer.team-identifier" raw /tmp/entitlements.plist)
-          echo "Binary team-identifier: $CODESIGN_TEAM"
-          [ "$CODESIGN_TEAM" = "QDG4B42LM2" ] || { echo "FAIL: Binary team-identifier mismatch"; exit 1; }
-
-          CODESIGN_GET_TASK=$(plutil -extract "get-task-allow" raw /tmp/entitlements.plist)
-          echo "Binary get-task-allow: $CODESIGN_GET_TASK"
-          [ "$CODESIGN_GET_TASK" = "false" ] || { echo "FAIL: Binary get-task-allow is not false"; exit 1; }
+          python3 -c "
+          import plistlib, subprocess, sys
+          data = subprocess.check_output(['codesign', '-d', '--entitlements', '-', 'extracted/Payload/App.app'])
+          plist = plistlib.loads(data)
+          team = plist.get('com.apple.developer.team-identifier', '')
+          gta = plist.get('get-task-allow', None)
+          print(f'Binary team-identifier: {team}')
+          print(f'Binary get-task-allow: {gta}')
+          ok = True
+          if team != 'QDG4B42LM2':
+              print(f'FAIL: team-identifier mismatch'); ok = False
+          if gta is not False:
+              print(f'FAIL: get-task-allow is not false'); ok = False
+          sys.exit(0 if ok else 1)
+          "
 
           echo ""
           echo "============================================"
