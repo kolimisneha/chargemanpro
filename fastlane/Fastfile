@@ -15,7 +15,7 @@ platform :ios do
     all_certs = Spaceship::ConnectAPI::Certificate.all
     UI.message("All certificates on account: #{all_certs.count}")
     all_certs.each do |cert|
-      UI.message("  #{cert.id} | type=#{cert.certificate_type} | name=#{cert.name} | created=#{cert.created_date}")
+      UI.message("  id=#{cert.id} type=#{cert.certificate_type} name=#{cert.name}")
     end
 
     dist_certs = all_certs.select do |cert|
@@ -26,8 +26,8 @@ platform :ios do
     UI.message("Distribution/App Store certificates: #{dist_certs.count}")
 
     if dist_certs.count >= 2
-      oldest = dist_certs.min_by { |c| c.created_date || Time.at(0) }
-      UI.message("Revoking oldest certificate to free a slot: #{oldest.id} (#{oldest.certificate_type}, created #{oldest.created_date})")
+      oldest = dist_certs.min_by { |c| c.id.to_i }
+      UI.message("Revoking oldest certificate to free a slot: id=#{oldest.id} type=#{oldest.certificate_type} name=#{oldest.name}")
       oldest.delete!
       UI.message("Certificate revoked successfully")
     else
