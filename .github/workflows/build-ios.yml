@@ -302,7 +302,7 @@ jobs:
           echo "=== Step 14: Compare binary entitlements against provisioning profile ==="
           codesign -d --entitlements :- extracted/Payload/App.app/App > /tmp/binary_entitlements.plist 2>/dev/null
           plutil -convert xml1 /tmp/binary_entitlements.plist
-          plutil -extract Entitlements -o /tmp/profile_entitlements.plist /tmp/profile.plist
+          plutil -extract Entitlements /tmp/profile.plist > /tmp/profile_entitlements.plist
 
           python3 -c "
           import plistlib, sys
