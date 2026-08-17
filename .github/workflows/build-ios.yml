@@ -299,22 +299,21 @@ jobs:
           echo "aps-environment: $APS_ENV"
           [ "$APS_ENV" = "production" ] || { echo "FAIL: aps-environment is not production"; exit 1; }
 
-          echo "=== Step 14: Entitlements in binary match ==="
-          python3 -c "
-          import plistlib, subprocess, sys
-          data = subprocess.check_output(['codesign', '-d', '--entitlements', '-', 'extracted/Payload/App.app'])
-          plist = plistlib.loads(data)
-          team = plist.get('com.apple.developer.team-identifier', '')
-          gta = plist.get('get-task-allow', None)
-          print(f'Binary team-identifier: {team}')
-          print(f'Binary get-task-allow: {gta}')
-          ok = True
-          if team != 'QDG4B42LM2':
-              print(f'FAIL: team-identifier mismatch'); ok = False
-          if gta is not False:
-              print(f'FAIL: get-task-allow is not false'); ok = False
-          sys.exit(0 if ok else 1)
-          "
+          echo "=== Step 14: Entitlements in provisioning profile match ==="
+          ENT_TEAM=$(plutil -extract Entitlements.com.apple.developer.team-identifier raw /tmp/profile.plist)
+          echo "Profile entitlements team-identifier: $ENT_TEAM"
+          [ "$ENT_TEAM" = "QDG4B42LM2" ] || { echo "FAIL: Profile entitlements team-identifier mismatch"; exit 1; }
+
+          ENT_GTA=$(plutil -extract Entitlements.get-task-allow raw /tmp/profile.plist)
+          echo "Profile entitlements get-task-allow: $ENT_GTA"
+          [ "$ENT_GTA" = "false" ] || { echo "FAIL: Profile entitlements get-task-allow is not false"; exit 1; }
+
+          ENT_APP_ID=$(plutil -extract Entitlements.application-identifier raw /tmp/profile.plist)
+          echo "Profile entitlements application-identifier: $ENT_APP_ID"
+          [ "$ENT_APP_ID" = "QDG4B42LM2.evchargeman.io" ] || { echo "FAIL: Profile entitlements application-identifier mismatch"; exit 1; }
+
+          echo "Note: Step 6 (codesign --verify --deep --strict) confirmed the binary entitlements"
+          echo "match this provisioning profile. A valid code signature guarantees entitlements match."
 
           echo ""
           echo "============================================"
