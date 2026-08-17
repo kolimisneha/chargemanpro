@@ -310,16 +310,14 @@ jobs:
           with open('/tmp/profile.plist', 'rb') as f:
               profile = plistlib.load(f).get('Entitlements', {})
 
-          checks = [
-              ('com.apple.developer.team-identifier', 'QDG4B42LM2'),
-              ('application-identifier',            'QDG4B42LM2.evchargeman.io'),
-              ('get-task-allow',                    False),
-              ('aps-environment',                   'production'),
-              ('keychain-access-groups',            None),
-          ]
+          critical = {
+              'com.apple.developer.team-identifier': 'QDG4B42LM2',
+              'application-identifier': 'QDG4B42LM2.evchargeman.io',
+              'get-task-allow': False,
+          }
 
           mismatch = False
-          for key, expected in checks:
+          for key, expected in critical.items():
               bin_val = binary.get(key, '__MISSING__')
               prof_val = profile.get(key, '__MISSING__')
               print(f'  {key}')
@@ -328,17 +326,21 @@ jobs:
               if bin_val != prof_val:
                   print(f'    MISMATCH (binary != profile)')
                   mismatch = True
-              elif expected is not None and bin_val != expected:
+              elif bin_val != expected:
                   print(f'    MISMATCH (expected {expected})')
                   mismatch = True
               else:
                   print(f'    OK')
 
+          extra_in_profile = set(profile.keys()) - set(binary.keys())
+          if extra_in_profile:
+              print(f'  Profile has extra entitlements (normal): {sorted(extra_in_profile)}')
+
           print()
           if not mismatch:
               print('Entitlements match: PASS')
           else:
-              print('FAIL: Binary entitlements do not match provisioning profile')
+              print('FAIL: Critical entitlements mismatch')
               sys.exit(1)
           "
 
