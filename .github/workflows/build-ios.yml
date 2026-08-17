@@ -302,51 +302,47 @@ jobs:
           echo "=== Step 14: Compare binary entitlements against provisioning profile ==="
           codesign -d --entitlements :- extracted/Payload/App.app/App > /tmp/binary_entitlements.plist 2>/dev/null
           plutil -convert xml1 /tmp/binary_entitlements.plist
+          plutil -extract Entitlements -o /tmp/profile_entitlements.plist /tmp/profile.plist
 
-          MISMATCH=0
-          for KEY in \
-            "com.apple.developer.team-identifier:QDG4B42LM2" \
-            "application-identifier:QDG4B42LM2.evchargeman.io" \
-            "get-task-allow:false" \
-            "aps-environment:production"; do
-            KEY_NAME="${KEY%%:*}"
-            EXPECTED="${KEY#*:}"
-            BIN_VAL=$(plutil -extract "$KEY_NAME" raw /tmp/binary_entitlements.plist 2>/dev/null || echo "__MISSING__")
-            PROF_VAL=$(plutil -extract "Entitlements.$KEY_NAME" raw /tmp/profile.plist 2>/dev/null || echo "__MISSING__")
-            echo "  $KEY_NAME"
-            echo "    binary:  $BIN_VAL"
-            echo "    profile: $PROF_VAL"
-            if [ "$BIN_VAL" != "$PROF_VAL" ]; then
-              echo "    MISMATCH (expected $EXPECTED)"
-              MISMATCH=1
-            elif [ "$BIN_VAL" != "$EXPECTED" ]; then
-              echo "    MISMATCH (expected $EXPECTED)"
-              MISMATCH=1
-            else
-              echo "    OK"
-            fi
-          done
+          python3 -c "
+          import plistlib, sys
 
-          KEY_NAME="keychain-access-groups"
-          BIN_VAL=$(plutil -extract "$KEY_NAME" raw /tmp/binary_entitlements.plist 2>/dev/null || echo "__MISSING__")
-          PROF_VAL=$(plutil -extract "Entitlements.$KEY_NAME" raw /tmp/profile.plist 2>/dev/null || echo "__MISSING__")
-          echo "  $KEY_NAME"
-          echo "    binary:  $BIN_VAL"
-          echo "    profile: $PROF_VAL"
-          if [ "$BIN_VAL" != "$PROF_VAL" ]; then
-            echo "    MISMATCH"
-            MISMATCH=1
-          else
-            echo "    OK"
-          fi
+          with open('/tmp/binary_entitlements.plist', 'rb') as f:
+              binary = plistlib.load(f)
+          with open('/tmp/profile_entitlements.plist', 'rb') as f:
+              profile = plistlib.load(f)
 
-          echo ""
-          if [ "$MISMATCH" = "0" ]; then
-            echo "Entitlements match: PASS"
-          else
-            echo "FAIL: Binary entitlements do not match provisioning profile"
-            exit 1
-          fi
+          checks = [
+              ('com.apple.developer.team-identifier', 'QDG4B42LM2'),
+              ('application-identifier',            'QDG4B42LM2.evchargeman.io'),
+              ('get-task-allow',                    False),
+              ('aps-environment',                   'production'),
+              ('keychain-access-groups',            None),
+          ]
+
+          mismatch = False
+          for key, expected in checks:
+              bin_val = binary.get(key, '__MISSING__')
+              prof_val = profile.get(key, '__MISSING__')
+              print(f'  {key}')
+              print(f'    binary:  {bin_val}')
+              print(f'    profile: {prof_val}')
+              if bin_val != prof_val:
+                  print(f'    MISMATCH (binary != profile)')
+                  mismatch = True
+              elif expected is not None and bin_val != expected:
+                  print(f'    MISMATCH (expected {expected})')
+                  mismatch = True
+              else:
+                  print(f'    OK')
+
+          print()
+          if not mismatch:
+              print('Entitlements match: PASS')
+          else:
+              print('FAIL: Binary entitlements do not match provisioning profile')
+              sys.exit(1)
+          "
 
           echo ""
           echo "============================================"
