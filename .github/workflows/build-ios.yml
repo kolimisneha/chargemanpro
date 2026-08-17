@@ -35,19 +35,19 @@ jobs:
       - name: Build web app
         run: npm run build -- --prod
 
-      - name: Patch Capacitor iOS template to iOS 15
+      - name: Patch Capacitor iOS template to iOS 14.0
         run: |
           set -e
           ARCH="$RUNNER_TEMP/ios-template"
           mkdir -p "$ARCH"
           cd node_modules/@capacitor/cli/assets
           tar xzf ios-template.tar.gz -C "$ARCH"
-          sed -i '' "s/platform :ios, '12.0'/platform :ios, '15.0'/" "$ARCH/App/Podfile"
-          sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = 12.0/IPHONEOS_DEPLOYMENT_TARGET = 15.0/g" "$ARCH/App/App.xcodeproj/project.pbxproj"
+          sed -i '' "s/platform :ios, '12.0'/platform :ios, '14.0'/" "$ARCH/App/Podfile"
+          sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = 12.0/IPHONEOS_DEPLOYMENT_TARGET = 14.0/g" "$ARCH/App/App.xcodeproj/project.pbxproj"
           grep -n "platform :ios" "$ARCH/App/Podfile"
-          grep -c "IPHONEOS_DEPLOYMENT_TARGET = 15.0" "$ARCH/App/App.xcodeproj/project.pbxproj"
+          grep -c "IPHONEOS_DEPLOYMENT_TARGET = 14.0" "$ARCH/App/App.xcodeproj/project.pbxproj"
           tar czf ios-template.tar.gz -C "$ARCH" .
-          echo "template patched to iOS 15"
+          echo "template patched to iOS 14.0"
 
       - name: Add iOS platform
         run: npx cap add ios
@@ -77,11 +77,12 @@ jobs:
           ls "$SET" | grep -c "\.png$" | xargs echo "icon PNGs:"
           grep -c '"filename"' "$SET/Contents.json" | xargs echo "Contents.json entries:"
 
-      - name: Force deployment target 15.0 and verify
+      - name: Configure version, permissions, and code signing
         run: |
+          set -e
           echo "WORKFLOW_COMMIT=$(git rev-parse --short HEAD)"
           cp fastlane/ios-Podfile.template ios/App/Podfile
-          sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = 12.0/IPHONEOS_DEPLOYMENT_TARGET = 15.0/g" ios/App/App.xcodeproj/project.pbxproj
+          sed -i '' "s/IPHONEOS_DEPLOYMENT_TARGET = 12.0/IPHONEOS_DEPLOYMENT_TARGET = 14.0/g" ios/App/App.xcodeproj/project.pbxproj
           BUILD_NUMBER=$(date +%s)
           echo "BUILD_NUMBER=$BUILD_NUMBER" >> "$GITHUB_ENV"
           plutil -replace CFBundleShortVersionString -string "$APP_VERSION" ios/App/App/Info.plist
@@ -89,28 +90,23 @@ jobs:
           echo "=== Info.plist version keys: ==="
           plutil -extract CFBundleShortVersionString raw ios/App/App/Info.plist
           plutil -extract CFBundleVersion raw ios/App/App/Info.plist
+
+          # Only add permission descriptions the app actually uses
           plutil -insert NSCameraUsageDescription -string "Used to scan QR codes on charging stations and to include photos in charging reports." ios/App/App/Info.plist
           plutil -insert NSPhotoLibraryUsageDescription -string "Used to select photos of charging stations to include in reports." ios/App/App/Info.plist
-          plutil -insert NSMicrophoneUsageDescription -string "Used to record audio and video notes when reporting issues at charging stations." ios/App/App/Info.plist
-          plutil -insert NSMotionUsageDescription -string "Used to access motion data to improve driving and parking guidance." ios/App/App/Info.plist
-          plutil -insert NSContactsUsageDescription -string "Used to share charging station reports with your contacts." ios/App/App/Info.plist
-          plutil -insert NSCalendarsUsageDescription -string "Used to schedule charging sessions and reminders in your calendar." ios/App/App/Info.plist
           plutil -insert NSLocationWhenInUseUsageDescription -string "Used to find nearby charging stations and show the distance to them." ios/App/App/Info.plist
           plutil -insert NSLocationAlwaysAndWhenInUseUsageDescription -string "Used to notify you when you are near a saved charging station." ios/App/App/Info.plist
-          plutil -insert NSBluetoothAlwaysUsageDescription -string "Used to connect to and control your EV charger via Bluetooth." ios/App/App/Info.plist
-          plutil -insert NSBluetoothPeripheralUsageDescription -string "Used to connect to your EV charger via Bluetooth." ios/App/App/Info.plist
-          plutil -insert NSFaceIDUsageDescription -string "Used to securely sign in to your EVChargeMan account." ios/App/App/Info.plist
-          plutil -insert NSSpeechRecognitionUsageDescription -string "Used to support voice search for charging stations." ios/App/App/Info.plist
+
           echo "=== Info.plist purpose strings: ==="
           plutil -extract NSCameraUsageDescription raw ios/App/App/Info.plist
           plutil -extract NSPhotoLibraryUsageDescription raw ios/App/App/Info.plist
-          echo "=== Podfile platform line (must be 15.0): ==="
+          plutil -extract NSLocationWhenInUseUsageDescription raw ios/App/App/Info.plist
+          plutil -extract NSLocationAlwaysAndWhenInUseUsageDescription raw ios/App/App/Info.plist
+          echo "=== Podfile platform line (must be 14.0): ==="
           grep "platform :ios" ios/App/Podfile
-          echo "=== Podfile head: ==="
-          cat ios/App/Podfile
           echo "=== pbxproj deployment targets: ==="
           grep "IPHONEOS_DEPLOYMENT_TARGET" ios/App/App.xcodeproj/project.pbxproj
-          test "$(grep -c 'platform :ios, .15.0.' ios/App/Podfile)" = "1" || { echo "FAIL: Podfile platform is not 15.0"; exit 1; }
+          test "$(grep -c 'platform :ios, .14.0.' ios/App/Podfile)" = "1" || { echo "FAIL: Podfile platform is not 14.0"; exit 1; }
 
       - name: Sync iOS (pod install)
         run: npx cap sync ios
@@ -154,7 +150,6 @@ jobs:
           security unlock-keychain -p "$KEYCHAIN_PASSWORD" "$KEYCHAIN"
           security set-keychain-settings -lut 21600 "$KEYCHAIN"
           export KEYCHAIN_PATH="$KEYCHAIN"
-          fastlane cleanup_certs
           fastlane generate_signing
           PROFILE_FILE="$(ls certificates/*.mobileprovision | head -1)"
           mkdir -p "$RUNNER_TEMP/certs_out"
@@ -191,45 +186,10 @@ jobs:
                 <array>
                   <dict>
                     <key>NSPrivacyAccessedAPIType</key>
-                    <string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
-                    <key>NSPrivacyAccessedAPITypeReasons</key>
-                    <array>
-                      <string>C617.1</string>
-                      <string>3B52.1</string>
-                      <string>1C8F.1</string>
-                    </array>
-                  </dict>
-                  <dict>
-                    <key>NSPrivacyAccessedAPIType</key>
-                    <string>NSPrivacyAccessedAPICategorySystemBootTime</string>
-                    <key>NSPrivacyAccessedAPITypeReasons</key>
-                    <array>
-                      <string>35F9.1</string>
-                      <string>8FFB.1</string>
-                      <string>3D61.1</string>
-                    </array>
-                  </dict>
-                  <dict>
-                    <key>NSPrivacyAccessedAPIType</key>
-                    <string>NSPrivacyAccessedAPICategoryDiskSpace</string>
-                    <key>NSPrivacyAccessedAPITypeReasons</key>
-                    <array>
-                      <string>E174.1</string>
-                      <string>85F4.1</string>
-                      <string>DDA9.1</string>
-                      <string>B13.3</string>
-                    </array>
-                  </dict>
-                  <dict>
-                    <key>NSPrivacyAccessedAPIType</key>
                     <string>NSPrivacyAccessedAPICategoryUserDefaults</string>
                     <key>NSPrivacyAccessedAPITypeReasons</key>
                     <array>
                       <string>CA92.1</string>
-                      <string>1C8F.1</string>
-                      <string>C56D.1</string>
-                      <string>AC6B.1</string>
-                      <string>4F7B.1</string>
                     </array>
                   </dict>
                 </array>
@@ -263,11 +223,101 @@ jobs:
             puts "Patched App target signing settings for PROFILE_SPECIFIER=#{ENV["PROFILE_SPECIFIER"]}"
           '
 
-      - name: Build .ipa and upload to App Store Connect
+      - name: Build .ipa
         env:
           FASTLANE_USER: ${{ secrets.APPLE_ID }}
         run: |
-          fastlane release
+          fastlane build
+
+      - name: Verify IPA signature and provisioning
+        run: |
+          set -e
+          echo "=== Step 1: IPA file exists ==="
+          ls -la build/EVChargeMan.ipa
+          test -f build/EVChargeMan.ipa || { echo "FAIL: IPA not found"; exit 1; }
+
+          echo "=== Step 2: Extract IPA ==="
+          cd build
+          rm -rf extracted
+          mkdir -p extracted
+          unzip -q EVChargeMan.ipa -d extracted
+          test -d extracted/Payload/App.app || { echo "FAIL: Payload/App.app not found"; exit 1; }
+
+          echo "=== Step 3: Bundle identifier ==="
+          BUNDLE_ID=$(plutil -extract CFBundleIdentifier raw extracted/Payload/App.app/Info.plist)
+          echo "Bundle ID: $BUNDLE_ID"
+          [ "$BUNDLE_ID" = "evchargeman.io" ] || { echo "FAIL: Bundle ID mismatch (expected evchargeman.io, got $BUNDLE_ID)"; exit 1; }
+
+          echo "=== Step 4: Version ==="
+          VERSION=$(plutil -extract CFBundleShortVersionString raw extracted/Payload/App.app/Info.plist)
+          echo "Version: $VERSION"
+          [ "$VERSION" = "1.4.0" ] || { echo "FAIL: Version mismatch (expected 1.4.0, got $VERSION)"; exit 1; }
+
+          echo "=== Step 5: Build number ==="
+          BUILD=$(plutil -extract CFBundleVersion raw extracted/Payload/App.app/Info.plist)
+          echo "Build number: $BUILD"
+          [ "$BUILD" -gt 2 ] || { echo "FAIL: Build number $BUILD is not greater than previous build 2"; exit 1; }
+
+          echo "=== Step 6: Code signature verification ==="
+          codesign --verify --deep --strict --verbose=4 extracted/Payload/App.app
+
+          echo "=== Step 7: Detailed code signature info ==="
+          codesign -dvvv extracted/Payload/App.app
+
+          echo "=== Step 8: Check all embedded frameworks ==="
+          if [ -d extracted/Payload/App.app/Frameworks ]; then
+            find extracted/Payload/App.app/Frameworks -type f -perm -111 | while read fw; do
+              echo "Verifying: $fw"
+              codesign --verify --deep --strict "$fw" || { echo "FAIL: Framework signature invalid: $fw"; exit 1; }
+            done
+            echo "All embedded frameworks verified."
+          else
+            echo "No Frameworks directory (app has no embedded frameworks)."
+          fi
+
+          echo "=== Step 9: Provisioning profile ==="
+          security cms -D -i extracted/Payload/App.app/embedded.mobileprovision > /tmp/profile.plist
+
+          echo "=== Step 10: Team ID in provisioning profile ==="
+          PROFILE_TEAM=$(plutil -extract TeamIdentifier.0 raw /tmp/profile.plist)
+          echo "Profile Team ID: $PROFILE_TEAM"
+          [ "$PROFILE_TEAM" = "QDG4B42LM2" ] || { echo "FAIL: Profile team ID mismatch (expected QDG4B42LM2, got $PROFILE_TEAM)"; exit 1; }
+
+          echo "=== Step 11: Bundle ID in provisioning profile ==="
+          PROFILE_BUNDLE=$(plutil -extract Entitlements.application-identifier raw /tmp/profile.plist)
+          echo "Profile Bundle ID: $PROFILE_BUNDLE"
+          [ "$PROFILE_BUNDLE" = "QDG4B42LM2.evchargeman.io" ] || { echo "FAIL: Profile bundle ID mismatch"; exit 1; }
+
+          echo "=== Step 12: get-task-allow is false ==="
+          GET_TASK=$(plutil -extract Entitlements.get-task-allow raw /tmp/profile.plist)
+          echo "get-task-allow: $GET_TASK"
+          [ "$GET_TASK" = "false" ] || { echo "FAIL: get-task-allow is not false"; exit 1; }
+
+          echo "=== Step 13: Distribution provisioning (aps-environment = production) ==="
+          APS_ENV=$(plutil -extract Entitlements.aps-environment raw /tmp/profile.plist)
+          echo "aps-environment: $APS_ENV"
+          [ "$APS_ENV" = "production" ] || { echo "FAIL: aps-environment is not production"; exit 1; }
+
+          echo "=== Step 14: Entitlements in binary match ==="
+          CODESIGN_TEAM=$(codesign -d --entitlements - extracted/Payload/App.app | plutil -extract "com.apple.developer.team-identifier" raw -)
+          echo "Binary team-identifier: $CODESIGN_TEAM"
+          [ "$CODESIGN_TEAM" = "QDG4B42LM2" ] || { echo "FAIL: Binary team-identifier mismatch"; exit 1; }
+
+          CODESIGN_GET_TASK=$(codesign -d --entitlements - extracted/Payload/App.app | plutil -extract "get-task-allow" raw -)
+          echo "Binary get-task-allow: $CODESIGN_GET_TASK"
+          [ "$CODESIGN_GET_TASK" = "false" ] || { echo "FAIL: Binary get-task-allow is not false"; exit 1; }
+
+          echo ""
+          echo "============================================"
+          echo " ALL 14 VERIFICATION CHECKS PASSED "
+          echo "============================================"
+          cd ..
+
+      - name: Upload .ipa to App Store Connect
+        env:
+          FASTLANE_USER: ${{ secrets.APPLE_ID }}
+        run: |
+          fastlane upload
 
       - name: Upload .ipa artifact
         uses: actions/upload-artifact@v5

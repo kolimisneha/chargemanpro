@@ -1,23 +1,6 @@
 default_platform(:ios)
 
 platform :ios do
-  desc "Revoke all distribution certificates to avoid the 2-cert limit"
-  lane :cleanup_certs do
-    token = Spaceship::ConnectAPI::Token.create(
-      key_id: ENV["APP_STORE_CONNECT_API_KEY_KEY_ID"],
-      issuer_id: ENV["APP_STORE_CONNECT_API_KEY_ISSUER_ID"],
-      key: ENV["APP_STORE_CONNECT_API_KEY_KEY"],
-      is_key_content_base64: true,
-      in_house: false
-    )
-    Spaceship::ConnectAPI.client = Spaceship::ConnectAPI::Client.new(token: token)
-    Spaceship::ConnectAPI::Certificate.all.each do |cert|
-      next unless cert.certificate_type.to_s.include?("DISTRIBUTION")
-      UI.message("Revoking #{cert.id} (#{cert.certificate_type})")
-      cert.delete!
-    end
-  end
-
   desc "Generate an Apple Distribution certificate and App Store provisioning profile"
   lane :generate_signing do
     cert(
@@ -48,8 +31,8 @@ platform :ios do
     )
   end
 
-  desc "Build the .ipa and upload it to App Store Connect"
-  lane :release do
+  desc "Build the .ipa"
+  lane :build do
     gym(
       workspace: "ios/App/App.xcworkspace",
       scheme: "App",
@@ -66,6 +49,10 @@ platform :ios do
       output_directory: "./build",
       output_name: "EVChargeMan"
     )
+  end
+
+  desc "Upload .ipa to App Store Connect"
+  lane :upload do
     upload_to_app_store(
       app_identifier: ENV["BUNDLE_ID"],
       skip_metadata: true,
