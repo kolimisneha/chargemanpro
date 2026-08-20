@@ -32,6 +32,9 @@ jobs:
       - name: Install npm dependencies
         run: npm install
 
+      - name: Patch Capacitor and Cordova podspecs with Privacy Manifest
+        run: node scripts/patch-podspecs.js
+
       - name: Build web app
         run: npm run build -- --prod
 
