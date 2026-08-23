@@ -10,7 +10,7 @@ on:
 
 env:
   BUNDLE_ID: evchargeman.io
-  APP_VERSION: '1.4.0'
+  APP_VERSION: '1.4.1'
   APPLE_ID: ${{ secrets.APPLE_ID || 'director@evgracias.com' }}
   APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID || 'QDG4B42LM2' }}
   FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
@@ -286,7 +286,7 @@ jobs:
           echo "=== Step 4: Version ==="
           VERSION=$(plutil -extract CFBundleShortVersionString raw extracted/Payload/App.app/Info.plist)
           echo "Version: $VERSION"
-          [ "$VERSION" = "1.4.0" ] || { echo "FAIL: Version mismatch (expected 1.4.0, got $VERSION)"; exit 1; }
+          [ "$VERSION" = "$APP_VERSION" ] || { echo "FAIL: Version mismatch (expected $APP_VERSION, got $VERSION)"; exit 1; }
 
           echo "=== Step 5: Build number ==="
           BUILD=$(plutil -extract CFBundleVersion raw extracted/Payload/App.app/Info.plist)
