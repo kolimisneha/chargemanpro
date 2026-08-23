@@ -5,7 +5,7 @@ agm-map {
 
 [charging-status-container] {
   position: fixed;
-  top: calc(env(safe-area-inset-top, 0px) + 56px);
+  top: calc(env(safe-area-inset-top, 0px) + 60px);
   left: 0;
   right: 0;
   z-index: 100;
@@ -53,7 +53,7 @@ agm-map {
 
 [wallet-balance-container] {
   position: fixed;
-  top: calc(env(safe-area-inset-top, 0px) + 62px);
+  top: calc(env(safe-area-inset-top, 0px) + 68px);
   left: 0;
   right: 0;
   z-index: 100;

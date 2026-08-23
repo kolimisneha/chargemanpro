@@ -283,16 +283,16 @@ ion-content {
 /*Toolbar styles*/
 [chargemen-toolbar-style] {
   --background: var(--chargemen-grey) !important;
-  --padding-top: env(safe-area-inset-top, 0px);
+  --padding-top: 0px;
   --padding-bottom: 0px;
-  --min-height: 56px;
+  --min-height: 60px;
   ion-buttons {
     ion-menu-button {
       width: 100%;
       height: 100%;
       margin-left: 16px;
-      margin-top: 15px;
-      margin-bottom: 15px;
+      margin-top: 12px;
+      margin-bottom: 12px;
       ion-icon {
         width: 40px;
         height: 40px;
@@ -311,8 +311,8 @@ ion-content {
     width: 100%;
     height: 100%;
     margin-right: 16px;
-    margin-top: 15px;
-    margin-bottom: 15px;
+    margin-top: 12px;
+    margin-bottom: 12px;
     ion-icon {
       width: 40px;
       height: 40px;
