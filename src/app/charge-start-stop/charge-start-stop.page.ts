@@ -17,18 +17,18 @@ import * as moment from 'moment';
 })
 export class ChargeStartStopPage implements OnInit {
 
-  constructor(private navCtrl: NavController,  public modalController: ModalController, private A_route: ActivatedRoute, private router: Router, private utils: Utils, private chargeReq: ChargemanRequestService) { }
+  constructor(private navCtrl: NavController, public modalController: ModalController, private A_route: ActivatedRoute, private router: Router, private utils: Utils, private chargeReq: ChargemanRequestService) { }
   deviceProtocolDetails = {
-    deviceId:"",
+    deviceId: "",
     deviceProtocol: "",
-    url:"",
-    suburl:""
+    url: "",
+    suburl: ""
   }
-  startChargeTransactionId:string = "";
-  chargerBackIcon:string  = '../../assets/icon/back_icon.svg';
-  chargerPlugIcon:string  = '../../assets/icon/charger_plug.svg';
-  chargerWalletIcon:string  = '../../assets/icon/charger_wallet.svg';
-  chargerPowerIcon:string  = '../../assets/icon/charger_power.svg';
+  startChargeTransactionId: string = "";
+  chargerBackIcon: string = '../../assets/icon/back_icon.svg';
+  chargerPlugIcon: string = '../../assets/icon/charger_plug.svg';
+  chargerWalletIcon: string = '../../assets/icon/charger_wallet.svg';
+  chargerPowerIcon: string = '../../assets/icon/charger_power.svg';
   chargeDatePickerIcon: string = '../../assets/icon/charge_date_picker.svg';
   calendarIcon: string = '../../assets/icon/calendar_icon.svg';
   timerIncrementIcon: string = '../../assets/icon/timer_increment.svg';
@@ -43,15 +43,15 @@ export class ChargeStartStopPage implements OnInit {
   isDurationSkipped: boolean = false;
   timerVal: any = 5;
   storedDetails;
-  walletBalance:any;
-  initialWalletBalance:any;
+  walletBalance: any;
+  initialWalletBalance: any;
   isChargeStopped: boolean = true;
   chargingTimer: any;
   walletConsumed: any = '0';
   chargeVal: any = '0';
   powerVal: any = '0';
   startBlink: boolean;
-  chargeStoppedAutomatically:boolean = false;
+  chargeStoppedAutomatically: boolean = false;
   deviceDetails: any;
   chargeStatusText: string = '';
   chargingStatus: any = false;
@@ -72,33 +72,38 @@ export class ChargeStartStopPage implements OnInit {
   minVal: any = '00';
   requestedDuration: string = '-'
   selectedGun: number = null;
-  guns: number[] = [1, 2, 3, 4];
+  guns: number[] = [];
+  isLoadingGuns: boolean = false;
+  connectorDetails: any[] = []; // Full connector objects from API
   async ngOnInit() {
-     this.pageParams = this.utils.getPageParams()?.charge_details; 
+    this.pageParams = this.utils.getPageParams()?.charge_details;
 
-     if (!this.pageParams || !this.pageParams.devicetype || !this.pageParams.deviceid) {
-       console.error('Invalid charge details - missing devicetype or deviceid');
-       this.utils.presentToast('Unable to start charge. Invalid station details.', [], 3000);
-       this.utils.navigateTo(KEYS.NAV_BACKWARD, '/tabs/map');
-       return;
-     }
+    if (!this.pageParams || !this.pageParams.devicetype || !this.pageParams.deviceid) {
+      console.error('Invalid charge details - missing devicetype or deviceid');
+      this.utils.presentToast('Unable to start charge. Invalid station details.', [], 3000);
+      this.utils.navigateTo(KEYS.NAV_BACKWARD, '/tabs/map');
+      return;
+    }
 
-     this.deviceProtocolDetails.deviceId = this.pageParams.deviceid;
-     this.deviceProtocolDetails.deviceProtocol = this.pageParams.devicetype;
-     
-     this.storedDetails = await this.utils.getStoredUserDetails();
-     this.walletBalance = await this.utils.getStoredDetails(KEYS.WALLET_BALANCE);
-     this.initialWalletBalance = this.walletBalance.value;
-     this.isSelfCharge = this.pageParams?.self
-    
-    if(parseInt(this.pageParams?.chargeCount) > 0) {
+    this.deviceProtocolDetails.deviceId = this.pageParams.deviceid;
+    this.deviceProtocolDetails.deviceProtocol = this.pageParams.devicetype;
+
+    // Load connectors dynamically
+    this.loadConnectors(this.pageParams.deviceid);
+
+    this.storedDetails = await this.utils.getStoredUserDetails();
+    this.walletBalance = await this.utils.getStoredDetails(KEYS.WALLET_BALANCE);
+    this.initialWalletBalance = this.walletBalance.value;
+    this.isSelfCharge = this.pageParams?.self
+
+    if (parseInt(this.pageParams?.chargeCount) > 0) {
       this.isChargeStarted = true;
       this.isStartButtonDisabled = true;
       this.isStopButtonDisabled = false;
       this.isChargeStopped = false;
       this.startBlink = true;
       this.isAutoCharge = this.storedDetails.autostart.toString() === '1' ? true : false;
-      
+
       this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_PROCESSING;
       const transaction_details = {
         transactionid: this.pageParams.transactionid
@@ -117,22 +122,22 @@ export class ChargeStartStopPage implements OnInit {
         this.minVal = this.chargeDurationTimerValue.split(':')[1];
         const reqDurationHrs = this.utils.getDurationInHours(res[0].duration).split(":")[0];
         const reqDurationMin = this.utils.getDurationInHours(res[0].duration).split(":")[1];
-        const totalDuration = reqDurationHrs+":"+reqDurationMin
-        this.requestedDuration =  totalDuration === '00:00' ? 'Skipped' : reqDurationHrs+':'+reqDurationMin;
+        const totalDuration = reqDurationHrs + ":" + reqDurationMin
+        this.requestedDuration = totalDuration === '00:00' ? 'Skipped' : reqDurationHrs + ':' + reqDurationMin;
         this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_CHARGING;
         // this.utils.storeDetails(KEYS.TRANSACTION_ID, this.pageParams.transactionid);
         // this.utils.storeDetails(KEYS.IS_CHARGING, 1);
-        if(this.pageParams.transactionid !== undefined) {
-          if(this.chargingTimer == undefined)  {
+        if (this.pageParams.transactionid !== undefined) {
+          if (this.chargingTimer == undefined) {
             this.chargeStartTime = Date.now();
             this.startChargeInterval(this.pageParams.transactionid);
           }
         } else {
-            this.startChargeProcess();
-          }
-        })
-      
-    } 
+          this.startChargeProcess();
+        }
+      })
+
+    }
   }
 
   navigateBack() {
@@ -141,18 +146,71 @@ export class ChargeStartStopPage implements OnInit {
 
   selectGun(gun: number) {
     this.selectedGun = gun;
+    // Update the active deviceid to the child connector's deviceid
+    // so startCharging DB call and OCPP command use the correct connector
+    const connector = this.connectorDetails.find(
+      (c: any) => parseInt(c.connectorid, 10) === gun
+    );
+    if (connector && connector.deviceid) {
+      this.pageParams.deviceid = connector.deviceid;
+      this.deviceProtocolDetails.deviceId = connector.deviceid;
+      console.log('Selected gun', gun, '→ deviceid:', connector.deviceid);
+    }
   }
 
   startCharging() {
     this.isChargeStarted = true;
   }
 
+  /**
+   * Loads the available connectors/guns for this station from the server.
+   * The parent device ID is derived by stripping the connector suffix
+   * (e.g., 'cm2300typo-1' → 'cm2300typo').
+   */
+  loadConnectors(deviceId: string) {
+    this.isLoadingGuns = true;
+    // Strip the connector suffix to get the parent device ID
+    const parentDeviceId = deviceId.includes('-')
+      ? deviceId.split('-').slice(0, -1).join('-')
+      : deviceId;
+
+    const body = { deviceid: parentDeviceId };
+    this.chargeReq.postRequestDetails(RELATIVE_URLS.GET_CONNECTORS_BY_PARENT, body).subscribe({
+      next: (res: any) => {
+        this.isLoadingGuns = false;
+        if (res && res.length > 0) {
+          // Exclude the parent device record (where deviceid === deviceparent)
+          // Only keep child connectors (e.g. cmdc120nnd-1, cmdc120nnd-2)
+          const childConnectors = res.filter((c: any) => c.deviceid !== c.deviceparent);
+          const source = childConnectors.length > 0 ? childConnectors : res;
+          // Store full objects for use in selectGun
+          this.connectorDetails = source;
+          this.guns = source
+            .map((c: any) => parseInt(c.connectorid, 10))
+            .filter((n: number) => !isNaN(n))
+            .sort((a: number, b: number) => a - b);
+          console.log('Loaded connectors from API:', this.guns);
+        } else {
+          // API returned empty — fall back to default 4 guns
+          console.warn('No connectors returned from API, falling back to default [1,2,3,4]');
+          this.guns = [1, 2, 3, 4];
+        }
+      },
+      error: (err) => {
+        this.isLoadingGuns = false;
+        console.error('Failed to load connectors:', err);
+        // Fall back to 4 guns on error
+        this.guns = [1, 2, 3, 4];
+      }
+    });
+  }
+
   async manualStopCharge() {
     this.chargeStoppedAutomatically = false;
     this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_PROCESSING;
-    const user_sel = await this.utils.displayDialog(KEYS.DIALOG_TYPE_PROMPT,DISPLAY_MESSAGES.DIALOG_TITLE_INFO,DISPLAY_MESSAGES.CHARGE_STOP_INFO,[DISPLAY_MESSAGES.DIALOG_TEXT_YES, DISPLAY_MESSAGES.DIALOG_TEXT_NO])
-    if(user_sel === 1) {
-     this.stopCharging(CHARGE_STATUS_TYPES.STATUS_SUCCESS);
+    const user_sel = await this.utils.displayDialog(KEYS.DIALOG_TYPE_PROMPT, DISPLAY_MESSAGES.DIALOG_TITLE_INFO, DISPLAY_MESSAGES.CHARGE_STOP_INFO, [DISPLAY_MESSAGES.DIALOG_TEXT_YES, DISPLAY_MESSAGES.DIALOG_TEXT_NO])
+    if (user_sel === 1) {
+      this.stopCharging(CHARGE_STATUS_TYPES.STATUS_SUCCESS);
     }
   }
 
@@ -162,10 +220,10 @@ export class ChargeStartStopPage implements OnInit {
     this.isStopButtonDisabled = true;
     this.chargeStatusText = CHARGE_STATUS_TYPES.STATUS_TERMINATING;
     const transactionID = await this.utils.getStoredUserDetails();
-    
+
     const deviceType = this.pageParams?.devicetype || this.deviceProtocolDetails?.deviceProtocol || 'evcm';
-    this.deviceProtocolDetails.url = deviceType.toLowerCase() === 'ocpp' 
-      ? DEVICE_SOCKET_OCPP_URL + this.pageParams.deviceid.split("-")[0].toUpperCase() + "/" + RELATIVE_URLS.OCPP_STOP_CHARGE 
+    this.deviceProtocolDetails.url = deviceType.toLowerCase() === 'ocpp'
+      ? DEVICE_SOCKET_OCPP_URL + this.pageParams.deviceid.split("-")[0].toUpperCase() + "/" + RELATIVE_URLS.OCPP_STOP_CHARGE
       : DEVICE_SOCKET_URL + RELATIVE_URLS.START_STOP_CHARGE_DEVICE;
 
     const stop_body = {
@@ -175,12 +233,12 @@ export class ChargeStartStopPage implements OnInit {
       "consumewallet": this.walletBalance?.value || 0,
       "modifiedby": this.storedDetails?.name || ''
     };
-    
+
     console.log('Stop charging request:', JSON.stringify(stop_body));
     console.log('Stop URL:', this.deviceProtocolDetails.url);
-    
+
     const relativeUrl = this.isSelfCharge ? RELATIVE_URLS.STOP_SELF_CHARGE : RELATIVE_URLS.STOP_CHARGE;
-    
+
     this.chargeReq.postRequestDetails(relativeUrl, stop_body).pipe(
       map((res: any) => {
         console.log('Stop response:', res);
@@ -188,7 +246,7 @@ export class ChargeStartStopPage implements OnInit {
         if (res && res.status && (res.status.toLowerCase() === 'accepted' || res.status.toLowerCase() === 'success')) {
           if (deviceType.toLowerCase() === 'ocpp') {
             device_command_body = {
-              "transactionId": transactionID.transactionid
+              "transactionId": parseInt(transactionID.transactionid || this.pageParams.transactionid, 10)
             };
           } else {
             device_command_body = {
@@ -231,7 +289,7 @@ export class ChargeStartStopPage implements OnInit {
         this.storedDetails.devicetype = deviceType;
         this.utils.storeDetails(KEYS.USER_DETAILS, JSON.stringify(this.storedDetails));
         this.utils.updateValues(KEYS.CHARGE_STATUS, false);
-        
+
         if (type === CHARGE_STATUS_TYPES.DEVICE_ERR) {
           this.chargeStatusText = CHARGE_STATUS_TYPES.DEVICE_ERR;
         } else if (type === CHARGE_STATUS_TYPES.INSUFF_FUNDS) {
@@ -265,62 +323,62 @@ export class ChargeStartStopPage implements OnInit {
         this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.STOP_CHARGE_ERR + ' (' + (err?.message || err) + ')', [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
       }
     });
-    
-  } 
 
-  
-/**
- * To start charge
- */
+  }
+
+
+  /**
+   * To start charge
+   */
   async startChargeProcess() {
     const deviceType = this.pageParams?.devicetype || this.deviceProtocolDetails?.deviceProtocol || 'evcm';
-    this.deviceProtocolDetails.url = deviceType.toLowerCase() === 'ocpp' 
-      ? DEVICE_SOCKET_OCPP_URL + this.pageParams.deviceid.split("-")[0].toUpperCase() + "/" + RELATIVE_URLS.OCPP_START_CHARGE 
+    this.deviceProtocolDetails.url = deviceType.toLowerCase() === 'ocpp'
+      ? DEVICE_SOCKET_OCPP_URL + this.pageParams.deviceid.split("-")[0].toUpperCase() + "/" + RELATIVE_URLS.OCPP_START_CHARGE
       : DEVICE_SOCKET_URL + RELATIVE_URLS.START_STOP_CHARGE_DEVICE;
-    
-    if(parseFloat(this.walletBalance?.value) > 0 || this.isSelfCharge) {
-    this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_PROCESSING;
-    this.storedDetails.chargeCount = '1';
-    this.storedDetails.autostart = this.isAutoCharge ? 1 : 0;
-    this.storedDetails.deviceid = this.pageParams.deviceid;
-    this.storedDetails.devicetype = deviceType;
-    this.utils.storeDetails(KEYS.USER_DETAILS, JSON.stringify(this.storedDetails)); 
-    this.utils.updateValues(KEYS.CHARGE_STATUS, true);
-    
-    const user_sel = this.isSelfCharge ? 1 : await this.utils.displayDialog(KEYS.DIALOG_TYPE_PROMPT,DISPLAY_MESSAGES.DIALOG_TITLE_INFO,DISPLAY_MESSAGES.CHARGE_START_ALERT,[DISPLAY_MESSAGES.BUTTON_TEXT_CONTINUE, DISPLAY_MESSAGES.BUTTON_TEXT_CANCEL]);
-    if(user_sel == 1) {
-      this.isStartButtonDisabled = true;
-      const start_body = {
-        "mobile": this.storedDetails.mobile,
-        "deviceid": this.pageParams.deviceid,
-        "chargedate": moment().format('YYYY-MM-DD'),
-        "starttime": moment().format('YYYY-MM-DD HH:mm:ss'),
-        "duration": this.isDurationSkipped ? 0 : this.timerVal,
-        "kwh": this.pageParams.rph,
-        "createdby": this.storedDetails.name,
-        "autostart": this.isAutoCharge ? 1 : 0 
-      };
-      
-      console.log('Start charging request:', JSON.stringify(start_body));
-      
-      this.chargeReq.postRequestDetails(RELATIVE_URLS.START_CHARGE,start_body).pipe(
-        map((res: any) => {
-          console.log('Start charge response:', res);
-          let device_command_body = {};
-          this.startChargeTransactionId = res.status;
-          
-          if(deviceType.toLowerCase() === "ocpp") {
-            device_command_body = {
+
+    if (parseFloat(this.walletBalance?.value) > 0 || this.isSelfCharge) {
+      this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_PROCESSING;
+      this.storedDetails.chargeCount = '1';
+      this.storedDetails.autostart = this.isAutoCharge ? 1 : 0;
+      this.storedDetails.deviceid = this.pageParams.deviceid;
+      this.storedDetails.devicetype = deviceType;
+      this.utils.storeDetails(KEYS.USER_DETAILS, JSON.stringify(this.storedDetails));
+      this.utils.updateValues(KEYS.CHARGE_STATUS, true);
+
+      const user_sel = this.isSelfCharge ? 1 : await this.utils.displayDialog(KEYS.DIALOG_TYPE_PROMPT, DISPLAY_MESSAGES.DIALOG_TITLE_INFO, DISPLAY_MESSAGES.CHARGE_START_ALERT, [DISPLAY_MESSAGES.BUTTON_TEXT_CONTINUE, DISPLAY_MESSAGES.BUTTON_TEXT_CANCEL]);
+      if (user_sel == 1) {
+        this.isStartButtonDisabled = true;
+        const start_body = {
+          "mobile": this.storedDetails.mobile,
+          "deviceid": this.pageParams.deviceid,
+          "chargedate": moment().format('YYYY-MM-DD'),
+          "starttime": moment().format('YYYY-MM-DD HH:mm:ss'),
+          "duration": this.isDurationSkipped ? 0 : this.timerVal,
+          "kwh": this.pageParams.rph,
+          "createdby": this.storedDetails.name,
+          "autostart": this.isAutoCharge ? 1 : 0
+        };
+
+        console.log('Start charging request:', JSON.stringify(start_body));
+
+        this.chargeReq.postRequestDetails(RELATIVE_URLS.START_CHARGE, start_body).pipe(
+          map((res: any) => {
+            console.log('Start charge response:', res);
+            let device_command_body = {};
+            this.startChargeTransactionId = res.status;
+
+            if (deviceType.toLowerCase() === "ocpp") {
+              device_command_body = {
                 "connectorId": this.selectedGun,
                 "chargingProfileId": 1,
                 "transactionId": parseInt(res.status),
                 "stackLevel": 1,
                 "chargingProfilePurpose": "TxProfile",
                 "chargingProfileKind": "Absolute",
-                "duration": this.isDurationSkipped ? 0 : parseInt(this.timerVal)*60
-            };
-          } else {
-            device_command_body = {
+                "duration": this.isDurationSkipped ? 0 : parseInt(this.timerVal) * 60
+              };
+            } else {
+              device_command_body = {
                 "type": "START_CHARGING",
                 "payload": {
                   "connectorId": this.selectedGun,
@@ -329,58 +387,58 @@ export class ChargeStartStopPage implements OnInit {
                   "Timestamp": this.utils.getCurrentTimeStamp(),
                   "duration": this.isDurationSkipped ? 0 : this.timerVal,
                   "transactionId": res.status
+                }
+              };
+            }
+            return device_command_body;
+          }),
+          mergeMap((startChargeRes) => {
+            console.log('Start device command body:', startChargeRes);
+            return this.chargeReq.postDeviceCommand(this.deviceProtocolDetails.url, startChargeRes);
+          })).subscribe({
+            next: (res: any) => {
+              console.log('Start device command response:', res);
+              if (deviceType.toLowerCase() === 'ocpp') {
+                if (!res.success) {
+                  this.chargeStatusText = `${DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_ERR} (${(res.message || 'UNKNOWN').toUpperCase()})`;
+                  this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.START_CHARGE_ERR + " (" + (res.message || 'UNKNOWN') + ")", [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
+                  this.isChargeStarted = false;
+                  this.isChargeStopped = false;
+                  this.startBlink = false;
+                  this.requestedDuration = '-';
+                  this.isStartButtonDisabled = false;
+                  return;
+                }
               }
-          };
-        }
-        return device_command_body;
-      }), 
-      mergeMap((startChargeRes) => {
-        console.log('Start device command body:', startChargeRes);
-        return this.chargeReq.postDeviceCommand(this.deviceProtocolDetails.url,startChargeRes);
-      })).subscribe({
-        next: (res: any) => {
-          console.log('Start device command response:', res);
-          if(deviceType.toLowerCase() === 'ocpp') { 
-            if(!res.success) {
-              this.chargeStatusText = `${DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_ERR} (${(res.message || 'UNKNOWN').toUpperCase()})`;
-              this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.START_CHARGE_ERR+" ("+(res.message || 'UNKNOWN')+")", [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
+              let _tran_id = "";
+              _tran_id = deviceType.toLowerCase() === 'ocpp' ? this.startChargeTransactionId : res.payload?.transactionId || res.transactionId;
+              this.utils.storeDetails(KEYS.TRANSACTION_ID, _tran_id);
+              this.storedDetails.transactionid = _tran_id;
+              this.storedDetails.autostart = this.isAutoCharge ? 1 : 0;
+              this.utils.storeDetails(KEYS.USER_DETAILS, JSON.stringify(this.storedDetails));
+              const reqDurationHrs = this.isDurationSkipped ? "00" : this.utils.getDurationInHours(this.timerVal).split(":")[0];
+              const reqDurationMin = this.isDurationSkipped ? "00" : this.utils.getDurationInHours(this.timerVal).split(":")[1];
+              const totalDuration = reqDurationHrs + ":" + reqDurationMin;
+              this.requestedDuration = totalDuration === '00:00' ? 'Skipped' : totalDuration;
+              this.utils.storeDetails(KEYS.CHARGE_STATUS, KEYS.CHARGE_REQ);
+              this.getChargingStatus(_tran_id);
+            },
+            error: (err) => {
+              console.error('Start charging error:', err);
+              this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_ERR;
+              this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.START_CHARGE_ERR, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
               this.isChargeStarted = false;
               this.isChargeStopped = false;
               this.startBlink = false;
               this.requestedDuration = '-';
               this.isStartButtonDisabled = false;
-              return;
             }
-          }
-          let _tran_id = "";
-          _tran_id = deviceType.toLowerCase() === 'ocpp' ? this.startChargeTransactionId : res.payload?.transactionId || res.transactionId;
-          this.utils.storeDetails(KEYS.TRANSACTION_ID, _tran_id);
-          this.storedDetails.transactionid = _tran_id;
-          this.storedDetails.autostart = this.isAutoCharge ? 1 : 0;
-          this.utils.storeDetails(KEYS.USER_DETAILS, JSON.stringify(this.storedDetails));
-          const reqDurationHrs = this.isDurationSkipped ? "00" : this.utils.getDurationInHours(this.timerVal).split(":")[0];
-          const reqDurationMin = this.isDurationSkipped ? "00" : this.utils.getDurationInHours(this.timerVal).split(":")[1];
-          const totalDuration = reqDurationHrs+":"+reqDurationMin;
-          this.requestedDuration = totalDuration === '00:00' ? 'Skipped' : totalDuration;
-          this.utils.storeDetails(KEYS.CHARGE_STATUS, KEYS.CHARGE_REQ);
-          this.getChargingStatus(_tran_id);
-        }, 
-        error: (err) => {
-          console.error('Start charging error:', err);
-          this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_ERR;
-          this.utils.displayDialog(KEYS.DIALOG_TYPE_ALERT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.START_CHARGE_ERR, [DISPLAY_MESSAGES.BUTTON_TEXT_OK]);
-          this.isChargeStarted = false;
-          this.isChargeStopped = false;
-          this.startBlink = false;
-          this.requestedDuration = '-';
-          this.isStartButtonDisabled = false;
-        }
-      });
-   }
+          });
+      }
     } else {
       this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_INSUFFICIENT;
       const choice = await this.utils.displayDialog(KEYS.DIALOG_TYPE_PROMPT, DISPLAY_MESSAGES.ERR_DIALOG_TITLE, DISPLAY_MESSAGES.WALLET_BALANCE_ERROR_2, [DISPLAY_MESSAGES.WALLET_DIALOG_TEXT_NAVIGATE, DISPLAY_MESSAGES.BUTTON_TEXT_CANCEL]);
-      if(choice == 1) {
+      if (choice == 1) {
         this.utils.navigateTo(KEYS.NAV_FORWARD, '/pages/sidemenu/wallet')
       }
     }
@@ -396,13 +454,13 @@ export class ChargeStartStopPage implements OnInit {
     let values = [];
     let counter = 0;
 
-    if(this.chargeDurationTimerInterval === undefined) {
+    if (this.chargeDurationTimerInterval === undefined) {
       const selectedDuration = this.isDurationSkipped ? 60 : this.timerVal;
       this.utils.storeDetails(KEYS.SELECTED_DURATION, selectedDuration);
     }
 
     this.chargingTimer = interval(10000).pipe(
-exhaustMap(() => this.chargeReq.postRequestDetails(RELATIVE_URLS.CHECK_CHARGE, interval_body).pipe(
+      exhaustMap(() => this.chargeReq.postRequestDetails(RELATIVE_URLS.CHECK_CHARGE, interval_body).pipe(
         catchError(err => {
           console.error('Charge interval error:', err);
           return of(null);
@@ -411,7 +469,7 @@ exhaustMap(() => this.chargeReq.postRequestDetails(RELATIVE_URLS.CHECK_CHARGE, i
 
       takeUntil(this.destroy$)
     ).subscribe((res: any) => {
-if(!res || !(res.length > 0) || !res[0]) {
+      if (!res || !(res.length > 0) || !res[0]) {
         console.warn('Invalid response in charge interval:', res);
         return;
       }
@@ -432,8 +490,8 @@ if(!res || !(res.length > 0) || !res[0]) {
 
       const deviceProtocol = this.deviceProtocolDetails.deviceProtocol || this.pageParams?.devicetype || 'evcm';
 
-      if(!this.isAutoCharge) {
-        if(device_status === 'stopped' && deviceProtocol.toLowerCase() === "evcm") {
+      if (!this.isAutoCharge) {
+        if (device_status === 'stopped' && deviceProtocol.toLowerCase() === "evcm") {
           this.destroy$.next();
           const transaction_details: NavigationExtras = { state: { transactionid: response } };
           this.utils.navigateTo(KEYS.NAV_FORWARD_WITH_OPT, '/charge-glance', transaction_details);
@@ -451,10 +509,10 @@ if(!res || !(res.length > 0) || !res[0]) {
 
       }
 
-      if(!this.isSelfCharge) {
+      if (!this.isSelfCharge) {
         let remainingBalance: any = parseFloat(this.initialWalletBalance || 0) - parseFloat(this.walletConsumed || 0);
         remainingBalance = parseFloat(remainingBalance).toFixed(2);
-        if(remainingBalance <= 0) {
+        if (remainingBalance <= 0) {
           remainingBalance = 0;
           this.chargeStatusText = DISPLAY_MESSAGES.CHARGE_START_STOP_STATUS_INSUFFICIENT;
           this.destroy$.next();
@@ -472,22 +530,37 @@ if(!res || !(res.length > 0) || !res[0]) {
         }
       }
 
-if (!this.isDurationSkipped && !this.isAutoCharge && this.timerVal > 0) {
-    const minuteago = (res[0].minuteago || '0.0').split('.')[0];
-    const parts = minuteago.split(':');
-    const serverElapsedSec = parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
-    const durationSec = this.timerVal * 60;
-  if (serverElapsedSec >= durationSec) {
-    this.destroy$.next();
-    this.chargeStoppedAutomatically = true;
-    this.startBlink = false;
-    this.chargeStatusText = CHARGE_STATUS_TYPES.TIMEOUT_ERR;
-    this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
-    return;
-  }
-}
+      if (!this.isDurationSkipped && !this.isAutoCharge && this.timerVal > 0) {
+        const minuteago = (res[0].minuteago || '00:00:00').split('.')[0];
+        const parts = minuteago.split(':');
+        let serverElapsedSec = 0;
 
-      if(device_status === 'stopped' && deviceProtocol.toLowerCase() === "ocpp") {
+        if (parts.length === 3) {
+          serverElapsedSec = (parseInt(parts[0], 10) || 0) * 3600 +
+            (parseInt(parts[1], 10) || 0) * 60 +
+            (parseInt(parts[2], 10) || 0);
+        } else if (parts.length === 2) {
+          serverElapsedSec = (parseInt(parts[0], 10) || 0) * 60 +
+            (parseInt(parts[1], 10) || 0);
+        } else if (parts.length === 1) {
+          const minutesVal = parseFloat(parts[0]);
+          if (!isNaN(minutesVal)) {
+            serverElapsedSec = Math.round(minutesVal * 60);
+          }
+        }
+
+        const durationSec = parseInt(this.timerVal, 10) * 60;
+        if (!isNaN(serverElapsedSec) && serverElapsedSec >= durationSec) {
+          this.destroy$.next();
+          this.chargeStoppedAutomatically = true;
+          this.startBlink = false;
+          this.chargeStatusText = CHARGE_STATUS_TYPES.TIMEOUT_ERR;
+          this.stopCharging(CHARGE_STATUS_TYPES.TIMEOUT_ERR);
+          return;
+        }
+      }
+
+      if (device_status === 'stopped' && deviceProtocol.toLowerCase() === "ocpp") {
         this.destroy$.next();
         const transaction_details: NavigationExtras = { state: { transactionid: response } };
         this.utils.navigateTo(KEYS.NAV_FORWARD_WITH_OPT, '/charge-glance', transaction_details);
@@ -503,7 +576,7 @@ if (!this.isDurationSkipped && !this.isAutoCharge && this.timerVal > 0) {
     });
   }
 
-ionViewWillLeave() {
+  ionViewWillLeave() {
     this.timeout = null;
     this.destroy$.next();
     this.destroy$.complete();
@@ -511,9 +584,9 @@ ionViewWillLeave() {
   }
 
   compareValues(arrayValues) {
-    if(parseFloat(arrayValues[0]) === parseFloat(arrayValues[1])) {
+    if (parseFloat(arrayValues[0]) === parseFloat(arrayValues[1])) {
       return true;
-    } 
+    }
     return false;
   }
 
@@ -524,13 +597,13 @@ ionViewWillLeave() {
   }
 
   incrementTimer() {
-    if(this.timerVal >= 5 && this.timerVal < 120) {
-      this.timerVal= parseInt(this.timerVal)+5;
+    if (this.timerVal >= 5 && this.timerVal < 120) {
+      this.timerVal = parseInt(this.timerVal) + 5;
     }
   }
   decrementTimer() {
-    if(this.timerVal <= 120 && this.timerVal > 5) {
-      this.timerVal = parseInt(this.timerVal)-5;
+    if (this.timerVal <= 120 && this.timerVal > 5) {
+      this.timerVal = parseInt(this.timerVal) - 5;
     }
   }
 
@@ -563,7 +636,7 @@ ionViewWillLeave() {
         if (this.timeout == null || this.timeout == undefined) {
           this.timeout = setTimeout(() => {
             this.isTimedout = true;
-          }, 30000); // 30 seconds for device to accept the start command
+          }, 60000); // 60 seconds for device to accept the start command
         }
 
         if (this.isTimedout) {
@@ -666,9 +739,9 @@ ionViewWillLeave() {
    * When user checks/unchecks the AutoStart option
    * @param event auto charge event handler
    */
-   onAutoChargeHandler(event: any) {
+  onAutoChargeHandler(event: any) {
     this.isAutoCharge = event.target.checked;
     this.isDurationSkipped = event.target.checked;
   }
-  
+
 }

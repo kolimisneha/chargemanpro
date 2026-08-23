@@ -12,6 +12,14 @@
 :root {
   --ion-safe-area-top: env(safe-area-inset-top);
   --ion-safe-area-bottom: env(safe-area-inset-bottom);
+  --ion-safe-area-left: env(safe-area-inset-left);
+  --ion-safe-area-right: env(safe-area-inset-right);
+}
+
+ion-app {
+  /* Use dvh (dynamic viewport height) if available, fall back to -webkit-fill-available / 100vh */
+  height: 100vh;
+  height: 100dvh;
 }
 
 /* Core CSS required for Ionic components to work properly */

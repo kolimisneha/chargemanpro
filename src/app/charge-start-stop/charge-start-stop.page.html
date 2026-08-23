@@ -69,7 +69,11 @@
     </div>
     <div gun-selection-container>
       <ion-label slot-label>Select Gun<span>*</span></ion-label>
-      <div gun-options>
+      <div *ngIf="isLoadingGuns" style="text-align:center; padding: 10px;">
+        <ion-spinner name="crescent" style="color: var(--ion-color-primary);"></ion-spinner>
+        <ion-label style="display:block; font-size:12px; opacity:0.6; margin-top:4px;">Loading connectors...</ion-label>
+      </div>
+      <div gun-options *ngIf="!isLoadingGuns">
         <div
           class="gun-option"
           *ngFor="let gun of guns"

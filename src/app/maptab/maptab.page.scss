@@ -5,7 +5,7 @@ agm-map {
 
 [charging-status-container] {
   position: fixed;
-  top: 88px;
+  top: calc(env(safe-area-inset-top, 0px) + 56px);
   left: 0;
   right: 0;
   z-index: 100;
@@ -13,7 +13,7 @@ agm-map {
   align-items: center;
   background: var(--ion-color-primary);
   color: #fff;
-  margin-top: 14px;
+  margin-top: 0;
   padding: 12px 16px;
   cursor: pointer;
 }
@@ -53,7 +53,7 @@ agm-map {
 
 [wallet-balance-container] {
   position: fixed;
-  top: 95px;
+  top: calc(env(safe-area-inset-top, 0px) + 62px);
   left: 0;
   right: 0;
   z-index: 100;
@@ -96,6 +96,7 @@ agm-map {
   padding: 4px 10px;
   border-radius: 6px;
   background: var(--ion-color-primary);
-  color: #fff;
+  color: #ffffff !important;
+  --color: #ffffff !important;
   flex-shrink: 0;
 }

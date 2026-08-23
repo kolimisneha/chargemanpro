@@ -1,6 +1,7 @@
 ion-content {
   --padding-top: env(safe-area-inset-top, 0px);
-  --padding-bottom: 0px;
+  --padding-bottom: env(safe-area-inset-bottom, 0px);
+  --overflow: auto;
 }
 
 [heading-style-one] {
@@ -38,10 +39,11 @@ ion-content {
   font-weight: 16px;
   text-transform: none;
 &[start-charge] {
-  position: absolute;
-  bottom: env(safe-area-inset-bottom, 0px);
-  left: 0;
-  right: 0;
+  position: static;
+  display: block;
+  width: calc(100% - 40px);
+  margin: 20px auto;
+  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
 }
 &[withdraw-button] {
   position: relative;
@@ -60,10 +62,10 @@ ion-content {
     line-height: 24px;
     font-weight: 16px;
     text-transform: none;
-    position: absolute;
-    bottom: env(safe-area-inset-bottom, 0px);
-    left: 0;
-    right: 0;
+    display: block;
+    width: calc(100% - 40px);
+    margin: 20px auto;
+    margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
 }
 
 [charging-status-container] {
@@ -92,20 +94,27 @@ ion-content {
 [login-logo-container] {
   padding-top: env(safe-area-inset-top, 0px);
   width: 100%;
-  height: 35vh;
+  height: clamp(120px, 30vh, 280px);
+  min-height: 120px;
+  flex-shrink: 0;
   img{
     width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 }
 
 [login-details-container] {
   background-color:var(--chargemen-white);
-  height: calc(70vh - env(safe-area-inset-top, 0px));
+  flex: 1;
+  min-height: 0;
   width:100vw;
   border:5px solid var(--chargemen-white);
   border-top-left-radius: 50px;
   border-top-right-radius: 50px;
-  overflow: scroll;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 80px);
   [otp-container] {
     display: flex;
     width: 100%;
@@ -248,11 +257,10 @@ ion-content {
   }
 }
 [login-button] {
-  margin: 10px 20px 20px 20px;
-  position: absolute;
-  bottom: env(safe-area-inset-bottom, 0px);
-  left: 0;
-  right: 0;
+  display: block;
+  margin: 24px 20px;
+  margin-bottom: calc(env(safe-area-inset-bottom, 0px) + 12px);
+  position: static;
 }
 [login-otp-timer-style] {
   margin:12px 0px 0px 0px;
@@ -482,7 +490,8 @@ ios in-toolbar {
 }
 
 [home-tab-bar] {
-  height: 52px;
+  height: auto;
+  min-height: 52px;
   padding-bottom: env(safe-area-inset-bottom, 0px);
   background:  var(--chargemen-grey);
   box-shadow: 0px 0px 4px rgb(0 0 0 / 25%);
@@ -494,7 +503,7 @@ ios in-toolbar {
 }
 
 [home-fab-button] {
-  margin-bottom: calc(28px + env(safe-area-inset-bottom, 0px));
+  margin-bottom: calc(60px + env(safe-area-inset-bottom, 0px));
   --background:black;
   width: 52px;
   height: 52px;
@@ -790,8 +799,14 @@ ion-tab-button:last-child{
   [charge-header-container] {
     width: 100%;
     position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: clamp(150px, 22vh, 260px);
     [charge-image] {
       width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
     [charge-back-button] {
       position: absolute !important;
@@ -799,7 +814,8 @@ ion-tab-button:last-child{
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      margin-top:14px;
+      top: calc(env(safe-area-inset-top, 0px) + 14px);
+      margin-top: 0;
       margin-left: 14px;
      }
   }
@@ -807,13 +823,15 @@ ion-tab-button:last-child{
   [charge-details-container] {
     position: absolute;
     background-color:var(--chargemen-white);
-    top: 20vh;
-    height: calc(100% - 20vh);
+    top: clamp(150px, 22vh, 260px);
+    height: calc(100% - clamp(150px, 22vh, 260px));
     width:100vw;
     border:5px solid var(--chargemen-white);
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
-    overflow: scroll;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 72px);
 
     [charge-address-container] {
       margin-left: 20px;

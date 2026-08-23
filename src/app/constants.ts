@@ -247,6 +247,7 @@ export const RELATIVE_URLS = {
     STOP_SELF_CHARGE: 'stopChargingBySelf',
     GET_APP_VERSION: 'getVersionUpdate',
     GET_REPORTS: 'getReportInfo',
+    GET_CONNECTORS_BY_PARENT: 'getChargeManByParentID',
 }
 export const DEMO_CRED = {
     mobileNumber: '9999999999',
