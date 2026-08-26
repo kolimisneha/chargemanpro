@@ -10,7 +10,7 @@
     <ion-item>
       <div manual-entry-container>
         <div>
-          <ion-label deviceid-label position="stacked">Device ID (10 digit code)</ion-label>
+          <ion-label deviceid-label position="stacked">Device ID (10 to 15 digit code)</ion-label>
           <ion-input formControlName="deviceId" type="text" recharge-input></ion-input>
         </div>
 
@@ -22,8 +22,8 @@
     <div error-container>
         <span *ngIf="(reportsForm.controls.deviceId.touched || submitted) && reportsForm.controls.deviceId.errors?.required"> Device ID required </span>
         <span *ngIf="(reportsForm.controls.deviceId.touched || submitted) && reportsForm.controls.deviceId.errors?.pattern"> Invalid Characters entered </span>
-        <span *ngIf="(reportsForm.controls.deviceId.touched || submitted) && reportsForm.controls.deviceId.errors?.minlength"> ID must be 10 characters length</span>
-        <span *ngIf="(reportsForm.controls.deviceId.touched || submitted) && reportsForm.controls.deviceId.errors?.maxlength"> ID must be 10 characters length</span>
+        <span *ngIf="(reportsForm.controls.deviceId.touched || submitted) && reportsForm.controls.deviceId.errors?.minlength"> ID must be at least 10 characters length</span>
+        <span *ngIf="(reportsForm.controls.deviceId.touched || submitted) && reportsForm.controls.deviceId.errors?.maxlength"> ID must not exceed 15 characters length</span>
         </div>
     <ion-item freq-container>
       <ion-label deviceid-label position="stacked">Frequency</ion-label>

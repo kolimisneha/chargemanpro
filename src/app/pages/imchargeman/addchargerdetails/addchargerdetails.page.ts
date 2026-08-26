@@ -115,7 +115,7 @@ export class AddchargerdetailsPage implements OnInit {
     }
     
     this.chargeStationForm = this.formBuilder.group({
-      deviceid: [this.pageDetails?.deviceid, Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(10), Validators.pattern(constants.REGEX.CHAR_NUM_PATTERN)])],
+      deviceid: [this.pageDetails?.deviceid, Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(15), Validators.pattern(constants.REGEX.CHAR_NUM_PATTERN)])],
       devicename: [this.pageDetails?.hostname, Validators.compose([Validators.required, Validators.minLength(3), Validators.maxLength(25), Validators.pattern(constants.REGEX.CHAR_NUM_PATTERN_SPACE)])],
       locationname: [this.pageDetails?.hostaddress, Validators.compose([Validators.required, Validators.minLength(10), Validators.pattern(constants.REGEX.ADDRESS_REGEX_PATTERN)])],
       registerType: [this.pageDetails?.chargettype,Validators.required],

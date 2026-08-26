@@ -16,8 +16,8 @@
       <div error-container>
         <span *ngIf="(chargeStationForm.controls.deviceid.touched || submitted) && chargeStationForm.controls.deviceid.errors?.required"> Device ID required </span>
         <span *ngIf="(chargeStationForm.controls.deviceid.touched || submitted) && chargeStationForm.controls.deviceid.errors?.pattern"> Invalid Characters entered </span>
-        <span *ngIf="(chargeStationForm.controls.deviceid.touched || submitted) && chargeStationForm.controls.deviceid.errors?.minlength"> ID must be 10 characters length</span>
-        <span *ngIf="(chargeStationForm.controls.deviceid.touched || submitted) && chargeStationForm.controls.deviceid.errors?.maxlength"> ID must be 10 characters length</span>
+        <span *ngIf="(chargeStationForm.controls.deviceid.touched || submitted) && chargeStationForm.controls.deviceid.errors?.minlength"> ID must be at least 10 characters length</span>
+        <span *ngIf="(chargeStationForm.controls.deviceid.touched || submitted) && chargeStationForm.controls.deviceid.errors?.maxlength"> ID must not exceed 15 characters length</span>
       </div>
 
       <ion-item>

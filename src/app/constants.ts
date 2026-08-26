@@ -2,7 +2,7 @@ export const REGEX = {
     MOB_NUM_REGEX: '[0-9]{10}',
     USER_NAME_REGEX: '[a-zA-Z ]{3,30}$',
     EMAIL_PATTERN: '^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$',
-    CHAR_NUM_PATTERN: '^[a-zA-Z0-9]*$',
+    CHAR_NUM_PATTERN: '^[a-zA-Z0-9-]*$',
     CHAR_NUM_PATTERN_SPACE: '^[ a-zA-Z0-9]*$',
     ADDRESS_REGEX_PATTERN: '^[ A-Za-z0-9.,: -]*$',
     AMOUNT_REGEX_PATTERN: '^([0-9]{1,5})+(\.[0-9]{1,2})?$',

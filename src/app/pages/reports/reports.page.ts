@@ -26,7 +26,7 @@ export class ReportsPage implements OnInit {
   }
   constructor(private formBuilder: FormBuilder, private utils: Utils, private barcodeScanner: BarcodeScanner) {
     this.reportsForm = this.formBuilder.group({
-      deviceId: ['',Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(10),Validators.pattern(constants.REGEX.CHAR_NUM_PATTERN)])],
+      deviceId: ['',Validators.compose([Validators.required, Validators.minLength(10), Validators.maxLength(15),Validators.pattern(constants.REGEX.CHAR_NUM_PATTERN)])],
       frequency:['', Validators.compose([Validators.required])],
       fromDate: [],
       toDate: [],

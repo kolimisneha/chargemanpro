@@ -92,7 +92,7 @@ export class ReportsViewPage implements OnInit {
     } else {
       this.isLoading = true;
           this.showProgress = false;
-          this.statusText = `${constants.DISPLAY_MESSAGES.NO_REPORTS_FOUND_1} ${this.selectedDeviceId} ${constants.DISPLAY_MESSAGES.NO_CHARGE_STATIONS_FOUND_2}`;
+          this.statusText = `${constants.DISPLAY_MESSAGES.NO_REPORTS_FOUND_1} ${this.selectedDeviceId} ${constants.DISPLAY_MESSAGES.NO_REPORTS_FOUND_2}`;
     }
   }, (err) => {
     this.isLoading = true;
