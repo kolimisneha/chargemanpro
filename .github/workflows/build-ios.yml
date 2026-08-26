@@ -53,7 +53,9 @@ jobs:
           echo "template patched to iOS 14.0"
 
       - name: Add iOS platform
-        run: npx cap add ios
+        run: |
+          rm -rf ios
+          npx cap add ios
 
       - name: Generate app icons from resources into template icon set
         run: |
