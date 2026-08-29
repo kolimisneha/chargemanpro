@@ -11,7 +11,7 @@ on:
 
 env:
   BUNDLE_ID: evchargeman.io
-  APP_VERSION: '1.4.1'
+  APP_VERSION: '1.4.2'
   APPLE_ID: ${{ secrets.APPLE_ID || 'director@evgracias.com' }}
   APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID || 'QDG4B42LM2' }}
   FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
@@ -58,7 +58,7 @@ jobs:
           rm -rf ios
           npx cap add ios
 
-      - name: Generate app icons from resources into template icon set
+      - name: Generate app icons and splash screen from resources
         run: |
           ICON_SRC="$GITHUB_WORKSPACE/resources/icon.png"
           SET="ios/App/App/Assets.xcassets/AppIcon.appiconset"
@@ -82,6 +82,15 @@ jobs:
           echo "=== AppIcon set after generation: ==="
           ls "$SET" | grep -c "\.png$" | xargs echo "icon PNGs:"
           grep -c '"filename"' "$SET/Contents.json" | xargs echo "Contents.json entries:"
+
+          echo "=== Generating Splash Screen ==="
+          SPLASH_SRC="$GITHUB_WORKSPACE/resources/splash.png"
+          SPLASH_DIR="ios/App/App/Assets.xcassets/Splash.imageset"
+          test -d "$SPLASH_DIR" || { echo "FAIL: no Splash.imageset at $SPLASH_DIR"; exit 1; }
+          cp "$SPLASH_SRC" "$SPLASH_DIR/splash-2732x2732.png"
+          cp "$SPLASH_SRC" "$SPLASH_DIR/splash-2732x2732-1.png"
+          cp "$SPLASH_SRC" "$SPLASH_DIR/splash-2732x2732-2.png"
+          echo "Copied splash screen to Splash.imageset"
 
       - name: Configure version, permissions, and code signing
         run: |

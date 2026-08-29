@@ -1,30 +1,38 @@
 <ion-content overflow-scroll="false">
   <div recharge-container>
     <form [formGroup]="manualChargeForm" (ngSubmit)="submitDeviceId()">
-    <ion-item>
-      <div manual-entry-container>
-        <div>
-          <ion-label deviceid-label position="stacked">Device ID (10 digit code)</ion-label>
-          <ion-input (keypress)="onKeypress($event)" formControlName="deviceid" type="text" recharge-input></ion-input>
-        </div>
-        
-        <div (click)="openQrScanner()">
-          <ion-icon [src]="scanIcon"></ion-icon>
-        </div>
-    </div>
+      <ion-item>
+        <div manual-entry-container>
+          <div>
+            <ion-label deviceid-label position="stacked">Device ID (10 digit code)</ion-label>
+            <ion-input (keypress)="onKeypress($event)" formControlName="deviceid" type="text"
+              recharge-input></ion-input>
+          </div>
 
-    </ion-item>
-    <div>
-    
-    </div>
-    <div error-container>
-      <span *ngIf="(manualChargeForm.controls.deviceid.touched || submitted) && manualChargeForm.controls.deviceid.errors?.required"> Device ID Required </span>
-      <span *ngIf="(manualChargeForm.controls.deviceid.touched || submitted) && manualChargeForm.controls.deviceid.errors?.minlength">Device ID mustbe in 10 character length</span>
-      <span *ngIf="(manualChargeForm.controls.deviceid.touched || submitted) && manualChargeForm.controls.deviceid.errors?.maxlength">Device ID mustbe in 10 character length</span>
+          <div (click)="openQrScanner()">
+            <ion-icon [src]="scanIcon"></ion-icon>
+          </div>
+        </div>
+
+      </ion-item>
+      <div>
+
       </div>
-    
+      <div error-container>
+        <span
+          *ngIf="(manualChargeForm.controls.deviceid.touched || submitted) && manualChargeForm.controls.deviceid.errors?.required">
+          Device ID Required </span>
+        <span
+          *ngIf="(manualChargeForm.controls.deviceid.touched || submitted) && manualChargeForm.controls.deviceid.errors?.minlength">Device
+          ID mustbe in 10 character length</span>
+        <span
+          *ngIf="(manualChargeForm.controls.deviceid.touched || submitted) && manualChargeForm.controls.deviceid.errors?.maxlength">Device
+          ID mustbe in 10 character length</span>
+      </div>
+
       <div button-container>
-        <ion-button expand="block" type="submit" [disabled]="!manualChargeForm.valid" button-regular>Proceed</ion-button>
+        <ion-button expand="block" type="submit" [disabled]="!manualChargeForm.valid"
+          button-regular>Proceed</ion-button>
       </div>
 
     </form>
