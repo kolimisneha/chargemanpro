@@ -780,6 +780,7 @@ ion-tab-button:last-child{
         flex-grow: 1;
         &:last-child {
           font-weight: bolder;
+          flex-grow: 1.3;
         }
       }
       
