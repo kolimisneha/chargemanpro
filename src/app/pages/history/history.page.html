@@ -25,7 +25,7 @@
         <ion-label>{{history.hostaddress}}</ion-label>
       </div>
       <div address-container>
-        <ion-label>Rate: ₹ {{history.rph}}/KW</ion-label>
+        <ion-label>Rate: ₹ {{history.rph}}/KW | Consumed: {{history.chargevalue}} Kw</ion-label>
       </div>
       <!--Time-->
       <div time-container>
@@ -43,8 +43,8 @@
 
       <div other-details-container>
         <div detail-container>
-          <ion-label>{{history.chargevalue}}Kw</ion-label>
-          <ion-label>(consumed)</ion-label>
+          <ion-label>₹ {{history.consumewallet}}</ion-label>
+          <ion-label>(Spent)</ion-label>
         </div>
         <div detail-container>
           <ion-label>₹ {{history.cgstvalue}}</ion-label>
@@ -55,8 +55,8 @@
           <ion-label>(SGST-{{history.sgst}}%)</ion-label>
         </div>
         <div detail-container>
-          <ion-label>₹ {{history.consumewallet}}</ion-label>
-          <ion-label>(Spent)</ion-label>
+          <ion-label>{{history.chargevalue}}Kw</ion-label>
+          <ion-label>(consumed)</ion-label>
         </div>
       </div>
     </div>
