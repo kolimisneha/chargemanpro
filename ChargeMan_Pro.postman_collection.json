@@ -1,0 +1,596 @@
+{
+	"info": {
+		"_postman_id": "a6b7c8d9-e0f1-4234-5678-9abcdef01234",
+		"name": "EVChargeMan Pro API Collection",
+		"description": "Collection of API endpoints for EVChargeMan Pro application.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://server.evchargeman.com/cs_services",
+			"type": "string"
+		},
+		{
+			"key": "deviceSocketUrl",
+			"value": "http://server.evchargeman.com:5679",
+			"type": "string"
+		},
+		{
+			"key": "ocppSocketUrl",
+			"value": "http://server.evchargeman.com:5678/charging-station",
+			"type": "string"
+		},
+		{
+			"key": "mobile",
+			"value": "9392894739",
+			"type": "string"
+		}
+	],
+	"item": [
+		{
+			"name": "Auth & User",
+			"item": [
+				{
+					"name": "Validate OTP",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"otp\": \"1234\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/validateOTP",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"validateOTP"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get App Version Update",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/getVersionUpdate",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"getVersionUpdate"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Wallet",
+			"item": [
+				{
+					"name": "Get Wallet Balance",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobile\": \"{{mobile}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/getWalletBalance",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"getWalletBalance"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Wallet History",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobile\": \"{{mobile}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/getWalletHistory",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"getWalletHistory"
+							]
+						}
+					}
+				},
+				{
+					"name": "Insert Wallet History / Top-up",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"amount\": 100,\n  \"payment_id\": \"pay_test123\",\n  \"status\": \"success\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/insertWalletHistory",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"insertWalletHistory"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Charging Stations",
+			"item": [
+				{
+					"name": "Get Near Charge Stations",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/getNearChargeStation",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"getNearChargeStation"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Scanned QR Station Details",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deviceid\": \"cmdc120nnd-1\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/getChargeManByID",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"getChargeManByID"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Charger Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/chargeTypes",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"chargeTypes"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Host / User ChargeMan Stations",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobile\": \"{{mobile}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/getChargeMan",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"getChargeMan"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Connectors By Parent ID",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"parentid\": \"EVCM001\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/getChargeManByParentID",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"getChargeManByParentID"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Charging Process",
+			"item": [
+				{
+					"name": "Start Charging",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"deviceid\": \"EVCM001\",\n  \"devicetype\": \"AC\",\n  \"duration\": \"30\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/startCharging",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"startCharging"
+							]
+						}
+					}
+				},
+				{
+					"name": "Check Charging Progress",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deviceid\": \"EVCM001\",\n  \"transactionid\": \"12345\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/goCharging",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"goCharging"
+							]
+						}
+					}
+				},
+				{
+					"name": "Stop Charging",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"deviceid\": \"EVCM001\",\n  \"transactionid\": \"12345\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/stopCharging",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"stopCharging"
+							]
+						}
+					}
+				},
+				{
+					"name": "Stop Charging By Self",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobile\": \"{{mobile}}\",\n  \"deviceid\": \"EVCM001\",\n  \"transactionid\": \"12345\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/stopChargingBySelf",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"stopChargingBySelf"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Charging Status",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deviceid\": \"EVCM001\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/getChargingStatus",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"getChargingStatus"
+							]
+						}
+					}
+				},
+				{
+					"name": "Charging Summary",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"transactionid\": \"12345\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/chargingSummary",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"chargingSummary"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "History & Reports",
+			"item": [
+				{
+					"name": "Get User Charge History",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobile\": \"{{mobile}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/getUserChargeHistory",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"getUserChargeHistory"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Host Charge History",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"mobile\": \"{{mobile}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/getHostChargeHistory",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"getHostChargeHistory"
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Reports Info",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deviceid\": \"cmdc120nnd-1\",\n  \"type\": \"month\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/getReportInfo",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"getReportInfo"
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Device Socket Commands",
+			"item": [
+				{
+					"name": "Send Device Command",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"deviceid\": \"EVCM001\",\n  \"command\": \"START\"\n}"
+						},
+						"url": {
+							"raw": "{{deviceSocketUrl}}/sendCommand",
+							"host": [
+								"{{deviceSocketUrl}}"
+							],
+							"path": [
+								"sendCommand"
+							]
+						}
+					}
+				},
+				{
+					"name": "OCPP Remote Start Transaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"connectorId\": 1,\n  \"idTag\": \"{{mobile}}\"\n}"
+						},
+						"url": {
+							"raw": "{{ocppSocketUrl}}/EVCM001/remoteStartTransaction",
+							"host": [
+								"{{ocppSocketUrl}}"
+							],
+							"path": [
+								"EVCM001",
+								"remoteStartTransaction"
+							]
+						}
+					}
+				},
+				{
+					"name": "OCPP Remote Stop Transaction",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"transactionId\": 12345\n}"
+						},
+						"url": {
+							"raw": "{{ocppSocketUrl}}/EVCM001/remoteStopTransaction",
+							"host": [
+								"{{ocppSocketUrl}}"
+							],
+							"path": [
+								"EVCM001",
+								"remoteStopTransaction"
+							]
+						}
+					}
+				}
+			]
+		}
+	]
+}

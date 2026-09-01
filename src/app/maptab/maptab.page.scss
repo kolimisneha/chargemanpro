@@ -18,6 +18,11 @@ agm-map {
   cursor: pointer;
 }
 
+:host-context(.ios) [charging-status-container],
+.ios [charging-status-container] {
+  margin-top: calc(env(safe-area-inset-top, 20px) + 56px);
+}
+
 [charging-status-container] ion-icon:first-child {
   font-size: 22px;
   flex-shrink: 0;
@@ -66,6 +71,11 @@ agm-map {
   background: #fff;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   cursor: pointer;
+}
+
+:host-context(.ios) [wallet-balance-container],
+.ios [wallet-balance-container] {
+  margin-top: calc(env(safe-area-inset-top, 20px) + 64px);
 }
 
 [wallet-balance-container] ion-icon {

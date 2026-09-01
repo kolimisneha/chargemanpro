@@ -603,7 +603,7 @@ ios in-toolbar {
   }
 
   [wallet-balance-container] {
-    margin-top: 42px
+    margin-top: calc(env(safe-area-inset-top, 20px) + 64px) !important;
   }
 
   .loading-custom-class {
