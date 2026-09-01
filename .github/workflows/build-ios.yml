@@ -11,7 +11,7 @@ on:
 
 env:
   BUNDLE_ID: evchargeman.io
-  APP_VERSION: '1.4.3'
+  APP_VERSION: '1.4.4'
   APPLE_ID: ${{ secrets.APPLE_ID || 'director@evgracias.com' }}
   APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID || 'QDG4B42LM2' }}
   FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.APPLE_APP_SPECIFIC_PASSWORD }}
